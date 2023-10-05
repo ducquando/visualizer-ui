@@ -5,12 +5,18 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
+// import { EventEmitter } from '@angular/core';
 import { ConfigurableFactory, DefaultAppearance, Rect2, RenderContext, Shape, ShapePlugin } from '@app/wireframes/interface';
 import { CommonTheme } from './_theme';
 
 const HEADER_BACKGROUND_COLOR = 'HEADER_BACKGROUND_COLOR';
 const HEADER_FOREGROUND_COLOR = 'HEADER_FOREGROUND_COLOR';
 const HEADER_HIDDEN = 'HEADER_HIDDEN';
+
+// show all at once if queue property unspecified 
+// at least that's the idea, i didn't implement it 
+// in this iteration 
+type Parsed = { rows: string[][]; columnCount: number; appearOrder?: boolean[][][] };
 
 const DEFAULT_APPEARANCE = {
     [DefaultAppearance.BACKGROUND_COLOR]: '#fff',
@@ -19,10 +25,10 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.STROKE_COLOR]: CommonTheme.CONTROL_BORDER_COLOR,
     [DefaultAppearance.STROKE_THICKNESS]: CommonTheme.CONTROL_BORDER_THICKNESS,
     [DefaultAppearance.TEXT_ALIGNMENT]: 'center',
-    [DefaultAppearance.TEXT]: 'column1,column2,column3\nrow1,row1,row1\nrow2,row2',
+    [DefaultAppearance.TEXT]: 'hello<1>, every<7>, nyan<4>\n how<3>, are<9>, you<8>\ndoing<6>, fine<5>, sanku<2>',
     [HEADER_BACKGROUND_COLOR]: CommonTheme.CONTROL_BACKGROUND_COLOR,
     [HEADER_FOREGROUND_COLOR]: CommonTheme.CONTROL_TEXT_COLOR,
-    [HEADER_HIDDEN]: false,
+    [HEADER_HIDDEN]: true,
 };
 
 export class Grid implements ShapePlugin {
@@ -47,11 +53,10 @@ export class Grid implements ShapePlugin {
     }
 
     public render(ctx: RenderContext) {
+        const { rows, columnCount, appearOrder } = this.parseText(ctx.shape);
+
         const w = ctx.rect.width;
         const h = ctx.rect.height;
-
-        const { rows, columnCount } = this.parseText(ctx.shape);
-
         const cellWidth = w / columnCount;
         const cellHeight = h / rows.length;
 
@@ -59,9 +64,61 @@ export class Grid implements ShapePlugin {
         this.createHeader(ctx, cellHeight);
         this.createBorders(ctx, columnCount, cellWidth, h, rows, cellHeight, w);
         this.createTexts(rows, cellWidth, cellHeight, ctx);
+
+        let frameCount : number = 0; 
+        let contentQueue : string[][][] = []; 
+        let tmpContentMtx : string[][]; 
+        while (frameCount < appearOrder!.length){
+            tmpContentMtx = this.generateEachContent(rows, appearOrder!, frameCount);
+            contentQueue.push(JSON.parse(JSON.stringify(tmpContentMtx))); 
+            frameCount++; 
+        }
+
+        // now, contentQueue is all we need 
+        let clickNum = 0; 
+        window.addEventListener('click', () => {
+            // console.log(clickNum); // debug, one click is counted as 3 tf? but nvm 
+            if (clickNum < contentQueue.length){
+                this.createFrame(ctx);
+                this.createHeader(ctx, cellHeight);
+                this.createBorders(ctx, columnCount, cellWidth, h, rows, cellHeight, w);
+                this.createTexts(contentQueue[clickNum], cellWidth, cellHeight, ctx); 
+            } else {
+                this.createFrame(ctx);
+                this.createHeader(ctx, cellHeight);
+                this.createBorders(ctx, columnCount, cellWidth, h, rows, cellHeight, w);
+                this.createTexts(rows, cellWidth, cellHeight, ctx);
+                clickNum = 0; 
+            }
+            clickNum++; 
+            // window.onclick = () => { clickNum++; }; 
+        });
+
+    }
+
+    
+    private generateEachContent(content: string[][], order: boolean[][][], frameCount : number){
+        // console.log('climke');
+        let visibleNow : boolean[][] = order[frameCount]; 
+        let contentNow : string[][] = [];
+        for (let i = 0; i < content.length; i++){
+            let tmpContentArr : string[] = []; 
+            for (let j = 0; j < content[0].length; j++){
+                if (visibleNow[i][j]){
+                    tmpContentArr.push(content[i][j]);
+                } else {
+                    tmpContentArr.push(' '); 
+                }
+            }
+            contentNow.push(JSON.parse(JSON.stringify(tmpContentArr))); 
+        }
+        
+        return contentNow; 
     }
 
     private createTexts(rows: string[][], cellWidth: number, cellHeight: number, ctx: RenderContext) {
+        // render cell by cell & increment anchor point of each cell 
+        // similar to how an array is made by docking cells in Tikz
         let y = 0;
 
         const headerForeground = ctx.shape.getAppearance(HEADER_FOREGROUND_COLOR);
@@ -75,6 +132,8 @@ export class Grid implements ShapePlugin {
                 const rect = new Rect2(x, y, cellWidth, cellHeight);
 
                 ctx.renderer2.text(ctx.shape, rect, p => {
+                    // shape properties function 
+                    // but actually just building cell appearance & inserting cell content 
                     p.setText(cell);
 
                     if (isFirstRow) {
@@ -138,7 +197,11 @@ export class Grid implements ShapePlugin {
 
     private parseText(shape: Shape) {
         const key = shape.text;
-
+        
+        // implicit type inference, 'result' is of type 'any' then
+        // inferred to be 'Parsed'. this is causing some mf problems that 
+        // can only be suppressed by line 21 in tsconfig.json
+        // this feature is no longer supported in latest typescript :) 
         let result = shape.renderCache['PARSED'] as { key: string; parsed: Parsed };
 
         if (!result || result.key !== key) {
@@ -149,18 +212,74 @@ export class Grid implements ShapePlugin {
             for (const row of rows) {
                 columnCount = Math.max(columnCount, row.length);
             }
-
-            while (rows.length < 2) {
-                rows.push([]);
-            }
+            
+            // we allow single row table, so disable this 
+            // while (rows.length < 2) {
+            //     rows.push([]);
+            // }
 
             for (const row of rows) {
                 while (row.length < columnCount) {
-                    row.push('');
+                    row.push('<0>');
                 }
             }
 
-            result = { parsed: { rows, columnCount }, key };
+            // break into a table of only content and a table of only queue number 
+            let contentOnly : string[][] = []; 
+            let queueOnly : number[][] = [];
+            for (let i = 0; i < rows.length; i++){
+                let tmpContentRow : string[] = []; 
+                let tmpQueueRow : number[] = [];
+                for (let j = 0; j < rows[0].length; j++){
+                    let tmpStr : string = rows[i][j];
+
+                    let tmpContent = tmpStr.slice(0, tmpStr.length - 3);
+                    tmpContentRow.push(tmpContent); 
+
+                    let tmpQueueNum : number = +tmpStr.slice(tmpStr.length - 2, tmpStr.length - 1);
+                    tmpQueueRow.push(tmpQueueNum); 
+                }
+                contentOnly.push(tmpContentRow); 
+                queueOnly.push(tmpQueueRow); 
+            }
+            // console.log(queueOnly); // debug, it's working :)
+
+            // now constructing the queue list 
+            // then, sort queueList by firs element in each tuple 
+            let queueList : [number, number, number][] = [];  
+            for (let i = 0; i < queueOnly.length; i++){
+                for (let j = 0; j < queueOnly[0].length; j++){
+                    let tmpTup: [number, number, number] = [queueOnly[i][j], i, j];
+                    queueList.push(tmpTup); 
+                }
+            }
+            queueList.sort((a, b) => a[0] - b[0]); 
+            // console.log(queueList); // debug, it's working :) 
+
+            // debug: testing deepcopy , this works :) 
+            // const copied : [number, number, number][] = JSON.parse(JSON.stringify(queueList)); 
+            //              ^declare type to avoid problem      ^eval      ^copy value as string 
+            
+            let visibility : boolean[][] = []; 
+            let tmpBoolArr : boolean[] = []; 
+            for (let j = 0; j < contentOnly[0].length; j++){
+                tmpBoolArr.push(false); 
+            }
+            for (let i = 0; i < contentOnly.length; i++){
+                visibility.push(JSON.parse(JSON.stringify(tmpBoolArr))); 
+            }
+
+            let visibleQueue : boolean[][][] = []; 
+            visibleQueue.push(JSON.parse(JSON.stringify(visibility)));
+            for (let i = 0; i < queueList.length; i++){
+                let item : [number, number, number] = queueList[i]; 
+                let rowidx : number = item[1]; 
+                let colidx : number = item[2]; 
+                visibility[rowidx][colidx] = true; 
+                visibleQueue.push(JSON.parse(JSON.stringify(visibility)));
+            }
+
+            result = { parsed: { rows:contentOnly, columnCount:columnCount, appearOrder:visibleQueue }, key };
 
             shape.renderCache['PARSED'] = result;
         }
@@ -169,4 +288,3 @@ export class Grid implements ShapePlugin {
     }
 }
 
-type Parsed = { rows: string[][]; columnCount: number };
