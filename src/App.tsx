@@ -30,9 +30,6 @@ export const App = () => {
     const showLeftSidebar = useStore(s => s.ui.showLeftSidebar);
     const showRightSidebar = useStore(s => s.ui.showRightSidebar);
     const [presenting, setPresenting] = React.useState(false);
-    // const [code, setCode] = React.useState(
-    //     `function add(a, b) {\n  return a + b;\n}`
-    // );
 
     const [
         print,
@@ -106,7 +103,7 @@ export const App = () => {
                         </span>
                     </Layout.Header>
                     <Layout className='content'>
-                        <Layout.Sider width={320} className='sidebar-left'
+                        <Layout.Sider width={300} className='sidebar-left'
                             collapsed={!showLeftSidebar}
                             collapsedWidth={0}>
 
@@ -131,7 +128,7 @@ export const App = () => {
                         <Layout.Content className='editor-content'>
                             <EditorView spacing={40} />
                         </Layout.Content>
-                        <Layout.Sider width={330} className='sidebar-right'
+                        <Layout.Sider width={250} className='sidebar-right'
                             collapsed={!showRightSidebar}
                             collapsedWidth={0}>
 

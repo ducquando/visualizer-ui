@@ -1,0 +1,3 @@
+temporarily removed these 2 keys from tsconfig.json: 
+    "suppressImplicitAnyIndexErrors": true,
+    "ignoreDeprecations": "5.0",
