@@ -5,7 +5,6 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
-export * from './assets/Icons';
 export * from './assets/Shapes';
 export * from './EditorView';
 export * from './AnimationView';

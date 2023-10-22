@@ -12,12 +12,12 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.FONT_SIZE]: CommonTheme.CONTROL_FONT_SIZE,
     [DefaultAppearance.FOREGROUND_COLOR]: CommonTheme.CONTROL_TEXT_COLOR,
     [DefaultAppearance.TEXT_ALIGNMENT]: 'left',
-    [DefaultAppearance.TEXT]: 'Lorem ipsum dolor sit amet, alii rebum postea eam ex. Et mei laoreet officiis, summo sensibus id mei.',
+    [DefaultAppearance.TEXT]: 'Textbox',
 };
 
-export class Paragraph implements ShapePlugin {
+export class Textbox implements ShapePlugin {
     public identifier(): string {
-        return 'Paragraph';
+        return 'Textbox';
     }
 
     public defaultAppearance() {
