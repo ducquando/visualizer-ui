@@ -28,7 +28,7 @@ export class Raster implements ShapePlugin {
     }
 
     public create(source: ShapeSource) {
-        if (source.type == 'Image') {
+        if (source.type === 'Image') {
             let { width: w, height: h, source: data } = source.image;
 
             if (w > MAX_IMAGE_SIZE || h > MAX_IMAGE_SIZE) {

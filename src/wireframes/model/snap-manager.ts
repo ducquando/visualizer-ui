@@ -348,7 +348,7 @@ export class SnapManager {
         for (const gridItem of grid) {
             const bound = gridItem.bound;
     
-            if (gridItem.leftDistance != Number.MAX_VALUE) {
+            if (gridItem.leftDistance !== Number.MAX_VALUE) {
                 xLines.push({ 
                     value: bound.right + gridItem.leftDistance, 
                     gridSide: 'Right',
@@ -356,7 +356,7 @@ export class SnapManager {
                 });
             }
 
-            if (gridItem.rightDistance != Number.MAX_VALUE) {
+            if (gridItem.rightDistance !== Number.MAX_VALUE) {
                 xLines.push({ 
                     value: bound.left - gridItem.rightDistance, 
                     gridSide: 'Left',
@@ -364,7 +364,7 @@ export class SnapManager {
                 });
             }
 
-            if (gridItem.topDistance != Number.MAX_VALUE) {
+            if (gridItem.topDistance !== Number.MAX_VALUE) {
                 yLines.push({ 
                     value: bound.bottom + gridItem.topDistance,
                     gridSide: 'Bottom',
@@ -372,7 +372,7 @@ export class SnapManager {
                 });
             }
 
-            if (gridItem.bottomDistance != Number.MAX_VALUE) {
+            if (gridItem.bottomDistance !== Number.MAX_VALUE) {
                 yLines.push({ 
                     value: bound.top - gridItem.bottomDistance,
                     gridSide: 'Top',

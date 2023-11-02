@@ -14,14 +14,19 @@ const addLineNumber = (event: any) => {
     .join('')
 }
 
-const compileLatex = () => {
+const presentSlideshow = async () => {
   const html = document.querySelector('.editor-diagram') as HTMLElement | null;
 
   if (html != null) {
-    const tex = html.innerHTML;
+    const newHTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="description"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="dist/reset.css"><link rel="stylesheet" href="dist/reveal.css"><link rel="stylesheet" href="dist/theme/white.css" id="theme"></head><body><div class="reveal"><div class="slides"><section>${html.innerHTML}</section></div></div><script src="dist/reveal.js"></script><script src="plugin/zoom/zoom.js"></script><script src="plugin/notes/notes.js"></script><script src="plugin/search/search.js"></script><script src="plugin/markdown/markdown.js"></script><script src="plugin/highlight/highlight.js"></script><script>Reveal.initialize({controls: true, progress: true, center: true, hash: true, plugins: [RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight]});</script></body>
+    </html>`;
 
-    navigator.clipboard.writeText(tex).then(() => {
-      alert('Success! Latex code copied to clipboard.');
+    // var newWindow = window.open(`http://localhost:8001/preview.html`);
+    // newWindow.fileContent = newHTML;
+    // console.log(`http://localhost:8001/preview.html?content=${newHTML}`);
+
+    navigator.clipboard.writeText(newHTML).then(() => {
+      alert('Success! HTML copied to clipboard.');
     },() => {
       alert('Error! Failed to copy');
     });
@@ -43,7 +48,7 @@ export class AnimationView extends React.Component {
       <div className="animation-view">
         <div className="title-editor">
           <h4>Animation panel</h4>
-          <Button onClick={ compileLatex }>Compile LaTeX</Button>
+          <Button onClick={ presentSlideshow }>Present</Button>
         </div>
         <div className="code-editor">
           <div className="line-numbers">
