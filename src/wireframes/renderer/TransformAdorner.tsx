@@ -330,7 +330,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
         this.props.previewStream.next({ type: 'Update', items });
     }
 
-    private move(delta: Vec2, snapMode: SnapMode, showOverlay = true) {
+    private move(delta: Vec2, snapMode: SnapMode, showOverlay = false) {
         const snapResult = this.props.snapManager.snapMoving(this.startTransform, delta, snapMode);
 
         this.transform = this.startTransform.moveBy(snapResult.delta);
@@ -347,7 +347,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
         this.debug();
     }
 
-    private rotate(event: SvgEvent, snapMode: SnapMode, showOverlay = true) {
+    private rotate(event: SvgEvent, snapMode: SnapMode, showOverlay = false) {
         const deltaValue = this.getCummulativeRotation(event);
         const deltaRotation = this.props.snapManager.snapRotating(this.startTransform, deltaValue, snapMode);
 
@@ -369,7 +369,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
         return cummulativeRotation;
     }
 
-    private resize(delta: Vec2, snapMode: SnapMode, showOverlay = true) {
+    private resize(delta: Vec2, snapMode: SnapMode, showOverlay = false) {
         const startRotation = this.startTransform.rotation;
 
         const deltaSize = this.getResizeDeltaSize(startRotation, delta, snapMode);

@@ -11,6 +11,7 @@ import { isModKey, Rect2, Subscription, SVGHelper, Vec2 } from '@app/core';
 import { calculateSelection, Diagram, DiagramItem } from '@app/wireframes/model';
 import { InteractionHandler, InteractionService, SvgEvent } from './interaction-service';
 import { PreviewEvent } from './preview';
+import { OverlayManager } from '../contexts/OverlayContext';
 
 const SELECTION_STROKE_COLOR = '#080';
 const SELECTION_STROKE_LOCK_COLOR = '#f00';
@@ -36,12 +37,16 @@ export interface SelectionAdornerProps {
 
     // A function to select a set of items.
     onSelectItems: (diagram: Diagram, itemIds: string[]) => any;
+
+    // The overlay manager.
+    overlayManager: OverlayManager;
 }
 
 export class SelectionAdorner extends React.Component<SelectionAdornerProps> implements InteractionHandler {
     private selectionMarkers: svg.Rect[] = [];
     private selectionShape!: svg.Rect;
     private dragStart: Vec2 | null = null;
+    
 
     public componentDidMount() {
         this.props.interactionService.addHandler(this);
@@ -60,7 +65,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
                 .stroke({ color: '#0a0', width: 1 })
                 .scale(1, 1)
                 .fill('#00aa0044')
-                .hide();
+                .hide();    
     }
 
     public componentWillUnmount() {
@@ -78,6 +83,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
             const selection = this.selectSingle(event, this.props.selectedDiagram);
 
             this.props.onSelectItems(this.props.selectedDiagram, selection);
+            this.props.overlayManager.reset();
         }
 
         if (!event.element) {
@@ -89,7 +95,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
         if (!this.dragStart) {
             next(event);
             return;
-        }
+        } 
 
         const rect = Rect2.fromVecs([this.dragStart, event.position]);
 
@@ -104,7 +110,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
             next(event);
             return;
         }
-
+        
         try {
             const rect = Rect2.fromVecs([this.dragStart, event.position]);
 
@@ -189,6 +195,9 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
             
             const actualItem = preview?.[item.id] || item;
             const actualBounds = actualItem.bounds(this.props.selectedDiagram);
+
+            // Show ID box
+            this.props.overlayManager.showInfo(actualBounds, `${item.renderer} ${item.id.slice(10, 14)}`);
 
             // Also adjust the bounds by the border width, to show the border outside of the shape.
             this.transformShape(marker, actualBounds.position.sub(actualBounds.halfSize), actualBounds.size, strokeWidth, actualBounds.rotation.degree);
