@@ -197,7 +197,8 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
             const actualBounds = actualItem.bounds(this.props.selectedDiagram);
 
             // Show ID box
-            this.props.overlayManager.showInfo(actualBounds, `${item.renderer} ${item.id.slice(10, 14)}`);
+            const id = (item.name != undefined) ? `${item.name}` : `${item.renderer} ${item.id.slice(10, 14)}`
+            this.props.overlayManager.showInfo(actualBounds, id);
 
             // Also adjust the bounds by the border width, to show the border outside of the shape.
             this.transformShape(marker, actualBounds.position.sub(actualBounds.halfSize), actualBounds.size, strokeWidth, actualBounds.rotation.degree);

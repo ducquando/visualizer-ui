@@ -94,7 +94,7 @@ export class InteractionOverlays {
     public showInfo(transform: Transform, text: string) {
         const aabb = transform.aabb;
 
-        this.renderLabel(aabb.left + 1, aabb.top - 18, text, '#080');
+        this.renderLabel(aabb.left + 1, aabb.top - 20, text, '#080');
     }
 
     private renderLine(x1: number, y1: number, x2: number, y2: number, color: string, width: number) {
@@ -161,7 +161,7 @@ export class InteractionOverlays {
         labelContent.style.fontSize = sizeInPx(fontSize / this.zoom);
         labelContent.style.fontFamily = 'monospace';
         labelContent.textContent = text;
-        labelRect.fill('#fff');
+        labelRect.fill('none');
 
         // The label dimensions needs to be calculated based on the zoom factor.
         padding /= this.zoom;
