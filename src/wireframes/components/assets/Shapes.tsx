@@ -59,7 +59,7 @@ export const Shapes = () => {
                     } />
             </div>
 
-            <Grid className='asset-shapes-list' renderer={cellRenderer} columns={2} items={shapesFiltered} keyBuilder={keyBuilder} />
+            <Grid className='asset-shapes-list' renderer={cellRenderer} columns={1} items={shapesFiltered} keyBuilder={keyBuilder} />
         </>
     );
 };

@@ -12,7 +12,7 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import { ClipboardContainer, useEventCallback } from '@app/core';
-import { ArrangeMenu, AnimationView, ClipboardMenu, EditorView, HistoryMenu, LoadingMenu, LockMenu, Outline, Pages, Properties, Recent, Shapes, TableMenu } from '@app/wireframes/components';
+import { ArrangeMenu, AnimationView, ClipboardMenu, EditorView, HistoryMenu, LoadingMenu, LockMenu, Outline, Pages, Properties, Shapes, TableMenu } from '@app/wireframes/components';
 import { loadDiagramFromServer, newDiagram, selectTab, toggleLeftSidebar, toggleRightSidebar, useStore } from '@app/wireframes/model';
 import { texts } from './texts';
 import { CustomDragLayer } from './wireframes/components/CustomDragLayer';
@@ -106,7 +106,7 @@ export const App = () => {
                         </span>
                     </Layout.Header>
                     <Layout className='content'>
-                        <Layout.Sider width={320} className='sidebar-left'
+                        <Layout.Sider width={160} className='sidebar-left'
                             collapsed={!showLeftSidebar}
                             collapsedWidth={0}>
 
@@ -119,9 +119,6 @@ export const App = () => {
                                 </Tabs.TabPane>
                                 <Tabs.TabPane key='pages' tab={texts.common.pages}>
                                     <Pages />
-                                </Tabs.TabPane>
-                                <Tabs.TabPane key='recent' tab={texts.common.recent}>
-                                    <Recent />
                                 </Tabs.TabPane>
                             </Tabs>
                         </Layout.Sider>
