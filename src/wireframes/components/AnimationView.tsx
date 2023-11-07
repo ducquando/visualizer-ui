@@ -14,22 +14,34 @@ const addLineNumber = (event: any) => {
     .join('')
 }
 
-const presentSlideshow = async () => {
-  const html = document.querySelector('.editor-diagram') as HTMLElement | null;
+const presentSlideshow = () => {
+  const html = document.querySelector('.editor-diagram')?.innerHTML;
+  const code = document.querySelector('.code-editor textarea')?.innerHTML;
+  const fileName = new Date().getTime();
 
-  if (html != null) {
-    const newHTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="description"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="dist/reset.css"><link rel="stylesheet" href="dist/reveal.css"><link rel="stylesheet" href="dist/theme/white.css" id="theme"></head><body><div class="reveal"><div class="slides"><section>${html.innerHTML}</section></div></div><script src="dist/reveal.js"></script><script src="plugin/zoom/zoom.js"></script><script src="plugin/notes/notes.js"></script><script src="plugin/search/search.js"></script><script src="plugin/markdown/markdown.js"></script><script src="plugin/highlight/highlight.js"></script><script>Reveal.initialize({controls: true, progress: true, center: true, hash: true, plugins: [RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight]});</script></body>
-    </html>`;
-
-    // var newWindow = window.open(`http://localhost:8001/preview.html`);
-    // newWindow.fileContent = newHTML;
-    // console.log(`http://localhost:8001/preview.html?content=${newHTML}`);
-
-    navigator.clipboard.writeText(newHTML).then(() => {
-      alert('Success! HTML copied to clipboard.');
-    },() => {
-      alert('Error! Failed to copy');
+  if ((html != undefined) && (code != undefined)) {
+    fetch('http://localhost:5001', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({ 
+            fileName: fileName,
+            graphicalObject: html,
+            animationScript: code
+        })
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        // Handle data
+    })
+    .catch((err) => {
+        alert(err.message);
     });
+
+    // Open new tab
+    window.open(`http://localhost:8001/${fileName}.html`);
   } else {
     alert('Error! Cannot perform action.');
   }
