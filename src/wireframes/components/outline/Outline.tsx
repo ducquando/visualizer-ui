@@ -54,7 +54,7 @@ export const Outline = () => {
             <DragDropContext onDragEnd={doSort}>
                 <Droppable droppableId='droppable'>
                     {(provided) => (
-                        <div className='pages-list' {...provided.droppableProps} ref={provided.innerRef}>
+                        <div className='pages-list' {...provided.droppableProps} ref={provided.innerRef} style={{height: 200}}>
                             {rootItems.map((item, index) =>
                                 <Draggable key={item.id} draggableId={item.id} index={index}>
                                     {(provided) => (

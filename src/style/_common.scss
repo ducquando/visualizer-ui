@@ -29,11 +29,13 @@ body {
     border-radius: 0;
 }
 
-.logo {
-    @include fixed(15px, null, null, 10px);
-    color: $color-white;
-    font-size: 1.1rem;
-    font-weight: bold;
+.header-left {
+    @include fixed(null, null, null, 5px);
+    height: 40px;
+}
+
+.header-right {
+    margin-right: 15px;
     height: 40px;
 }
 
@@ -48,7 +50,7 @@ body {
         text-align: center;
         z-index: 1000;
 
-        .logo {
+        .header-left {
             max-height: 100%;
         }
 

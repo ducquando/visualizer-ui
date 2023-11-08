@@ -69,26 +69,14 @@ export const LoadingMenu = React.memo(() => {
 
     return (
         <>
-            <CustomTitle token={tokenToRead} />
+            <div className='header-left'>
+                <CustomTitle token={tokenToRead} />
 
-            <ActionMenuButton displayMode='IconLabel' action={forLoading.newDiagram} />
-            <ActionMenuButton displayMode='Icon' action={forLoading.openDiagramAction} />
+                <ActionMenuButton displayMode='IconLabel' action={forLoading.newDiagram} />
+                <ActionMenuButton displayMode='Icon' action={forLoading.openDiagramAction} />
 
-            <ActionDropdownButton displayMode='IconLabel' action={forLoading.saveDiagram} type='primary' overlay={menu} />
-{/* 
-            <Button className='menu-item' size='large' onClick={doToggleInfoDialog}>
-                <QuestionCircleOutlined />
-            </Button>
-
-            <Button className='menu-item' size='large' href='https://github.com/mydraft-cc/ui' target='_blank'>
-                <GithubOutlined />
-            </Button>
-
-            <MarkerButton />
-
-            <Modal title={texts.common.about} visible={isOpen} onCancel={doToggleInfoDialog} onOk={doToggleInfoDialog}>
-                <div dangerouslySetInnerHTML={{ __html: text.default }} />
-            </Modal> */}
+                <ActionDropdownButton displayMode='Icon' action={forLoading.saveDiagram} overlay={menu} />
+            </div>
         </>
     );
 });

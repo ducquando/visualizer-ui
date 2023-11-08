@@ -21,7 +21,7 @@ export interface UIState {
     // Indicates if the right sidebar is open.
     showRightSidebar: boolean;
 
-    // The selected tab on the left sidebar.
+    // The selected panel on the bottom layout.
     selectedTab: string;
 
     // The color tab.
@@ -38,9 +38,9 @@ export interface UIStateInStore {
 export const createInitialUIState: () => UIState = () => {
     return {
         zoom: 1,
-        selectedTab: 'shapes',
         showLeftSidebar: true,
         showRightSidebar: true,
         selectedColorTab: 'palette',
+        selectedTab: 'animation',
     };
 };
