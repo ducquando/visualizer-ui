@@ -129,11 +129,14 @@ ul {
     .ant-tabs-tabpane {
         flex-shrink: 1 !important;
     }
-}
 
-.sidebar-right {
-    .ant-collapse {
-        background: transparent;
+    .item {
+        background: transparent !important;
+        border: 0;
+        border-radius: 0;
+        max-height: 45px;
+        min-height: 45px;
+        opacity: .8;
     }
 }
 

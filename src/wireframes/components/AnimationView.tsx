@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import './AnimationView.scss';
 
 // Default code
-const code = '\\begin{document}\nHello world\n\\end{document}';
+const code = '<1> Textbox001 \n<2> Table001[0,:] \n<2> Textbox002 \n<3> Table001[1,:]';
 
 const addLineNumber = (event: any) => {
   const numberOfLines = event.target.value.split('\n').length;
@@ -64,6 +64,7 @@ export class AnimationView extends React.Component {
         </div>
         <div className="code-editor">
           <div className="line-numbers">
+              <span></span>
               <span></span>
               <span></span>
               <span></span>

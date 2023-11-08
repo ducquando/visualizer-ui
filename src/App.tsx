@@ -6,15 +6,15 @@
 */
 
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { Button, Layout, Tabs } from 'antd';
+import { Button, Layout } from 'antd';
 import classNames from 'classnames';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import { ClipboardContainer, useEventCallback } from '@app/core';
-import { ArrangeMenu, AnimationView, ClipboardMenu, EditorView, HistoryMenu, LoadingMenu, LockMenu, Outline, Pages, Properties, Shapes, TableMenu } from '@app/wireframes/components';
-import { loadDiagramFromServer, newDiagram, selectTab, toggleLeftSidebar, toggleRightSidebar, useStore } from '@app/wireframes/model';
-import { texts } from './texts';
+import { ArrangeMenu, AnimationView, ClipboardMenu, EditorView, HistoryMenu, LoadingMenu, LockMenu,  Properties, ShapeMenu, TableMenu } from '@app/wireframes/components';
+import { loadDiagramFromServer, newDiagram, toggleRightSidebar, useStore } from '@app/wireframes/model';
+
 import { CustomDragLayer } from './wireframes/components/CustomDragLayer';
 import { PresentationView } from './wireframes/components/PresentationView';
 import { OverlayContainer } from './wireframes/contexts/OverlayContext';
@@ -26,8 +26,7 @@ export const App = () => {
     const route = useRouteMatch();
     const routeToken = route.params['token'] || null;
     const routeTokenSnapshot = React.useRef(routeToken);
-    const selectedTab = useStore(s => s.ui.selectedTab);
-    const showLeftSidebar = useStore(s => s.ui.showLeftSidebar);
+
     const showRightSidebar = useStore(s => s.ui.showRightSidebar);
     const [presenting, setPresenting] = React.useState(false);
 
@@ -53,14 +52,6 @@ export const App = () => {
     //         dispatch(showToast(texts.common.printingStarted));
     //     }
     // }, [dispatch, isPrinting]);
-
-    const doSelectTab = useEventCallback((key: string) => {
-        dispatch(selectTab(key));
-    });
-
-    const doToggleLeftSidebar = useEventCallback(() => {
-        dispatch(toggleLeftSidebar());
-    });
 
     const doToggleRightSidebar = useEventCallback(() => {
         dispatch(toggleRightSidebar());
@@ -106,22 +97,11 @@ export const App = () => {
                         </span>
                     </Layout.Header>
                     <Layout className='content'>
-                        <Layout.Sider width={160} className='sidebar-left'
-                            collapsed={!showLeftSidebar}
-                            collapsedWidth={0}>
+                        <Layout.Sider width={50} className='sidebar-left'>
+                            <ShapeMenu />
 
-                            <Tabs type='card' onTabClick={doSelectTab} activeKey={selectedTab}>
-                                <Tabs.TabPane key='shapes' tab={texts.common.shapes}>
-                                    <Shapes />
-                                </Tabs.TabPane>
-                                <Tabs.TabPane key='outline' tab={texts.common.outline}>
-                                    <Outline />
-                                </Tabs.TabPane>
-                                <Tabs.TabPane key='pages' tab={texts.common.pages}>
-                                    <Pages />
-                                </Tabs.TabPane>
-                            </Tabs>
                         </Layout.Sider>
+
                         <Layout.Content className='editor-content'>
                             <EditorView spacing={40} />
                         </Layout.Content>
@@ -131,12 +111,6 @@ export const App = () => {
 
                             <Properties />
                         </Layout.Sider>
-
-                        <Button icon={showLeftSidebar ? <LeftOutlined /> : <RightOutlined />}
-                            className={classNames('toggle-button-left', { visible: showLeftSidebar })}
-                            size='small'
-                            shape='circle'
-                            onClick={doToggleLeftSidebar} />
 
                         <Button icon={showRightSidebar ? <RightOutlined /> : <LeftOutlined />}
                             className={classNames('toggle-button-right', { visible: showRightSidebar })}
