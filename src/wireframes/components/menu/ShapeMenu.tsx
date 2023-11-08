@@ -38,9 +38,6 @@ export const ShapeMenu = React.memo(() => {
     const TriangleIcon = () => (
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="m96-192 384-576 384 576H96Zm134-72h500L480-638 230-264Zm250-187Z"/></svg>
     );
-    const DiamondIcon = () => (
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M480-240 240-480l240-240 240 240-240 240Zm0-102 138-138-138-138-138 138 138 138Zm0-138Z"/></svg>
-    );
     const ImageIcon = () => (
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M216-144q-29.7 0-50.85-21.5Q144-187 144-216v-528q0-29 21.15-50.5T216-816h528q29.7 0 50.85 21.5Q816-773 816-744v528q0 29-21.15 50.5T744-144H216Zm0-72h528v-528H216v528Zm48-72h432L552-480 444-336l-72-96-108 144Zm-48 72v-528 528Z"/></svg>
     );
@@ -75,11 +72,6 @@ export const ShapeMenu = React.memo(() => {
             <Tooltip mouseEnterDelay={1} title={ 'Triangle' }>
                 <Button className='item' onClick={ () => createNewShape('Triangle') }>
                     <TriangleIcon />
-                </Button>
-            </Tooltip>
-            <Tooltip mouseEnterDelay={1} title={ 'Rhombus' }>
-                <Button className='item' onClick={ () => createNewShape('Rhombus') }>
-                    <DiamondIcon />
                 </Button>
             </Tooltip>
             <Tooltip mouseEnterDelay={1} title={ 'Image' }>

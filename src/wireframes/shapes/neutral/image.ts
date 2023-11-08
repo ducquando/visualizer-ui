@@ -8,16 +8,15 @@
 import { ConfigurableFactory, DefaultAppearance, RenderContext, ShapePlugin } from '@app/wireframes/interface';
 import { CommonTheme } from './_theme';
 
-const IMAGE_URL = 'URL';
+// const IMAGE_URL = 'URL';
 const IMAGE_ASPECT_RATIO = 'ASPECT_RATIO';
 
 const DEFAULT_APPEARANCE = {
     [DefaultAppearance.BACKGROUND_COLOR]: 0xFFFFFF,
     [DefaultAppearance.STROKE_COLOR]: CommonTheme.CONTROL_BORDER_COLOR,
     [DefaultAppearance.STROKE_THICKNESS]: CommonTheme.CONTROL_BORDER_THICKNESS,
-    [DefaultAppearance.TEXT_DISABLED]: true,
+    [DefaultAppearance.TEXT]: '[Image URL]',
     [IMAGE_ASPECT_RATIO]: true,
-    [IMAGE_URL]: '',
 };
 
 export class Image implements ShapePlugin {
@@ -35,13 +34,13 @@ export class Image implements ShapePlugin {
 
     public configurables(factory: ConfigurableFactory) {
         return [
-            factory.text(IMAGE_URL, 'Url'),
             factory.toggle(IMAGE_ASPECT_RATIO, 'Preserve aspect ratio'),
         ];
     }
 
     public render(ctx: RenderContext) {
-        const url = ctx.shape.getAppearance(IMAGE_URL);
+        const url = ctx.shape.getAppearance(DefaultAppearance.TEXT);
+        console.log(url);
 
         if (url) {
             const aspectRatio = ctx.shape.getAppearance(IMAGE_ASPECT_RATIO);
