@@ -5,7 +5,7 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
-import { ImmutableList, ImmutableMap, MathHelper, Rotation, Vec2 } from '@app/core';
+import { IDHelper, ImmutableList, ImmutableMap, Rotation, Vec2 } from '@app/core';
 import { Diagram } from './diagram';
 import { DiagramItem } from './diagram-item';
 import { DiagramItemSet } from './diagram-item-set';
@@ -26,13 +26,14 @@ export module Serializer {
 
     export function generateNewIds(json: string): string {
         const input = JSON.parse(json);
+        console.log(input);
 
         const idMap: IdMap = {};
 
         for (const jsonShape of input.visuals) {
             const oldId = jsonShape.id;
 
-            jsonShape.id = MathHelper.nextId();
+            jsonShape.id = IDHelper.nextId(jsonShape.renderer);
 
             idMap[oldId] = jsonShape.id;
         }
@@ -40,7 +41,7 @@ export module Serializer {
         for (const jsonGroup of input.groups) {
             const oldId = jsonGroup.id;
 
-            jsonGroup.id = MathHelper.nextId();
+            jsonGroup.id = IDHelper.nextId('Group');
 
             idMap[oldId] = jsonGroup.id;
         }
