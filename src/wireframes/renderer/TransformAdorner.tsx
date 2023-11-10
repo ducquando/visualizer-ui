@@ -98,6 +98,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             this.calculateInitializeTransform();
             this.calculateResizeRestrictions();
             this.renderShapes();
+            this.renderID();
         } else {
             this.hideShapes();
         }
@@ -198,6 +199,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
 
             this.renderPreview();
             this.renderShapes();
+            this.renderID();
 
             // We have kept the keyboard pressed and therefore also updated at least one shape.
             this.manipulated = true;
@@ -230,7 +232,8 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
                 this.props.selectedDiagram,
                 this.props.selectedItems,
                 this.startTransform,
-                this.transform);
+                this.transform
+            );
         } finally {
             this.stopTransform();
         }
@@ -324,7 +327,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
         this.props.previewStream.next({ type: 'Update', items });
     }
 
-    private move(delta: Vec2, snapMode: SnapMode, showOverlay = false) {
+    private move(delta: Vec2, snapMode: SnapMode, showOverlay = true) {
         const snapResult = this.props.snapManager.snapMoving(this.startTransform, delta, snapMode);
 
         this.transform = this.startTransform.moveBy(snapResult.delta);
@@ -336,12 +339,11 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             const y = Math.floor(this.transform.aabb.y);
 
             this.props.overlayManager.showInfo(this.transform, `X: ${x}, Y: ${y}`);
-        }
-
+        } 
         this.debug();
     }
 
-    private resize(delta: Vec2, snapMode: SnapMode, showOverlay = false) {
+    private resize(delta: Vec2, snapMode: SnapMode, showOverlay = true) {
         const startRotation = this.startTransform.rotation;
 
         const deltaSize = this.getResizeDeltaSize(startRotation, delta, snapMode);
@@ -427,7 +429,8 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
                 this.props.selectedDiagram,
                 this.props.selectedItems,
                 this.startTransform,
-                this.transform);
+                this.transform
+            );
         } finally {
             this.stopTransform();
         }
@@ -528,6 +531,15 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
 
     private hideShapes() {
         this.allElements.forEach(s => s.hide());
+        this.props.overlayManager.reset();
+    }
+
+    private renderID() {
+        this.props.selectedItems.forEach((item) => {
+            const actualBounds = item.bounds(this.props.selectedDiagram);
+            const id = (item.name != undefined) ? `${item.name}` : `${item.id}`
+            this.props.overlayManager.showInfo(actualBounds, id);
+        });
     }
 
     private createMoveShape() {

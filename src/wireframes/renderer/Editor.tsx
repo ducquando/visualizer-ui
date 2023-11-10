@@ -195,7 +195,6 @@ export const Editor = React.memo((props: EditorProps) => {
                             adorners={adornerSelectLayer.current!}
                             interactionService={interactionMainService}
                             onSelectItems={onSelectItems}
-                            overlayManager={overlayContext.overlayManager}
                             previewStream={renderPreview.current}
                             selectedDiagram={diagram}
                             selectedItems={selectedItemsWithLocked}

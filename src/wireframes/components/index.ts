@@ -7,11 +7,10 @@
 
 export * from './assets/Shapes';
 export * from './EditorView';
-export * from './AnimationView';
-export * from './ErrorView';
+export * from './animation/AnimationView';
+export * from './animation/ErrorView';
+export * from './animation/PresentView';
 export * from './outline/Outline';
-export * from './PresentView';
-export * from './PrintView';
 export * from './menu/ArrangeMenu';
 export * from './menu/ClipboardMenu';
 export * from './menu/HistoryMenu';

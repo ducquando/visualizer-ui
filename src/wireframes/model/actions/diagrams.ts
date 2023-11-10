@@ -6,13 +6,13 @@
 */
 
 import { ActionReducerMapBuilder, createAction } from '@reduxjs/toolkit';
-import { Color, MathHelper, Vec2 } from '@app/core';
+import { Color, IDHelper, Vec2 } from '@app/core';
 import { Diagram, EditorState } from './../internal';
 import { createDiagramAction, DiagramRef } from './utils';
 
 export const addDiagram =
     createAction('diagram/add', (diagramId?: string) => {
-        return { payload: createDiagramAction(diagramId || MathHelper.nextId()) };
+        return { payload: createDiagramAction(diagramId || IDHelper.nextId('Diagram')) };
     });
 
 export const selectDiagram =

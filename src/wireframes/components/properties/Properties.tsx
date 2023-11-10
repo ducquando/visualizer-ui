@@ -29,7 +29,7 @@ export const Properties = () => {
     return (
         <>
             <PageHeader className={(classNames({ hidden: !hasSelection}))} >
-                    {(hasSelection)? (multipleSelection? 'Group': ((selectedItems.at(0)?.name != undefined)? selectedItems.at(0)?.name : selectedItems.at(0)?.renderer + " " + selectedItems.at(0)?.id.slice(10, 14)) ) : ''}
+                    {(hasSelection)? (multipleSelection? 'Group': ((selectedItems.at(0)?.name != undefined)? selectedItems.at(0)?.name : `${selectedItems.at(0)?.id}`) ) : ''}
             </PageHeader>
             <Collapse className={(classNames({ hidden: !hasSelection }))} bordered={false} defaultActiveKey={['layout', 'visual', 'more', 'custom']}>
                 <Collapse.Panel key='layout' header={texts.common.layout}>

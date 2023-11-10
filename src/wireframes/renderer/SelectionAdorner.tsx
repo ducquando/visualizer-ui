@@ -11,7 +11,6 @@ import { isModKey, Rect2, Subscription, SVGHelper, Vec2 } from '@app/core';
 import { calculateSelection, Diagram, DiagramItem } from '@app/wireframes/model';
 import { InteractionHandler, InteractionService, SvgEvent } from './interaction-service';
 import { PreviewEvent } from './preview';
-import { OverlayManager } from '../contexts/OverlayContext';
 
 const SELECTION_STROKE_COLOR = '#080';
 const SELECTION_STROKE_LOCK_COLOR = '#f00';
@@ -37,9 +36,6 @@ export interface SelectionAdornerProps {
 
     // A function to select a set of items.
     onSelectItems: (diagram: Diagram, itemIds: string[]) => any;
-
-    // The overlay manager.
-    overlayManager: OverlayManager;
 }
 
 export class SelectionAdorner extends React.Component<SelectionAdornerProps> implements InteractionHandler {
@@ -83,7 +79,6 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
             const selection = this.selectSingle(event, this.props.selectedDiagram);
 
             this.props.onSelectItems(this.props.selectedDiagram, selection);
-            this.props.overlayManager.reset();
         }
 
         if (!event.element) {
@@ -195,10 +190,6 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
             
             const actualItem = preview?.[item.id] || item;
             const actualBounds = actualItem.bounds(this.props.selectedDiagram);
-
-            // Show ID box
-            const id = (item.name != undefined) ? `${item.name}` : `${item.renderer} ${item.id.slice(10, 14)}`
-            this.props.overlayManager.showInfo(actualBounds, id);
 
             // Also adjust the bounds by the border width, to show the border outside of the shape.
             this.transformShape(marker, actualBounds.position.sub(actualBounds.halfSize), actualBounds.size, strokeWidth, actualBounds.rotation.degree);
