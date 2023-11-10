@@ -2,7 +2,7 @@ import * as React from "react";
 import './AnimationView.scss';
 
 // Default code
-const code = '<1> Textbox001 \n<2> Table001[0,:] \n<2> Textbox002 \n<3> Table001[1,:]';
+const code = '<1> Textbox0 \n<2> Table0[0,:] \n<2> Textbox1 \n<3> Table1[1,:]';
 
 const addLineNumber = (event: any) => {
     const numberOfLines = event.target.value.split('\n').length;

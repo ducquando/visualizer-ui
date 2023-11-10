@@ -92,20 +92,22 @@ export const App = () => {
                             onClick={doToggleRightSidebar} />
                     </Layout>
 
-                    <Tabs className="animation-view" type='card' onTabClick={doSelectTab} activeKey={selectedTab}>
-                        <Tabs.TabPane key='pages' tab={texts.common.pages}>
-                            <Pages />
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key='outline' tab={texts.common.outline}>
-                            <Outline />
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key='animation' tab={texts.common.animation}>
-                            <AnimationView />
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key='error' tab={texts.common.error}>
-                            <ErrorView />
-                        </Tabs.TabPane>
-                    </Tabs>
+                    <Layout.Footer style={{ padding: 0 }}>
+                        <Tabs className="animation-view" type='card' onTabClick={doSelectTab} activeKey={selectedTab}>
+                            <Tabs.TabPane key='pages' tab={texts.common.pages}>
+                                <Pages />
+                            </Tabs.TabPane>
+                            <Tabs.TabPane key='outline' tab={texts.common.outline}>
+                                <Outline />
+                            </Tabs.TabPane>
+                            <Tabs.TabPane key='animation' tab={texts.common.animation}>
+                                <AnimationView />
+                            </Tabs.TabPane>
+                            <Tabs.TabPane key='error' tab={texts.common.error}>
+                                <ErrorView />
+                            </Tabs.TabPane>
+                        </Tabs>
+                    </Layout.Footer>
                 </Layout>
 
                 <CustomDragLayer />

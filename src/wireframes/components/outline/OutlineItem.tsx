@@ -51,7 +51,7 @@ export const OutlineItem = (props: OutlineItemProps) => {
     const [editing, setEditing] = React.useState(false);
     const [expanded, setExpanded] = React.useState(true);
     const isGroup = diagramItem.type === 'Group';
-    const DefaultName =  diagramItem.renderer+ " " + diagramItem.id.slice(10, 14);
+    const DefaultName =  diagramItem.id;
     const changed_name = diagramItem.name != diagramItem.renderer;
     const itemName = (changed_name ? diagramItem.name: diagramItem.name)  || DefaultName || (isGroup ? texts.common.group : diagramItem.renderer);
 
