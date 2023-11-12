@@ -1,55 +1,77 @@
 import { ExportOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import React = require("react");
-import { getDiagrams, useStore } from "@app/wireframes/model";
+import { getDiagrams, getEditor, useStore } from "@app/wireframes/model";
 
 export const PresentView = React.memo(() => {
     const html = document.querySelector('.editor-diagram')?.innerHTML;
     const code = document.querySelector('.code-editor textarea')?.innerHTML;
-    const outputView = document.querySelector('#error-view') || null;
+    // const outputView = document.querySelector('#error-view') || null;
 
     const fileName = new Date().getTime();
     const diagrams = useStore(getDiagrams);
+    const editor = useStore(getEditor);
     
     const retrieveObjects = () => {
-        let diagramID = new Array();
-        let objectImage = {};
-        let objectText = {};
+        let allDiagrams = new Array();
+        let allObjects = {};
 
-        diagrams.values.forEach((diagram) => {
-            let images = new Array();
-            let texts = new Array(); 
-    
+        diagrams.values.forEach((diagram, i) => {
+            const diagramID = diagram.id;
+
             diagram.items.values.forEach((item) => {
+                let object = {};
                 const id = (item.name != undefined) ? `${item.name}` : `${item.id}`;
                 const content = item.text;
                 const bound = item.bounds(diagram);
-                const position = `${bound.left} ${bound.top} ${bound.size.getX()} ${bound.size.getY()}` // left top width height
 
-                if (item.renderer == 'Textbox') {
-                    texts.push({
-                        id: id,
-                        position: position,
-                        text: content
-                    });
-                } else if (item.renderer == 'Image') {
-                    images.push({
-                        id: id,
-                        position: position,
-                        url: content
-                    });
+                switch (item.renderer) {
+                    case 'Textbox':
+                    case 'Equation':
+                        object['content'] = content;
+                        object['diagram'] = diagramID;
+                        object['id'] = id;
+                        object['style'] = {
+                            alignment: item.textAlignment,
+                            colorBackground: item.backgroundColor,
+                            colorForeground: item.foregroundColor,
+                            fontSize: item.fontSize,
+                            position: `${bound.left} ${bound.top}`,
+                            size: `${bound.size.getX()} ${bound.size.getY()}`,
+                        }
+                        break;
+                    case 'Image':
+                        object['content'] = content;
+                        object['diagram'] = diagramID;
+                        object['id'] = id;
+                        object['style'] = {
+                            alignment: item.textAlignment,
+                            keepAspectRatio: item.getAppearance('ASPECT_RATIO'),
+                            position: `${bound.left} ${bound.top}`,
+                            size: `${bound.size.getX()} ${bound.size.getY()}`,
+                        }
+                        break;
+                    default:
+                        break;
                 }
+
+                allObjects[item.renderer] = (item.renderer in allObjects) ? allObjects[item.renderer] : new Array() ;
+                allObjects[item.renderer].push(object);
             });
     
-            diagramID.push(diagram.id);
-            objectImage[diagram.id] = images;
-            objectText[diagram.id] = texts;
+            allDiagrams.push({
+                id: diagramID,
+                index: i,
+                style: {
+                    colorBackground: (editor.color.r * 255 << 16) + (editor.color.g * 255 << 8) + (editor.color.b * 255),
+                    size: `${editor.size.x} ${editor.size.y}`
+                }
+            });
         });
 
         return {
-            diagramID: diagramID, 
-            image: objectImage,
-            text: objectText
+            diagram: allDiagrams, 
+            object: allObjects
         }
     }
     
@@ -57,9 +79,7 @@ export const PresentView = React.memo(() => {
     const fetchAPI = () => {
         const allObjects = retrieveObjects();
 
-        if (outputView == null) {
-            console.log('Cannot find output panel');
-        } else if ((html != undefined) && (code != undefined)) {
+        if ((html != undefined) && (code != undefined)) {
             fetch('http://localhost:5001', {
                 method: 'POST',
                 headers: {
@@ -68,23 +88,26 @@ export const PresentView = React.memo(() => {
                 body: JSON.stringify({
                     animationScript: code,
                     fileName: fileName,
-                    diagramID: allObjects.diagramID,
-                    objectImage: allObjects.image,
-                    objectText: allObjects.text
+                    diagram: allObjects.diagram,
+                    image: allObjects.object['Image'],
+                    katex: allObjects.object['Equation'],
+                    shape: null,
+                    table: null,
+                    text: allObjects.object['Textbox']
                 })
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    outputView.innerHTML += `${fileName}:\t ${data}.\n`;
+                    console.log(data);
                 })
                 .catch((err) => {
-                    outputView.innerHTML += `${fileName}:\t ${err.message}.\n`;
+                    console.log(err);
                 });
 
             // Open new tab
             // window.open(`http://localhost:8001/${fileName}.html`);
         } else {
-            outputView.innerHTML += `${fileName}:\t Error! Cannot perform action.\n`;
+            console.log(`${fileName}:\t Error! Cannot perform action.\n`);
         }
     }
 

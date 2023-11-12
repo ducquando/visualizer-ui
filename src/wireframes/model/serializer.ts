@@ -26,7 +26,6 @@ export module Serializer {
 
     export function generateNewIds(json: string): string {
         const input = JSON.parse(json);
-        console.log(input);
 
         const idMap: IdMap = {};
 

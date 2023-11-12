@@ -40,7 +40,6 @@ export class Image implements ShapePlugin {
 
     public render(ctx: RenderContext) {
         const url = ctx.shape.getAppearance(DefaultAppearance.TEXT);
-        console.log(url);
 
         if (url) {
             const aspectRatio = ctx.shape.getAppearance(IMAGE_ASPECT_RATIO);

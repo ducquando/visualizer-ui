@@ -12,7 +12,8 @@ import * as React from 'react';
 import { Keys, useEventCallback } from '@app/core';
 import { texts } from '@app/texts';
 import { Diagram, DiagramItem, OrderMode } from '@app/wireframes/model';
-// import { MathHelper } from '@app/core';
+import { CircleIcon, FunctionIcon, ImageIcon, RectangleIcon, TableIcon, TextIcon, TriangleIcon } from '@app/icons/icon';
+
 
 export type OutlineItemAction = 'Delete' | 'Rename' | 'Move' | 'Select';
 
@@ -54,6 +55,7 @@ export const OutlineItem = (props: OutlineItemProps) => {
     const DefaultName =  diagramItem.id;
     const changed_name = diagramItem.name != diagramItem.renderer;
     const itemName = (changed_name ? diagramItem.name: diagramItem.name)  || DefaultName || (isGroup ? texts.common.group : diagramItem.renderer);
+    const rendererName = diagramItem.renderer;
 
     const setText = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setEditName(event.target.value);
@@ -138,7 +140,7 @@ export const OutlineItem = (props: OutlineItemProps) => {
                         </Menu>
                     } trigger={['contextMenu']}>
                         <Row className={classNames('tree-item-header', { selected })} wrap={false} style={{ marginLeft: level * 20 }} onDoubleClick={doRenameStart} onClick={doSelect}>
-                            <Col flex='none'>
+                            <Col flex='none' style={{ display: 'flex' }}>
                                 {isGroup ? (
                                     <span onClick={() => setExpanded(x => !x)}>
                                         {expanded ? (
@@ -147,9 +149,15 @@ export const OutlineItem = (props: OutlineItemProps) => {
                                             <CaretRightOutlined />
                                         )}
                                     </span>
-                                ) : (
-                                    <FileOutlined />
-                                )}
+                                ) : (rendererName == 'Textbox') ? <TextIcon /> :
+                                        (rendererName == 'Equation') ? <FunctionIcon /> :
+                                            (rendererName == 'Cell') ? <TableIcon /> :
+                                                (rendererName == 'Rectangle') ? <RectangleIcon /> :
+                                                    (rendererName == 'Ellipse') ? <CircleIcon /> :
+                                                        (rendererName == 'Triangle') ? <TriangleIcon /> :
+                                                            (rendererName == 'Image') ? <ImageIcon /> :
+                                                                <FileOutlined />
+                                }
                             </Col>
                             <Col flex='auto' className='tree-item-title no-select'>
                                 {itemName}
