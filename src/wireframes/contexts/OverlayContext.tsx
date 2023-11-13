@@ -19,7 +19,7 @@ export interface OverlayManager {
     renderYLine(line: SnapLine): void;
 
     // Renders a line next to a transform.
-    showInfo(transform: Transform, text: string): void;
+    showInfo(transform: Transform, text: string, offsetX: number, offsetY: number): void;
 
     // Hides all markers.
     reset(): void;

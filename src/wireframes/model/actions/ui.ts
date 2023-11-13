@@ -26,6 +26,11 @@ export const selectColorTab =
         return { payload: { tab } };
     });
 
+export const selectPanel =
+    createAction('ui/panel', (tab: string) => {
+        return { payload: { tab } };
+    });
+
 export const selectTab =
     createAction('ui/tab', (tab: string) => {
         return { payload: { tab } };
@@ -69,6 +74,9 @@ export function ui(initialState: UIState): Reducer<UIState> {
         })
         .addCase(setZoom, (state, action) => {
             state.zoom = action.payload.zoom;
+        })
+        .addCase(selectPanel, (state, action) => {
+            state.selectedPanel = action.payload.tab;
         })
         .addCase(selectTab, (state, action) => {
             state.selectedTab = action.payload.tab;

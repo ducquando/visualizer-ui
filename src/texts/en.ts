@@ -70,6 +70,7 @@ export const texts = {
         pasteTooltip: 'Paste Items',
         printDiagrams: 'Print Diagrams',
         printingStarted: 'Printing started...',
+        properties: 'Properties',
         recent: 'Recent',
         redo: 'Redo',
         remove: 'Delete',

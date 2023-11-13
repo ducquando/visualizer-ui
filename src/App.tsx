@@ -13,13 +13,14 @@ import { useDispatch } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import { ClipboardContainer, useEventCallback } from '@app/core';
 import { ArrangeMenu, AnimationView, ClipboardMenu, EditorView, ErrorView, HistoryMenu, LoadingMenu, LockMenu,  PresentView, Properties, ShapeMenu, TableMenu, Pages, Outline } from '@app/wireframes/components';
-import { loadDiagramFromServer, newDiagram, selectTab, toggleRightSidebar, useStore } from '@app/wireframes/model';
+import { loadDiagramFromServer, newDiagram, selectPanel, selectTab, toggleRightSidebar, useStore } from '@app/wireframes/model';
 import { texts } from './texts';
 import { CustomDragLayer } from './wireframes/components/CustomDragLayer';
 import { OverlayContainer } from './wireframes/contexts/OverlayContext';
 
 export const App = () => {
     const dispatch = useDispatch();
+    const selectedPanel = useStore(s => s.ui.selectedPanel);
     const selectedTab = useStore(s => s.ui.selectedTab);
     const route = useRouteMatch();
     const routeToken = route.params['token'] || null;
@@ -35,6 +36,10 @@ export const App = () => {
             dispatch(newDiagram(false));
         }
     }, [dispatch]);
+
+    const doSelectPanel = useEventCallback((key: string) => {
+        dispatch(selectPanel(key));
+    });
 
     const doSelectTab = useEventCallback((key: string) => {
         dispatch(selectTab(key));
@@ -81,8 +86,17 @@ export const App = () => {
                         <Layout.Sider width={330} className='sidebar-right'
                             collapsed={!showRightSidebar}
                             collapsedWidth={0}>
-
-                            <Properties />
+                                <Tabs type='card' onTabClick={doSelectTab} activeKey={selectedTab}>
+                                    <Tabs.TabPane key='properties' tab={texts.common.properties}>
+                                        <Properties />
+                                    </Tabs.TabPane>
+                                    <Tabs.TabPane key='pages' tab={texts.common.pages}>
+                                        <Pages />
+                                    </Tabs.TabPane>
+                                    <Tabs.TabPane key='outline' tab={texts.common.outline}>
+                                        <Outline />
+                                    </Tabs.TabPane>
+                                </Tabs>
                         </Layout.Sider>
 
                         <Button icon={showRightSidebar ? <RightOutlined /> : <LeftOutlined />}
@@ -93,13 +107,7 @@ export const App = () => {
                     </Layout>
 
                     <Layout.Footer style={{ padding: 0 }}>
-                        <Tabs className="animation-view" type='card' onTabClick={doSelectTab} activeKey={selectedTab}>
-                            <Tabs.TabPane key='pages' tab={texts.common.pages}>
-                                <Pages />
-                            </Tabs.TabPane>
-                            <Tabs.TabPane key='outline' tab={texts.common.outline}>
-                                <Outline />
-                            </Tabs.TabPane>
+                        <Tabs className="animation-view" type='card' onTabClick={doSelectPanel} activeKey={selectedPanel}>
                             <Tabs.TabPane key='animation' tab={texts.common.animation}>
                                 <AnimationView />
                             </Tabs.TabPane>

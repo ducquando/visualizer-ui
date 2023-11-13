@@ -99,6 +99,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             this.calculateResizeRestrictions();
             this.renderShapes();
             this.renderID();
+            this.renderLineCount()
         } else {
             this.hideShapes();
         }
@@ -200,6 +201,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             this.renderPreview();
             this.renderShapes();
             this.renderID();
+            this.renderLineCount();
 
             // We have kept the keyboard pressed and therefore also updated at least one shape.
             this.manipulated = true;
@@ -338,7 +340,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             const x = Math.floor(this.transform.aabb.x);
             const y = Math.floor(this.transform.aabb.y);
 
-            this.props.overlayManager.showInfo(this.transform, `X: ${x}, Y: ${y}`);
+            this.props.overlayManager.showInfo(this.transform, `X: ${x}, Y: ${y}`, 1, -20);
         } 
         this.debug();
     }
@@ -358,7 +360,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             const w = Math.floor(this.transform.size.x);
             const h = Math.floor(this.transform.size.y);
 
-            this.props.overlayManager.showInfo(this.transform, `Width: ${w}, Height: ${h}`);
+            this.props.overlayManager.showInfo(this.transform, `Width: ${w}, Height: ${h}`, 1, -20);
         }
 
         this.debug();
@@ -538,7 +540,23 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
         this.props.selectedItems.forEach((item) => {
             const actualBounds = item.bounds(this.props.selectedDiagram);
             const id = (item.name != undefined) ? `${item.name}` : `${item.id}`
-            this.props.overlayManager.showInfo(actualBounds, id);
+            this.props.overlayManager.showInfo(actualBounds, id, 1, -20);
+        });
+    }
+
+    private renderLineCount() {
+        this.props.selectedItems.forEach((item) => {
+            if (item.renderer == 'Textbox') {
+                const actualBounds = item.bounds(this.props.selectedDiagram);
+                const lineHeight = item.fontSize * 1.5;
+                const lines = item.text.split("\n").length;
+                const maxLine = (actualBounds.aabb.height + lineHeight / 3) / lineHeight;
+
+                for (let line = 1; (line <= lines) && (line <= maxLine); line++) {
+                    const offset = lineHeight * (line - 2/3);
+                    this.props.overlayManager.showInfo(actualBounds, `${line}`, -20, offset);
+                }
+            }
         });
     }
 

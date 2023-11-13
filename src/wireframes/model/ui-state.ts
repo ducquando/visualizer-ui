@@ -22,6 +22,9 @@ export interface UIState {
     showRightSidebar: boolean;
 
     // The selected panel on the bottom layout.
+    selectedPanel: string;
+
+    // The selected panel on the bottom layout.
     selectedTab: string;
 
     // The color tab.
@@ -41,6 +44,7 @@ export const createInitialUIState: () => UIState = () => {
         showLeftSidebar: true,
         showRightSidebar: true,
         selectedColorTab: 'palette',
-        selectedTab: 'animation',
+        selectedPanel: 'animation',
+        selectedTab: 'properties',
     };
 };

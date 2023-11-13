@@ -91,10 +91,10 @@ export class InteractionOverlays {
         }
     }
 
-    public showInfo(transform: Transform, text: string) {
+    public showInfo(transform: Transform, text: string, offsetX: number, offsetY: number) {
         const aabb = transform.aabb;
 
-        this.renderLabel(aabb.left + 1, aabb.top - 20, text, '#080');
+        this.renderLabel(aabb.left + offsetX, aabb.top + offsetY, text, '#080');
     }
 
     private renderLine(x1: number, y1: number, x2: number, y2: number, color: string, width: number) {
