@@ -21,6 +21,7 @@ const DEBUG_DISTANCES = false;
 
 const TRANSFORMER_STROKE_COLOR = '#080';
 const TRANSFORMER_FILL_COLOR = '#0f0';
+const TRANSFORMER_NO_SHOW = 'rgba(0, 0, 0, 0)';
 
 export interface TransformAdornerProps {
     // The current zoom value.
@@ -74,8 +75,9 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
     constructor(props: TransformAdornerProps) {
         super(props);
 
+        this.createResizeRects();
         this.createMoveShape();
-        this.createResizeShapes();
+        this.createResizeCorners();
         this.allElements = [...this.resizeShapes, this.moveShape];
         this.hideShapes();
 
@@ -489,10 +491,8 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
         for (const resizeShape of this.resizeShapes) {
             const offset = resizeShape['offset'];
             const angle = resizeShape['angle'];
-            const width = (angle % 180 === 0) ? this.transform.size.x : (angle % 90 === 0) ? 0.5 : adornerSize; 
-            const height = (angle % 180 === 0) ? 0.5 : (angle % 90 === 0) ? this.transform.size.y : adornerSize;
-            const moreOffsetX = (angle === 90) ? 5 : (angle === 270) ? -5 : 0;
-            const moreOffsetY = (angle === 0) ? -5 : (angle === 180) ? 5 : 0;
+            const width = (angle % 180 === 0) ? this.transform.size.x : (angle % 90 === 0) ? DRAG_SIZE : adornerSize; 
+            const height = (angle % 180 === 0) ? DRAG_SIZE : (angle % 90 === 0) ? this.transform.size.y : adornerSize;
 
             const visible =
                 (offset.x === 0 || this.canResizeX) &&
@@ -504,8 +504,8 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             }
 
             SVGHelper.transformBy(resizeShape, {
-                x: position.x - width / 2 + offset.x * (size.x + width / 2) + moreOffsetX,
-                y: position.y - height / 2 + offset.y * (size.y + height / 2) + moreOffsetY,
+                x: position.x - width / 2 + offset.x * (size.x + width / 2),
+                y: position.y - height / 2 + offset.y * (size.y + height / 2),
                 w: width,
                 h: height,
                 rx: position.x,
@@ -549,12 +549,15 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             if (item.renderer == 'Textbox') {
                 const actualBounds = item.bounds(this.props.selectedDiagram);
                 const lineHeight = item.fontSize * 1.5;
-                const lines = item.text.split("\n").length;
+                const wordWidth = actualBounds.aabb.width / item.fontSize * 2;
+                const lines = item.text.split("\n");
                 const maxLine = (actualBounds.aabb.height + lineHeight / 3) / lineHeight;
+                let lineOffset = 0;
 
-                for (let line = 1; (line <= lines) && (line <= maxLine); line++) {
-                    const offset = lineHeight * (line - 2/3);
+                for (let line = 1; (line <= lines.length) && (line <= maxLine); line++) {
+                    const offset = lineHeight * (line + lineOffset - 2/3);
                     this.props.overlayManager.showInfo(actualBounds, `${line}`, -20, offset);
+                    lineOffset = lineOffset + Math.floor(lines[line - 1].length / wordWidth);
                 }
             }
         });
@@ -563,22 +566,39 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
     private createMoveShape() {
         const moveShape =
             this.props.adorners.rect(1)
-                .stroke({ color: '#fff', width: 1 }).fill('none');
+            .stroke({ color: TRANSFORMER_STROKE_COLOR, width: 1 }).fill('none');
 
         this.props.interactionService.setCursor(moveShape, 'move');
 
         this.moveShape = moveShape;
     }
 
-    private createResizeShapes() {
-        const ys = [-0.5,  0.0,  0.0,  0.5, -0.5, -0.5,  0.5,  0.5];
-        const xs = [ 0.0, -0.5,  0.5,  0.0, -0.5,  0.5, -0.5,  0.5];
-        const as = [ 0.0,  270,  90,   180,  315,  45,   215,  135];
+    private createResizeRects() {
+        const ys = [-0.5,  0.0,  0.0,  0.5];
+        const xs = [ 0.0, -0.5,  0.5,  0.0];
+        const as = [ 0.0,  270,  90,   180];
 
         for (let i = 0; i < xs.length; i++) {
-            const resizeShape =
-                this.props.adorners.rect(DRAG_SIZE, DRAG_SIZE)
-                    .stroke({ color: TRANSFORMER_STROKE_COLOR, width: 1 }).fill(TRANSFORMER_FILL_COLOR);
+            const resizeShape = this.props.adorners.rect(DRAG_SIZE, DRAG_SIZE)
+                .stroke({ color: 'none', width: 1 }).fill(TRANSFORMER_NO_SHOW)
+
+            resizeShape['offset'] = new Vec2(xs[i], ys[i]);
+            resizeShape['angle'] = as[i];
+
+            this.props.interactionService.setCursorAngle(resizeShape, resizeShape['angle']);
+
+            this.resizeShapes.push(resizeShape);
+        }
+    }
+
+    private createResizeCorners() {
+        const ys = [-0.5, -0.5,  0.5,  0.5];
+        const xs = [-0.5,  0.5, -0.5,  0.5];
+        const as = [315,  45,   215,  135];
+
+        for (let i = 0; i < xs.length; i++) {
+            const resizeShape = this.props.adorners.rect(DRAG_SIZE/2, DRAG_SIZE/2)
+                .stroke({ color: TRANSFORMER_STROKE_COLOR, width: 1 }).fill(TRANSFORMER_FILL_COLOR);
 
             resizeShape['offset'] = new Vec2(xs[i], ys[i]);
             resizeShape['angle'] = as[i];

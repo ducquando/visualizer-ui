@@ -63,7 +63,7 @@ export const PresentView = React.memo(() => {
                 id: diagramID,
                 index: i,
                 style: {
-                    colorBackground: (editor.color.r * 255 << 16) + (editor.color.g * 255 << 8) + (editor.color.b * 255),
+                    colorBackground: editor.color.toNumber(),
                     size: `${editor.size.x} ${editor.size.y}`
                 }
             });

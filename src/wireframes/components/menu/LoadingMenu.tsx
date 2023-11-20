@@ -72,7 +72,7 @@ export const LoadingMenu = React.memo(() => {
             <div className='header-left'>
                 <CustomTitle token={tokenToRead} />
 
-                <ActionMenuButton displayMode='IconLabel' action={forLoading.newDiagram} />
+                <ActionMenuButton displayMode='Icon' action={forLoading.newDiagram} />
                 <ActionMenuButton displayMode='Icon' action={forLoading.openDiagramAction} />
 
                 <ActionDropdownButton displayMode='Icon' action={forLoading.saveDiagram} overlay={menu} />
