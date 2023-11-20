@@ -91,10 +91,12 @@ export class InteractionOverlays {
         }
     }
 
-    public showInfo(transform: Transform, text: string, offsetX: number, offsetY: number) {
+    public showInfo(transform: Transform, text: string, offsetX: number, offsetY: number, top: boolean, left: boolean) {
         const aabb = transform.aabb;
+        const horizontal = (left) ? aabb.left : aabb.right;
+        const vertical = (top) ? aabb.top : aabb.bottom;
 
-        this.renderLabel(aabb.left + offsetX, aabb.top + offsetY, text, '#080');
+        this.renderLabel(horizontal + offsetX, vertical + offsetY, text, '#080');
     }
 
     private renderLine(x1: number, y1: number, x2: number, y2: number, color: string, width: number) {

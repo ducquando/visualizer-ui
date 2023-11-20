@@ -9,7 +9,7 @@ export module IDHelper {
     let CURRENT_ID = {};
 
     export function nextId(renderID: string) {
-        CURRENT_ID[renderID] = (renderID in CURRENT_ID) ? CURRENT_ID[renderID] + 1 : 0;
+        CURRENT_ID[renderID] = (renderID in CURRENT_ID) ? CURRENT_ID[renderID] + 1 : 1;
         
         return `${renderID}${CURRENT_ID[renderID]}`;
     }

@@ -100,8 +100,6 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             this.calculateInitializeTransform();
             this.calculateResizeRestrictions();
             this.renderShapes();
-            this.renderID();
-            this.renderLineCount()
         } else {
             this.hideShapes();
         }
@@ -202,8 +200,6 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
 
             this.renderPreview();
             this.renderShapes();
-            this.renderID();
-            this.renderLineCount();
 
             // We have kept the keyboard pressed and therefore also updated at least one shape.
             this.manipulated = true;
@@ -331,7 +327,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
         this.props.previewStream.next({ type: 'Update', items });
     }
 
-    private move(delta: Vec2, snapMode: SnapMode, showOverlay = true) {
+    private move(delta: Vec2, snapMode: SnapMode, showOverlay = false) {
         const snapResult = this.props.snapManager.snapMoving(this.startTransform, delta, snapMode);
 
         this.transform = this.startTransform.moveBy(snapResult.delta);
@@ -342,12 +338,12 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             const x = Math.floor(this.transform.aabb.x);
             const y = Math.floor(this.transform.aabb.y);
 
-            this.props.overlayManager.showInfo(this.transform, `X: ${x}, Y: ${y}`, 1, -20);
+            this.props.overlayManager.showInfo(this.transform, `X: ${x}, Y: ${y}`, -20, 10, false, true);
         } 
         this.debug();
     }
 
-    private resize(delta: Vec2, snapMode: SnapMode, showOverlay = true) {
+    private resize(delta: Vec2, snapMode: SnapMode, showOverlay = false) {
         const startRotation = this.startTransform.rotation;
 
         const deltaSize = this.getResizeDeltaSize(startRotation, delta, snapMode);
@@ -362,7 +358,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             const w = Math.floor(this.transform.size.x);
             const h = Math.floor(this.transform.size.y);
 
-            this.props.overlayManager.showInfo(this.transform, `Width: ${w}, Height: ${h}`, 1, -20);
+            this.props.overlayManager.showInfo(this.transform, `Width: ${w}, Height: ${h}`, -20, 10, false, true);
         }
 
         this.debug();
@@ -534,33 +530,6 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
     private hideShapes() {
         this.allElements.forEach(s => s.hide());
         this.props.overlayManager.reset();
-    }
-
-    private renderID() {
-        this.props.selectedItems.forEach((item) => {
-            const actualBounds = item.bounds(this.props.selectedDiagram);
-            const id = (item.name != undefined) ? `${item.name}` : `${item.id}`
-            this.props.overlayManager.showInfo(actualBounds, id, 1, -20);
-        });
-    }
-
-    private renderLineCount() {
-        this.props.selectedItems.forEach((item) => {
-            if (item.renderer == 'Textbox') {
-                const actualBounds = item.bounds(this.props.selectedDiagram);
-                const lineHeight = item.fontSize * 1.5;
-                const wordWidth = actualBounds.aabb.width / item.fontSize * 2;
-                const lines = item.text.split("\n");
-                const maxLine = (actualBounds.aabb.height + lineHeight / 3) / lineHeight;
-                let lineOffset = 0;
-
-                for (let line = 1; (line <= lines.length) && (line <= maxLine); line++) {
-                    const offset = lineHeight * (line + lineOffset - 2/3);
-                    this.props.overlayManager.showInfo(actualBounds, `${line}`, -20, offset);
-                    lineOffset = lineOffset + Math.floor(lines[line - 1].length / wordWidth);
-                }
-            }
-        });
     }
 
     private createMoveShape() {

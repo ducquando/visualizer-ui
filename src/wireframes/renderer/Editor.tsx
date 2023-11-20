@@ -198,6 +198,7 @@ export const Editor = React.memo((props: EditorProps) => {
                             previewStream={renderPreview.current}
                             selectedDiagram={diagram}
                             selectedItems={selectedItemsWithLocked}
+                            overlayManager={overlayContext.overlayManager}
                             zoom={zoom}
                         />
                     }
