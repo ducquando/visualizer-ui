@@ -9,9 +9,10 @@ import { InsertRowBelowOutlined, InsertRowRightOutlined, CheckSquareOutlined, Ta
 import { useDispatch } from 'react-redux';
 import { useEventCallback } from '@app/core';
 import { Button, Tooltip } from 'antd';
-import { getDiagramId, DiagramItem, calculateSelection, getDiagram, selectItems, useStore, DiagramItemSet, Serializer, pasteItems, addShape, getSelectedItems, removeItems } from '@app/wireframes/model';
+import { getDiagramId, DiagramItem, calculateSelection, getDiagram, selectItems, useStore, DiagramItemSet, Serializer, pasteItems, addShape, getSelectedItems, removeItems, groupItems, ItemRef } from '@app/wireframes/model';
 import * as React from 'react';
 import { parseTableText } from '@app/wireframes/shapes/neutral/table';
+
 
 export const TableMenu = React.memo(() => {
     const dispatch = useDispatch();
@@ -26,8 +27,11 @@ export const TableMenu = React.memo(() => {
     const rowContent: React.MutableRefObject<Set<string>> = React.useRef(new Set());
     const colContent: React.MutableRefObject<Set<string>> = React.useRef(new Set());
     const tableContent: React.MutableRefObject<Set<string>> = React.useRef(new Set());
+    let tableItems: React.MutableRefObject<Array<ItemRef>> = React.useRef(new Array());
+
 
     const updateRef = (id: string, mode?: string) => {
+        tableItems.current.push(id);
         mode = (mode) ? mode : '';
         tableContent.current.add(id);
 
@@ -39,27 +43,23 @@ export const TableMenu = React.memo(() => {
         }
     };
 
+    function CreateTable(selectedDiagramId: string, row: number , col: number, x: number, y: number){
+    // Creating the table
+        for (let i = 0; i < row; i++) {
+            for (let j = 0; j < col; j++) {
+                const newShape = dispatch(addShape(selectedDiagramId, 'Cell',
+                {position: { x: x + j * 100, y: y + i * 39}}));
+                updateRef(newShape.payload.id);
+            };
+        };
+        saveTable();
+    };
+
+
+
+
     const createTable = useEventCallback(() => {
-        for (const selectedItem of selectedItems) {
-            if (selectedItem.renderer == 'Cell' && selectedDiagramId) {
-                const text = selectedItem.text;
-                const x = selectedItem.transform.left;
-                const y = selectedItem.transform.top;
-                const w = (selectedItem.transform.right - x);
-                const h = (selectedItem.transform.bottom - y);
-
-                updateRef(selectedItem.id);
-
-                // Save table
-                tableInit.current['text'] = text;
-                tableInit.current['x'] = x;
-                tableInit.current['y'] = y;
-                tableInit.current['w'] = w;
-                tableInit.current['h'] = h;
-            }
-        }
-
-        onCreation.current = 2;
+        CreateTable(selectedDiagramId || '0', 3, 3,  0, 0)
     });
     
     const editTable = useEventCallback(() => {
@@ -74,7 +74,9 @@ export const TableMenu = React.memo(() => {
 
                 for (let i = 0; i < content.length; i++) {
                     for (let j = 0; j < columnCount; j++) {
-                        const newShape = dispatch(addShape(selectedDiagramId, 'Cell', { position: { x: x + j * w, y: y + i * h }, size : { x: w, y: h }, appearance : { 'TEXT': content[i][j],'BORDER_TOP': styles[i][i]['s1'], 'BORDER_DOWN': styles[i][i]['s2'] } }));
+                        const newShape = dispatch(addShape(selectedDiagramId, 'Cell', 
+                        { position: { x: x + j * w, y: y + i * h }, size : { x: w, y: h }, 
+                        appearance : { 'TEXT': content[i][j],'BORDER_TOP': styles[i][i]['s1'], 'BORDER_DOWN': styles[i][i]['s2'] } }));
                         updateRef(newShape.payload.id);
                     }
                 }
@@ -130,18 +132,6 @@ export const TableMenu = React.memo(() => {
     const addRow = useEventCallback(() => {
         // Select previous row
         var rowItems = new Array<DiagramItem>();
-        if (selectedDiagram) {
-            selectedDiagram.items.values.forEach((e: DiagramItem) => {
-                if (rowContent.current.has(e.id)) {
-                    rowItems.push(e);
-                    rowContent.current.delete(e.id);
-                }
-            })
-
-            const selection = calculateSelection(rowItems, selectedDiagram);
-            dispatch(selectItems(selectedDiagram, selection));
-        }
-
         // Copy and paste row
         if (selectedDiagram) {
             const set = DiagramItemSet.createFromDiagram(rowItems, selectedDiagram);
@@ -158,36 +148,40 @@ export const TableMenu = React.memo(() => {
         }
     });
 
-    const saveTable = useEventCallback(() => {
-        var tableItems = new Array<DiagramItem>();
-        if (selectedDiagram) {
-            selectedDiagram.items.values.forEach((e: DiagramItem) => {
-                if (tableContent.current.has(e.id)) {
-                    tableItems.push(e);
-                }
-            })
-
-            const selection = calculateSelection(tableItems, selectedDiagram);
-            dispatch(selectItems(selectedDiagram, selection));
-        }
-
+const saveTable = useEventCallback(() => {        
         if (selectedDiagramId) {
-            dispatch(removeItems(selectedDiagramId, tableItems));
-            dispatch(addShape(selectedDiagramId, 'Table', { position: { x: tableInit.current['x'], y: tableInit.current['y'] }, size : { x: tableInit.current['w'], y: tableInit.current['h'] }, appearance : {text: tableInit.current['text']} }));
-        }
+            dispatch(groupItems(selectedDiagramId, tableItems.current));
+        };
 
         // Restart all refs
         rowContent.current = new Set();
         colContent.current = new Set();
         tableContent.current = new Set();
+        tableItems.current = new Array();
         onCreation.current = 0;
+    });
+
+
+    const Popup = useEventCallback(() => {
+        return (
+    <form>
+        <label>Enter your name:
+        <input type="text" />
+        </label>
+    </form>
+        );
     });
 
     return (
         <>
             <Tooltip mouseEnterDelay={1} title={ 'Create Table' }>
-                <Button size='large' disabled={onCreation.current != 0} className='menu-item' onClick={ createTable }>
+                <Button size='large' className='menu-item' onClick={ createTable }>
                     <TableOutlined />
+                </Button>
+            </Tooltip>
+            <Tooltip mouseEnterDelay={1} title={ 'Save Table' }>
+                <Button size='large'  className='menu-item' onClick={ Popup}>
+                    <CheckSquareOutlined />
                 </Button>
             </Tooltip>
             <Tooltip mouseEnterDelay={1} title={ 'Edit Table' }>
@@ -205,11 +199,7 @@ export const TableMenu = React.memo(() => {
                     <InsertRowBelowOutlined />
                 </Button>
             </Tooltip>
-            <Tooltip mouseEnterDelay={1} title={ 'Save Table' }>
-                <Button size='large' disabled={onCreation.current == 0} className='menu-item' onClick={ saveTable }>
-                    <CheckSquareOutlined />
-                </Button>
-            </Tooltip>
+
         </>
     );
 });
