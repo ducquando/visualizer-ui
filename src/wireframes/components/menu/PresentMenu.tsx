@@ -5,7 +5,6 @@ import { getDiagrams, getEditor, useStore } from "@app/wireframes/model";
 
 export const PresentMenu = React.memo(() => {
     const html = document.querySelector('.editor-diagram')?.innerHTML;
-    const code = document.querySelector('.code-editor textarea')?.innerHTML;
     // const outputView = document.querySelector('#error-view') || null;
 
     const fileName = new Date().getTime();
@@ -18,6 +17,7 @@ export const PresentMenu = React.memo(() => {
 
         diagrams.values.forEach((diagram, i) => {
             const diagramID = diagram.id;
+            const diagramScript = diagram.script;
 
             diagram.items.values.forEach((item) => {
                 let object = {};
@@ -62,6 +62,7 @@ export const PresentMenu = React.memo(() => {
             allDiagrams.push({
                 id: diagramID,
                 index: i,
+                script: diagramScript,
                 style: {
                     colorBackground: editor.color.toNumber(),
                     size: `${editor.size.x} ${editor.size.y}`
@@ -79,14 +80,13 @@ export const PresentMenu = React.memo(() => {
     const fetchAPI = () => {
         const allObjects = retrieveObjects();
 
-        if ((html != undefined) && (code != undefined)) {
+        if ((html != undefined)) {
             fetch('http://localhost:5001', {
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
                 body: JSON.stringify({
-                    animationScript: code,
                     fileName: fileName,
                     diagram: allObjects.diagram,
                     image: allObjects.object['Image'],

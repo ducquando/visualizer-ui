@@ -45,6 +45,11 @@ export const setDiagramMaster =
         return { payload: createDiagramAction(diagram, { master }) };
     });
 
+export const changeScript =
+    createAction('diagram/script', (diagram: DiagramRef, script: string) => {
+        return { payload: createDiagramAction(diagram, { script }) };
+    });
+
 export const changeSize =
     createAction('editor/size', (width: number, height: number) => {
         return { payload:  { width, height } };
@@ -81,6 +86,11 @@ export function buildDiagrams(builder: ActionReducerMapBuilder<EditorState>) {
             const { diagramId, index } = action.payload;
 
             return state.moveDiagram(diagramId, index);
+        })
+        .addCase(changeScript, (state, action) => {
+            const { diagramId, script } = action.payload;
+
+            return state.updateDiagram(diagramId, diagram => diagram.changeScript(script));
         })
         .addCase(changeSize, (state, action) => {
             const { width, height } = action.payload;

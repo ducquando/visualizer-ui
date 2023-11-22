@@ -275,7 +275,7 @@ export class Diagram extends Record<Props> {
         });
     }
 
-    public modifyScript(script: string | undefined) {
+    public changeScript(script: string) {
         return this.set('script', script);
     }
 
