@@ -41,6 +41,9 @@ type Props = {
 
     // Set the master diagram.
     master?: string;
+
+    // The animation script
+    script?: string;
 };
 
 export type InitialDiagramProps = {
@@ -58,6 +61,9 @@ export type InitialDiagramProps = {
 
     // Set the master diagram.
     master?: string;
+
+    // The animation script
+    script?: string;
 };
 
 export class Diagram extends Record<Props> {
@@ -87,12 +93,16 @@ export class Diagram extends Record<Props> {
         return this.get('master');
     }
 
+    public get script() {
+        return this.get('script');
+    }
+
     public get rootItems(): ReadonlyArray<DiagramItem> {
         return this.rootIds.values.map(x => this.items.get(x)).filter(x => !!x) as DiagramItem[];
     }
 
     public static create(setup: InitialDiagramProps = {}) {
-        const { id, items, rootIds, master, title } = setup;
+        const { id, items, rootIds, master, title, script } = setup;
 
         const props: Props = {
             id: id || MathHelper.nextId(),
@@ -101,6 +111,7 @@ export class Diagram extends Record<Props> {
             rootIds: ImmutableList.of(rootIds),
             selectedIds: ImmutableSet.empty(),
             title,
+            script,
         };
 
         return new Diagram(props);
@@ -262,6 +273,10 @@ export class Diagram extends Record<Props> {
 
             update.itemIds = update.itemIds.remove(...set.rootIds);
         });
+    }
+
+    public modifyScript(script: string | undefined) {
+        return this.set('script', script);
     }
 
     private mutate(targetIds: ReadonlyArray<string>, updater: (diagram: UpdateProps, targetItems: DiagramItem[]) => void): Diagram {

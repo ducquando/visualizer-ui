@@ -3,7 +3,7 @@ import { Button } from "antd";
 import React = require("react");
 import { getDiagrams, getEditor, useStore } from "@app/wireframes/model";
 
-export const PresentView = React.memo(() => {
+export const PresentMenu = React.memo(() => {
     const html = document.querySelector('.editor-diagram')?.innerHTML;
     const code = document.querySelector('.code-editor textarea')?.innerHTML;
     // const outputView = document.querySelector('#error-view') || null;
@@ -105,7 +105,7 @@ export const PresentView = React.memo(() => {
                 });
 
             // Open new tab
-            // window.open(`http://localhost:8001/${fileName}.html`);
+            window.open(`http://localhost:8001/${fileName}.html`);
         } else {
             console.log(`${fileName}:\t Error! Cannot perform action.\n`);
         }

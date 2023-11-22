@@ -225,6 +225,8 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
     }
 
     private renderLineCount(item: DiagramItem, bounds: Transform) {
+        // Determine line breaks for textbox based on width and fontsize
+        // This assumes that every char has the same width
         if (item.renderer == 'Textbox') {
             const lineHeight = item.fontSize * 1.5;
             const wordWidth = bounds.aabb.width / item.fontSize * 2;

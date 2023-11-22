@@ -6,16 +6,16 @@
 */
 
 export * from './assets/Shapes';
-export * from './EditorView';
-export * from './animation/AnimationView';
-export * from './animation/ErrorView';
-export * from './animation/PresentView';
+export * from './layout/EditorView';
+export * from './layout/PanelView';
+export * from './layout/TabView';
 export * from './outline/Outline';
 export * from './menu/ArrangeMenu';
 export * from './menu/ClipboardMenu';
 export * from './menu/HistoryMenu';
 export * from './menu/LoadingMenu';
 export * from './menu/LockMenu';
+export * from './menu/PresentMenu';
 export * from './menu/SettingsMenu';
 export * from './menu/ShapeMenu';
 export * from './menu/TableMenu';
