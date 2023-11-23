@@ -6,7 +6,9 @@
 */
 
 import { RendererService } from '@app/wireframes/model/renderer.service';
-import { Cell, Ellipse, Image, Latex, Rectangle, Rhombus, Shape, Table, Textbox, Triangle } from './dependencies';
+
+import { Cell, Ellipse, Image, Latex, Rectangle, Rhombus, Shape, Textbox, Triangle } from './dependencies';
+
 import { AbstractControl } from './utils/abstract-control';
 
 export function registerRenderers() {
@@ -17,7 +19,6 @@ export function registerRenderers() {
     RendererService.addRenderer(new AbstractControl(new Rectangle()));
     RendererService.addRenderer(new AbstractControl(new Rhombus()));
     RendererService.addRenderer(new AbstractControl(new Shape()));
-    RendererService.addRenderer(new AbstractControl(new Table()));
     RendererService.addRenderer(new AbstractControl(new Textbox()));
     RendererService.addRenderer(new AbstractControl(new Triangle()));
 }
