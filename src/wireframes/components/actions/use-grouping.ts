@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
-import { MathHelper } from '@app/core';
+import { IDHelper } from '@app/core';
 import { useEventCallback } from '@app/core';
 import { texts } from '@app/texts';
 import { getDiagramId, getSelectedGroups, getSelectedItems, groupItems, ungroupItems, useStore } from '@app/wireframes/model';
@@ -23,7 +23,7 @@ export function useGrouping() {
 
     const doGroup = useEventCallback(() => {
         if (selectedDiagramId) {
-            dispatch(groupItems(selectedDiagramId, selectedItems, MathHelper.nextId()));
+            dispatch(groupItems(selectedDiagramId, selectedItems, IDHelper.nextId('Group')));
         }
     });
 

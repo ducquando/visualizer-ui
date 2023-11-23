@@ -43,6 +43,14 @@ export class Vec2 {
         return `(${this.x}, ${this.y})`;
     }
 
+    public getX(): string {
+        return `${this.x}`;
+    }
+
+    public getY(): string {
+        return `${this.y}`;
+    }
+
     public add(v: Vec2 | number): Vec2 {
         if (v instanceof Vec2) {
             return new Vec2(this.x + v.x, this.y + v.y);

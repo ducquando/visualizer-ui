@@ -18,7 +18,7 @@ const DEFAULT_APPEARANCE = {
 
 function parseParams(input: string) {
     var field = input.match(/\{(.*?)\}/);
-    var params = (field == null) ? [] : field[0].replace(/\{/, '').replace(/\}/, '').split(',');
+    var params = (field === null) ? [] : field[0].replace(/\{/, '').replace(/\}/, '').split(',');
     var record = {};
 
     for (var i = 0; i < params.length; i++) {
@@ -105,7 +105,7 @@ export class Table implements ShapePlugin {
 
             for (let j = 0; j < rows[i].length; j++) {
                 const cell = rows[i][j];
-                const factorWidth = ((styles[i][j]['span'] == null) || (styles[i][j]['span'] < 1)) ? 1 : styles[i][j]['span'];
+                const factorWidth = ((styles[i][j]['span'] === null) || (styles[i][j]['span'] < 1)) ? 1 : styles[i][j]['span'];
                 const rect = new Rect2(x, y, cellWidth * factorWidth, cellHeight);
 
                 ctx.renderer2.text(ctx.shape, rect, p => {
@@ -125,8 +125,8 @@ export class Table implements ShapePlugin {
 
         for (let x = 0; x < columnCount; x++) {
             for (let y = 0; y < rows.length; y++) {
-                const factorTop = (styles[y][x]['s1'] == null) ? 1 : styles[y][x]['s1'];
-                const factorBot = (styles[y][x]['s2'] == null) ? 1 : styles[y][x]['s2'];
+                const factorTop = (styles[y][x]['s1'] === null) ? 1 : styles[y][x]['s1'];
+                const factorBot = (styles[y][x]['s2'] === null) ? 1 : styles[y][x]['s2'];
                 const strokeTop = CommonTheme.CONTROL_BORDER_THICKNESS * factorTop;
                 const strokeBot = CommonTheme.CONTROL_BORDER_THICKNESS * factorBot;
                 const offsetX = Math.round(x * cellWidth);

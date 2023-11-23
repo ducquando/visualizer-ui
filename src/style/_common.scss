@@ -29,11 +29,13 @@ body {
     border-radius: 0;
 }
 
-.logo {
-    @include fixed(15px, null, null, 10px);
-    color: $color-white;
-    font-size: 1.1rem;
-    font-weight: bold;
+.header-left {
+    @include fixed(null, null, null, 5px);
+    height: 40px;
+}
+
+.header-right {
+    margin-right: 15px;
     height: 40px;
 }
 
@@ -48,7 +50,7 @@ body {
         text-align: center;
         z-index: 1000;
 
-        .logo {
+        .header-left {
             max-height: 100%;
         }
 
@@ -85,6 +87,10 @@ ul {
 
 .section {
     padding-bottom: 10px;
+}
+
+tspan {
+    background-color: #0f0;
 }
 
 //
@@ -129,18 +135,22 @@ ul {
     .ant-tabs-tabpane {
         flex-shrink: 1 !important;
     }
-}
 
-.sidebar-right {
-    .ant-collapse {
-        background: transparent;
+    .item {
+        background: transparent !important;
+        border: 0;
+        border-radius: 0;
+        max-height: 45px;
+        min-height: 45px;
+        opacity: .8;
     }
 }
 
 $toggle-button-top: 72px;
 $toggle-button-offset-left: 10px;
 $toggle-button-offset-right: 27px;
-$sidebar-size: 320px;
+$sidebar-size-left: 160px;
+$sidebar-size-right: 320px;
 
 .content {
     .toggle-button-left {
@@ -149,7 +159,7 @@ $sidebar-size: 320px;
         }
 
         &.visible {
-            left: $sidebar-size + $toggle-button-offset-left;
+            left: $sidebar-size-left + $toggle-button-offset-left;
         }
     }
 
@@ -159,7 +169,7 @@ $sidebar-size: 320px;
         }
 
         &.visible {
-            right: $sidebar-size + $toggle-button-offset-right;
+            right: $sidebar-size-right + $toggle-button-offset-right;
         }
     }
 }

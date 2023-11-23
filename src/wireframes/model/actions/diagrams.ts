@@ -6,13 +6,13 @@
 */
 
 import { ActionReducerMapBuilder, createAction } from '@reduxjs/toolkit';
-import { Color, MathHelper, Vec2 } from '@app/core';
+import { Color, IDHelper, Vec2 } from '@app/core';
 import { Diagram, EditorState } from './../internal';
 import { createDiagramAction, DiagramRef } from './utils';
 
 export const addDiagram =
     createAction('diagram/add', (diagramId?: string) => {
-        return { payload: createDiagramAction(diagramId || MathHelper.nextId()) };
+        return { payload: createDiagramAction(diagramId || IDHelper.nextId('Diagram')) };
     });
 
 export const selectDiagram =
@@ -43,6 +43,11 @@ export const renameDiagram =
 export const setDiagramMaster =
     createAction('diagram/master', (diagram: DiagramRef, master: string | undefined) => {
         return { payload: createDiagramAction(diagram, { master }) };
+    });
+
+export const changeScript =
+    createAction('diagram/script', (diagram: DiagramRef, script: string) => {
+        return { payload: createDiagramAction(diagram, { script }) };
     });
 
 export const changeSize =
@@ -81,6 +86,11 @@ export function buildDiagrams(builder: ActionReducerMapBuilder<EditorState>) {
             const { diagramId, index } = action.payload;
 
             return state.moveDiagram(diagramId, index);
+        })
+        .addCase(changeScript, (state, action) => {
+            const { diagramId, script } = action.payload;
+
+            return state.updateDiagram(diagramId, diagram => diagram.changeScript(script));
         })
         .addCase(changeSize, (state, action) => {
             const { width, height } = action.payload;

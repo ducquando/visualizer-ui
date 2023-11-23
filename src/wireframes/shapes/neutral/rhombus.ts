@@ -18,9 +18,9 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.TEXT]: 'Shape',
 };
 
-export class Rectangle implements ShapePlugin {
+export class Rhombus implements ShapePlugin {
     public identifier(): string {
-        return 'Rectangle';
+        return 'Rhombus';
     }
 
     public defaultAppearance() {
@@ -37,7 +37,10 @@ export class Rectangle implements ShapePlugin {
     }
 
     private createShape(ctx: RenderContext) {
-        ctx.renderer2.rectangle(ctx.shape, 0, ctx.rect, p => {
+        const b = ctx.rect;
+        const path = `M${b.cx} ${b.top} L${b.right} ${b.cy} L${b.cx} ${b.bottom} L${b.left} ${b.cy} z`;
+
+        ctx.renderer2.path(ctx.shape, path, p => {
             this.styleShape(ctx, p);
         });
     }
