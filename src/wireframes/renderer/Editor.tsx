@@ -109,8 +109,8 @@ export const Editor = React.memo((props: EditorProps) => {
         renderMasterLayer.current = doc.group().id('masterLayer');
         renderMainLayer.current = doc.group().id('parentLayer');
         adornerSelectLayer.current = doc.group().id('selectLayer');
-        adornerTransformLayer.current = doc.group().id('transformLayer');
         overlayLayer.current = doc.group().id('overlaysLayer');
+        adornerTransformLayer.current = doc.group().id('transformLayer');
 
         setInteractionMainService(new InteractionService([
             adornerSelectLayer.current,
@@ -198,6 +198,7 @@ export const Editor = React.memo((props: EditorProps) => {
                             previewStream={renderPreview.current}
                             selectedDiagram={diagram}
                             selectedItems={selectedItemsWithLocked}
+                            overlayManager={overlayContext.overlayManager}
                             zoom={zoom}
                         />
                     }

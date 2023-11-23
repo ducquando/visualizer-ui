@@ -8,14 +8,15 @@
 /* eslint-disable @typescript-eslint/no-loop-func */
 
 import { ActionReducerMapBuilder, createAction } from '@reduxjs/toolkit';
-import { MathHelper, Rotation, Vec2 } from '@app/core';
+import { IDHelper, Rotation, Vec2 } from '@app/core';
 import { Appearance } from '@app/wireframes/interface';
 import { Diagram, DiagramItem, DiagramItemSet, EditorState, RendererService, Serializer, Transform } from './../internal';
 import { createDiagramAction, createItemsAction, DiagramRef, ItemsRef } from './utils';
 
+
 export const addShape =
     createAction('items/addShape', (diagram: DiagramRef, renderer: string, props: { position?: { x: number; y: number }; size?: { x: number; y: number }; appearance?: Appearance } = {}, id?: string) => {
-        return { payload: createDiagramAction(diagram, { id: id || MathHelper.nextId(), renderer, ...props }) };
+        return { payload: createDiagramAction(diagram, { id: id || IDHelper.nextId(renderer), renderer, ...props }) };
     });
 
 export const lockItems =

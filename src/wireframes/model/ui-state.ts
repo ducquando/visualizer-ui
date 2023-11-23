@@ -16,12 +16,15 @@ export interface UIState {
     infoToast?: string;
 
     // Indicates if the left sidebar is open.
-    showLeftSidebar: boolean;
+    showPanel: boolean;
 
     // Indicates if the right sidebar is open.
     showRightSidebar: boolean;
 
-    // The selected tab on the left sidebar.
+    // The selected panel on the bottom layout.
+    selectedPanel: string;
+
+    // The selected panel on the bottom layout.
     selectedTab: string;
 
     // The color tab.
@@ -38,9 +41,10 @@ export interface UIStateInStore {
 export const createInitialUIState: () => UIState = () => {
     return {
         zoom: 1,
-        selectedTab: 'shapes',
-        showLeftSidebar: true,
+        showPanel: true,
         showRightSidebar: true,
         selectedColorTab: 'palette',
+        selectedPanel: 'animation',
+        selectedTab: 'properties',
     };
 };

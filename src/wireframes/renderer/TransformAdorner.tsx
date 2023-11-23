@@ -21,6 +21,7 @@ const DEBUG_DISTANCES = false;
 
 const TRANSFORMER_STROKE_COLOR = '#080';
 const TRANSFORMER_FILL_COLOR = '#0f0';
+const TRANSFORMER_NO_SHOW = 'rgba(0, 0, 0, 0)';
 
 export interface TransformAdornerProps {
     // The current zoom value.
@@ -66,7 +67,6 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
     private moveShape: svg.Element = null!;
     private moveTimer?: Timer | null;
     private resizeShapes: svg.Element[] = [];
-    private rotateShape: svg.Element = null!;
     private rotation = Rotation.ZERO;
     private startPosition = Vec2.ZERO;
     private startTransform = Transform.ZERO;
@@ -75,10 +75,10 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
     constructor(props: TransformAdornerProps) {
         super(props);
 
-        this.createRotateShape();
+        this.createResizeRects();
         this.createMoveShape();
-        this.createResizeShapes();
-        this.allElements = [...this.resizeShapes, this.moveShape, this.rotateShape];
+        this.createResizeCorners();
+        this.allElements = [...this.resizeShapes, this.moveShape];
         this.hideShapes();
 
         this.props.interactionService.addHandler(this);
@@ -232,7 +232,8 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
                 this.props.selectedDiagram,
                 this.props.selectedItems,
                 this.startTransform,
-                this.transform);
+                this.transform
+            );
         } finally {
             this.stopTransform();
         }
@@ -262,8 +263,6 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
 
         if (hitItem === this.moveShape) {
             this.manipulationMode = Mode.Move;
-        } else if (hitItem === this.rotateShape) {
-            this.manipulationMode = Mode.Rotate;
         } else {
             this.manipulationMode = Mode.Resize;
             this.manipulationOffset = hitItem['offset'];
@@ -309,8 +308,6 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
 
         if (this.manipulationMode === Mode.Move) {
             this.move(delta, getSnapMode(event.event));
-        } else if (this.manipulationMode === Mode.Rotate) {
-            this.rotate(event, getSnapMode(event.event));
         } else {
             this.resize(delta, getSnapMode(event.event));
         }
@@ -330,7 +327,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
         this.props.previewStream.next({ type: 'Update', items });
     }
 
-    private move(delta: Vec2, snapMode: SnapMode, showOverlay = true) {
+    private move(delta: Vec2, snapMode: SnapMode, showOverlay = false) {
         const snapResult = this.props.snapManager.snapMoving(this.startTransform, delta, snapMode);
 
         this.transform = this.startTransform.moveBy(snapResult.delta);
@@ -341,35 +338,12 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             const x = Math.floor(this.transform.aabb.x);
             const y = Math.floor(this.transform.aabb.y);
 
-            this.props.overlayManager.showInfo(this.transform, `X: ${x}, Y: ${y}`);
-        }
-
+            this.props.overlayManager.showInfo(this.transform, `X: ${x}, Y: ${y}`, -20, 10, false, true);
+        } 
         this.debug();
     }
 
-    private rotate(event: SvgEvent, snapMode: SnapMode, showOverlay = true) {
-        const deltaValue = this.getCummulativeRotation(event);
-        const deltaRotation = this.props.snapManager.snapRotating(this.startTransform, deltaValue, snapMode);
-
-        this.transform = this.startTransform.rotateBy(Rotation.fromDegree(deltaRotation));
-
-        if (showOverlay) {
-            this.props.overlayManager.showInfo(this.transform, `Y: ${this.transform.rotation.degree}°`);
-        }
-    }
-
-    private getCummulativeRotation(event: SvgEvent): number {
-        const center = this.startTransform.position;
-
-        const eventPoint = event.position;
-        const eventStart = this.startPosition;
-
-        const cummulativeRotation = Vec2.angleBetween(eventStart.sub(center), eventPoint.sub(center));
-
-        return cummulativeRotation;
-    }
-
-    private resize(delta: Vec2, snapMode: SnapMode, showOverlay = true) {
+    private resize(delta: Vec2, snapMode: SnapMode, showOverlay = false) {
         const startRotation = this.startTransform.rotation;
 
         const deltaSize = this.getResizeDeltaSize(startRotation, delta, snapMode);
@@ -384,7 +358,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             const w = Math.floor(this.transform.size.x);
             const h = Math.floor(this.transform.size.y);
 
-            this.props.overlayManager.showInfo(this.transform, `Width: ${w}, Height: ${h}`);
+            this.props.overlayManager.showInfo(this.transform, `Width: ${w}, Height: ${h}`, -20, 10, false, true);
         }
 
         this.debug();
@@ -455,7 +429,8 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
                 this.props.selectedDiagram,
                 this.props.selectedItems,
                 this.startTransform,
-                this.transform);
+                this.transform
+            );
         } finally {
             this.stopTransform();
         }
@@ -508,10 +483,12 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
         const position = this.transform.position;
 
         const adornerSize = DRAG_SIZE / this.props.zoom;
-        const adornerHalfSize = adornerSize / 2;
 
         for (const resizeShape of this.resizeShapes) {
             const offset = resizeShape['offset'];
+            const angle = resizeShape['angle'];
+            const width = (angle % 180 === 0) ? this.transform.size.x : (angle % 90 === 0) ? DRAG_SIZE : adornerSize; 
+            const height = (angle % 180 === 0) ? DRAG_SIZE : (angle % 90 === 0) ? this.transform.size.y : adornerSize;
 
             const visible =
                 (offset.x === 0 || this.canResizeX) &&
@@ -523,10 +500,10 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             }
 
             SVGHelper.transformBy(resizeShape, {
-                x: position.x - adornerHalfSize + offset.x * (size.x + adornerHalfSize),
-                y: position.y - adornerHalfSize + offset.y * (size.y + adornerHalfSize),
-                w: adornerSize,
-                h: adornerSize,
+                x: position.x - width / 2 + offset.x * (size.x + width / 2),
+                y: position.y - height / 2 + offset.y * (size.y + height / 2),
+                w: width,
+                h: height,
                 rx: position.x,
                 ry: position.y,
                 rotation,
@@ -535,19 +512,6 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             resizeShape.stroke(stroke);
             resizeShape.show();
         }
-
-        this.rotateShape.size(adornerSize, adornerSize);
-        this.rotateShape.stroke(stroke);
-        this.rotateShape.show();
-
-        SVGHelper.setSize(this.rotateShape, adornerSize, adornerSize);
-        SVGHelper.transformBy(this.rotateShape, {
-            x: position.x - adornerHalfSize,
-            y: position.y - adornerHalfSize - size.y * 0.5 - 30 / this.props.zoom,
-            rx: position.x,
-            ry: position.y,
-            rotation,
-        }, false, true); // Do not set the position by matrix for bounding box calculation
 
         this.moveShape.stroke(stroke);
         this.moveShape.show();
@@ -565,41 +529,50 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
 
     private hideShapes() {
         this.allElements.forEach(s => s.hide());
+        this.props.overlayManager.reset();
     }
 
     private createMoveShape() {
         const moveShape =
             this.props.adorners.rect(1)
-                .stroke({ color: TRANSFORMER_STROKE_COLOR, width: 1 }).fill('none');
+            .stroke({ color: TRANSFORMER_STROKE_COLOR, width: 1 }).fill('none');
 
         this.props.interactionService.setCursor(moveShape, 'move');
 
         this.moveShape = moveShape;
     }
 
-    private createRotateShape() {
-        const rotateShape =
-            this.props.adorners.ellipse(DRAG_SIZE, DRAG_SIZE)
-                .stroke({ color: TRANSFORMER_STROKE_COLOR, width: 1 }).fill(TRANSFORMER_FILL_COLOR);
-
-        this.props.interactionService.setCursor(rotateShape, 'pointer');
-
-        this.rotateShape = rotateShape;
-    }
-
-    private createResizeShapes() {
-        const ys = [-0.5, -0.5, -0.5,  0.0, 0.0,  0.5, 0.5, 0.5];
-        const xs = [-0.5,  0.0,  0.5, -0.5, 0.5, -0.5, 0.0, 0.5];
-        const as = [315, 0, 45, 270, 90, 215, 180, 135];
+    private createResizeRects() {
+        const ys = [-0.5,  0.0,  0.0,  0.5];
+        const xs = [ 0.0, -0.5,  0.5,  0.0];
+        const as = [ 0.0,  270,  90,   180];
 
         for (let i = 0; i < xs.length; i++) {
-            const resizeShape =
-                this.props.adorners.rect(DRAG_SIZE, DRAG_SIZE)
-                    .stroke({ color: TRANSFORMER_STROKE_COLOR, width: 1 }).fill(TRANSFORMER_FILL_COLOR);
+            const resizeShape = this.props.adorners.rect(DRAG_SIZE, DRAG_SIZE)
+                .stroke({ color: 'none', width: 1 }).fill(TRANSFORMER_NO_SHOW)
 
             resizeShape['offset'] = new Vec2(xs[i], ys[i]);
+            resizeShape['angle'] = as[i];
 
-            this.props.interactionService.setCursorAngle(resizeShape, as[i]);
+            this.props.interactionService.setCursorAngle(resizeShape, resizeShape['angle']);
+
+            this.resizeShapes.push(resizeShape);
+        }
+    }
+
+    private createResizeCorners() {
+        const ys = [-0.5, -0.5,  0.5,  0.5];
+        const xs = [-0.5,  0.5, -0.5,  0.5];
+        const as = [315,  45,   215,  135];
+
+        for (let i = 0; i < xs.length; i++) {
+            const resizeShape = this.props.adorners.rect(DRAG_SIZE/2, DRAG_SIZE/2)
+                .stroke({ color: TRANSFORMER_STROKE_COLOR, width: 1 }).fill(TRANSFORMER_FILL_COLOR);
+
+            resizeShape['offset'] = new Vec2(xs[i], ys[i]);
+            resizeShape['angle'] = as[i];
+
+            this.props.interactionService.setCursorAngle(resizeShape, resizeShape['angle']);
 
             this.resizeShapes.push(resizeShape);
         }

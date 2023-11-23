@@ -8,9 +8,10 @@
 import * as svg from '@svgdotjs/svg.js';
 import * as React from 'react';
 import { isModKey, Rect2, Subscription, SVGHelper, Vec2 } from '@app/core';
-import { calculateSelection, Diagram, DiagramItem } from '@app/wireframes/model';
+import { calculateSelection, Diagram, DiagramItem, Transform } from '@app/wireframes/model';
 import { InteractionHandler, InteractionService, SvgEvent } from './interaction-service';
 import { PreviewEvent } from './preview';
+import { OverlayManager } from '../contexts/OverlayContext';
 
 const SELECTION_STROKE_COLOR = '#080';
 const SELECTION_STROKE_LOCK_COLOR = '#f00';
@@ -31,6 +32,9 @@ export interface SelectionAdornerProps {
     // The interaction service.
     interactionService: InteractionService;
 
+    // The overlay manager.
+    overlayManager: OverlayManager;
+
     // The preview subscription.
     previewStream: Subscription<PreviewEvent>;
 
@@ -42,6 +46,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
     private selectionMarkers: svg.Rect[] = [];
     private selectionShape!: svg.Rect;
     private dragStart: Vec2 | null = null;
+    
 
     public componentDidMount() {
         this.props.interactionService.addHandler(this);
@@ -60,16 +65,18 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
                 .stroke({ color: '#0a0', width: 1 })
                 .scale(1, 1)
                 .fill('#00aa0044')
-                .hide();
+                .hide();    
     }
 
     public componentWillUnmount() {
         this.props.interactionService.removeHandler(this);
 
         this.selectionMarkers = [];
+        
     }
 
     public componentDidUpdate() {
+        this.props.overlayManager.reset();
         this.markItems();
     }
 
@@ -89,7 +96,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
         if (!this.dragStart) {
             next(event);
             return;
-        }
+        } 
 
         const rect = Rect2.fromVecs([this.dragStart, event.position]);
 
@@ -104,7 +111,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
             next(event);
             return;
         }
-
+        
         try {
             const rect = Rect2.fromVecs([this.dragStart, event.position]);
 
@@ -192,6 +199,8 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
 
             // Also adjust the bounds by the border width, to show the border outside of the shape.
             this.transformShape(marker, actualBounds.position.sub(actualBounds.halfSize), actualBounds.size, strokeWidth, actualBounds.rotation.degree);
+            this.renderID(actualItem, actualBounds);
+            this.renderLineCount(actualItem, actualBounds);
         });
     }
 
@@ -208,6 +217,29 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
         if (size.x > 2 && size.y > 2) {
             shape.show();
         }
+    }
+
+    private renderID(item: DiagramItem, bounds: Transform) {
+        const id = (item.name != undefined) ? `${item.name}` : `${item.id}`
+        this.props.overlayManager.showInfo(bounds, id, 1, -20, true, true);
+    }
+
+    private renderLineCount(item: DiagramItem, bounds: Transform) {
+        // Determine line breaks for textbox based on width and fontsize
+        // This assumes that every char has the same width
+        if (item.renderer == 'Textbox') {
+            const lineHeight = item.fontSize * 1.5;
+            const wordWidth = bounds.aabb.width / item.fontSize * 2;
+            const lines = item.text.split("\n");
+            const maxLine = (bounds.aabb.height + lineHeight / 3) / lineHeight;
+            let lineOffset = 0;
+
+            for (let line = 1; (line <= lines.length) && (line <= maxLine); line++) {
+                const offset = lineHeight * (line + lineOffset - 2/3);
+                this.props.overlayManager.showInfo(bounds, `${line}`, -20, offset, true, true);
+                lineOffset = lineOffset + Math.floor(lines[line - 1].length / wordWidth);
+            }
+        };
     }
 
     public render(): any {

@@ -15,7 +15,7 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.TEXT]: 'c = \\pm\\sqrt{a^2 + b^2}',
 };
 
-export class Equation implements ShapePlugin {
+export class Latex implements ShapePlugin {
     public identifier(): string {
         return 'Equation';
     }

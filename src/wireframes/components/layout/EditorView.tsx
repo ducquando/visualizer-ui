@@ -14,9 +14,9 @@ import { useDispatch } from 'react-redux';
 import { loadImagesToClipboardItems, sizeInPx, useClipboard, useEventCallback } from '@app/core';
 import { addShape, changeItemsAppearance, Diagram, getDiagram, getDiagramId, getEditor, getMasterDiagram, getSelectedItems, getSelectedItemsWithLocked, RendererService, selectItems, Transform, transformItems, useStore } from '@app/wireframes/model';
 import { Editor } from '@app/wireframes/renderer/Editor';
-import { DiagramRef, ItemsRef } from '../model/actions/utils';
-import { ShapeSource } from './../interface';
-import { ContextMenu } from './context-menu/ContextMenu';
+import { DiagramRef, ItemsRef } from '../../model/actions/utils';
+import { ShapeSource } from '../../interface';
+import { ContextMenu } from '../context-menu/ContextMenu';
 import './EditorView.scss';
 
 export interface EditorViewProps {

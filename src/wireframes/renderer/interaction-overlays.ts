@@ -91,10 +91,12 @@ export class InteractionOverlays {
         }
     }
 
-    public showInfo(transform: Transform, text: string) {
+    public showInfo(transform: Transform, text: string, offsetX: number, offsetY: number, top: boolean, left: boolean) {
         const aabb = transform.aabb;
+        const horizontal = (left) ? aabb.left : aabb.right;
+        const vertical = (top) ? aabb.top : aabb.bottom;
 
-        this.renderLabel(aabb.right + 4, aabb.bottom + 24, text, '#000');
+        this.renderLabel(horizontal + offsetX, vertical + offsetY, text, '#080');
     }
 
     private renderLine(x1: number, y1: number, x2: number, y2: number, color: string, width: number) {
@@ -112,7 +114,7 @@ export class InteractionOverlays {
         this.indexLines++;
     }
 
-    private renderLabel(x: number, y: number, text: string, color: string, fontSize = 16, centerX = false, centerY = false, padding = 4) {
+    private renderLabel(x: number, y: number, text: string, color: string, fontSize = 12, centerX = false, centerY = false, padding = 4) {
         let labelGroup = this.labels[this.indexLabels];
         let labelRect: svg.Rect;
         let labelText: svg.ForeignObject;
@@ -122,7 +124,7 @@ export class InteractionOverlays {
             labelGroup = this.layer.group();
 
             labelRect = new svg.Rect().addTo(labelGroup);
-            labelText = SVGHelper.createText(text, fontSize, 'center', 'middle').attr('color', '#fff').addTo(labelGroup);
+            labelText = SVGHelper.createText(text, fontSize, 'center', 'middle').attr('color', color).addTo(labelGroup);
 
             this.labels.push(labelGroup);
         } else {
@@ -146,7 +148,7 @@ export class InteractionOverlays {
         const w = characterWidthValue * text.length / this.zoom;
 
         // We assume a line height of 1.5 here.
-        const h = fontSize * 1.5 / this.zoom;
+        const h = fontSize / this.zoom;
 
         if (centerX) {
             x -= 0.5 * w;
@@ -161,7 +163,7 @@ export class InteractionOverlays {
         labelContent.style.fontSize = sizeInPx(fontSize / this.zoom);
         labelContent.style.fontFamily = 'monospace';
         labelContent.textContent = text;
-        labelRect.fill(color);
+        labelRect.fill('none');
 
         // The label dimensions needs to be calculated based on the zoom factor.
         padding /= this.zoom;
