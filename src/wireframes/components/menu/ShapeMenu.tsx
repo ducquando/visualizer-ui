@@ -34,7 +34,7 @@ export const ShapeMenu = React.memo(() => {
                 </Button>
             </Tooltip>
             <Tooltip mouseEnterDelay={1} title={ 'Table' }>
-                <Button className='item' onClick={ () => createNewShape('Cell') }>
+                <Button className='item' onClick={ () => createNewShape('Table') }>
                     <TableIcon />
                 </Button>
             </Tooltip>

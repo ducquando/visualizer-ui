@@ -219,12 +219,12 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
         }
     }
 
-    private renderID(item: DiagramItem, bounds: Transform) {
+    protected renderID(item: DiagramItem, bounds: Transform) {
         const id = (item.name != undefined) ? `${item.name}` : `${item.id}`
         this.props.overlayManager.showInfo(bounds, id, 1, -20, true, true);
     }
 
-    private renderLineCount(item: DiagramItem, bounds: Transform) {
+    protected renderLineCount(item: DiagramItem, bounds: Transform) {
         // Determine line breaks for textbox based on width and fontsize
         // This assumes that every char has the same width
         if (item.renderer == 'Textbox') {

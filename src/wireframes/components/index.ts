@@ -18,7 +18,7 @@ export * from './menu/LockMenu';
 export * from './menu/PresentMenu';
 export * from './menu/SettingsMenu';
 export * from './menu/ShapeMenu';
-export * from './menu/TableMenu';
+// export * from './menu/TableMenu';
 export * from './menu/UIMenu';
 export * from './pages/Pages';
 export * from './recent/Recent';

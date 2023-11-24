@@ -11,7 +11,7 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import { ClipboardContainer } from '@app/core';
-import { ArrangeMenu, ClipboardMenu, EditorView, PanelView, HistoryMenu, LoadingMenu, LockMenu,  PresentMenu, ShapeMenu, TableMenu, TabView } from '@app/wireframes/components';
+import { ArrangeMenu, ClipboardMenu, EditorView, PanelView, HistoryMenu, LoadingMenu, LockMenu,  PresentMenu, ShapeMenu, TabView } from '@app/wireframes/components';
 import { loadDiagramFromServer, newDiagram, useStore } from '@app/wireframes/model';
 import { CustomDragLayer } from './wireframes/components/CustomDragLayer';
 import { OverlayContainer } from './wireframes/contexts/OverlayContext';
@@ -52,7 +52,7 @@ export const App = () => {
                         <ClipboardMenu />
                         <span className='menu-separator' />
 
-                        <TableMenu />
+                        {/* <TableMenu /> */}
 
                         <span style={{ float: 'right' }}>
                             <PresentMenu />

@@ -6,10 +6,11 @@
 */
 
 import * as React from 'react';
-import { Keys, sizeInPx } from '@app/core';
+import { Keys, Vec2, sizeInPx } from '@app/core';
 import { DefaultAppearance } from '@app/wireframes/interface';
 import { Diagram, DiagramItem } from '@app/wireframes/model';
 import { InteractionHandler, InteractionService, SvgEvent } from './interaction-service';
+import { parseTableText } from '../shapes/dependencies';
 
 const MIN_WIDTH = 150;
 const MIN_HEIGHT = 30;
@@ -35,6 +36,8 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
     private readonly style = { display: 'none ' };
     private selectedShape: DiagramItem | null = null;
     private textareaElement: HTMLTextAreaElement = null!;
+    private selectedRow = 0;
+    private selectedCol = 0;
 
     public componentDidMount() {
         this.props.interactionService.addHandler(this);
@@ -67,16 +70,13 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
             }
 
             const zoom = this.props.zoom;
+            const { content, sizeX, sizeY, positionX, positionY } = this.getAttribute(event.shape, event.position);
+            const x = sizeInPx(zoom * (positionX - 0.5 * sizeX) - 2);
+            const y = sizeInPx(zoom * (positionY - 0.5 * sizeY) - 2);
+            const w = sizeInPx(zoom * (Math.max(sizeX, MIN_WIDTH)) + 4);
+            const h = sizeInPx(zoom * (Math.max(sizeY, MIN_HEIGHT)) + 4);
 
-            const transform = event.shape.transform;
-
-            const x = sizeInPx(zoom * (transform.position.x - 0.5 * transform.size.x) - 2);
-            const y = sizeInPx(zoom * (transform.position.y - 0.5 * transform.size.y) - 2);
-
-            const w = sizeInPx(zoom * (Math.max(transform.size.x, MIN_WIDTH)) + 4);
-            const h = sizeInPx(zoom * (Math.max(transform.size.y, MIN_HEIGHT)) + 4);
-
-            this.textareaElement.value = event.shape.text;
+            this.textareaElement.value = content;
             this.textareaElement.style.top = y;
             this.textareaElement.style.left = x;
             this.textareaElement.style.width = w;
@@ -120,13 +120,29 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
             return;
         }
 
-        const newText = this.textareaElement.value;
-        const oldText = this.selectedShape.text;
+        if (this.selectedShape.renderer == 'Table') {
+            const newText = this.textareaElement.value;
+            const oldText = parseTableText(this.selectedShape.text).rows[this.selectedRow][this.selectedCol];
+    
+            if (newText !== oldText) {
+                let tableText = parseTableText(this.selectedShape.text).rows;
+                tableText[this.selectedRow][this.selectedCol] = newText;
 
-        if (newText !== oldText) {
-            this.props.onChangeItemsAppearance(this.props.selectedDiagram, [this.selectedShape], DefaultAppearance.TEXT, newText);
+                let fullText: string[] = [];
+                tableText.forEach((e) => {
+                    fullText.push(e.join(','));
+                })
+
+                this.props.onChangeItemsAppearance(this.props.selectedDiagram, [this.selectedShape], DefaultAppearance.TEXT, fullText.join("\n"));
+            }
+        } else {
+            const newText = this.textareaElement.value;
+            const oldText = this.selectedShape.text;
+
+            if (newText !== oldText) {
+                this.props.onChangeItemsAppearance(this.props.selectedDiagram, [this.selectedShape], DefaultAppearance.TEXT, newText);
+            }
         }
-
         this.hide();
     }
 
@@ -137,6 +153,64 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
         this.textareaElement.style.display = 'none';
 
         this.props.interactionService.showAdorners();
+    }
+
+    private getAttribute(shape: DiagramItem, position: Vec2) {
+        let content: string, sizeX: number, sizeY: number, positionX: number, positionY: number;
+        const transform = shape.transform;
+
+        if (shape.renderer == 'Table') {
+            // Size
+            const parseTable = parseTableText(shape.text);
+            sizeX = shape.transform.aabb.width / parseTable.columnCount;
+            sizeY = shape.transform.aabb.height / parseTable.rowCount;
+
+            // Position
+            const cell = this.detectSelectedCell(
+                {'x': parseInt(position.getX()), 'y': parseInt(position.getY())},
+                {'x': shape.transform.left, 'y': shape.transform.top},
+                {'x': sizeX, 'y': sizeY},
+                {'x': parseTable.columnCount, 'y': parseTable.rowCount});
+            positionX = shape.transform.left + sizeX * (cell.indexCol + 0.5);
+            positionY = shape.transform.top + sizeY * (cell.indexRow + 0.5);
+
+            // Text
+            this.selectedRow = cell.indexRow;
+            this.selectedCol = cell.indexCol;
+            content = parseTableText(shape.text).rows[this.selectedRow][this.selectedCol];
+        } else {
+            // Size
+            sizeX = transform.size.x;
+            sizeY = transform.size.y;
+
+            // Position
+            positionX = transform.position.x;
+            positionY = transform.position.y;
+
+            // Text
+            content = shape.text;
+        }
+
+        return { sizeX, sizeY, positionX, positionY, content }
+    }
+
+    private detectSelectedCell(position: Record<string, number>, start: Record<string, number>, offset: Record<string, number>, count: Record<string, number>) {
+        let indexRow = 0;
+        let indexCol = 0;
+        
+        for (var i = 1; i < count['y']; i++) {
+            if (position['y'] > start['y'] + offset['y'] * i) {
+                indexRow++;
+            }
+        }
+
+        for (var i = 1; i < count['x']; i++) {
+            if (position['x'] > start['x'] + offset['x'] * i) {
+                indexCol++;
+            }
+        }
+
+        return { indexRow , indexCol }
     }
 
     public render() {

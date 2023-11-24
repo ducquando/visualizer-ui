@@ -6,8 +6,6 @@
 */
 
 import { DefaultAppearance, Rect2, RenderContext, ShapePlugin } from '@app/wireframes/interface';
-// import { RendererService } from '@app/wireframes/model/renderer.service';
-// import { AbstractControl } from '../utils/abstract-control';
 import { CommonTheme } from './_theme';
 
 const CELL_APPEARANCE = {
@@ -23,6 +21,7 @@ const CELL_APPEARANCE = {
 
 export class Cell implements ShapePlugin {
     factorWidth = 1;
+    
 
     public identifier(): string {
         return 'Cell';
@@ -37,7 +36,6 @@ export class Cell implements ShapePlugin {
     }
 
     public render(ctx: RenderContext) {
-
         this.createFrame(ctx);
         this.createText(ctx);
         this.createBorder(ctx);

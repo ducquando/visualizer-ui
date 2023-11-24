@@ -7,6 +7,7 @@
 
 export * from './neutral/arrow';
 export * from './neutral/cell';
+export * from './neutral/cells';
 export * from './neutral/ellipse';
 export * from './neutral/latex';
 export * from './neutral/image';
