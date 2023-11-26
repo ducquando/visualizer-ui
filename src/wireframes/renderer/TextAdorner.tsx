@@ -10,10 +10,8 @@ import { Keys, Vec2, sizeInPx } from '@app/core';
 import { DefaultAppearance } from '@app/wireframes/interface';
 import { Diagram, DiagramItem } from '@app/wireframes/model';
 import { InteractionHandler, InteractionService, SvgEvent } from './interaction-service';
-import { parseTableText } from '../shapes/dependencies';
-
-const MIN_WIDTH = 150;
-const MIN_HEIGHT = 30;
+import { detectSelectedCell, parseTableText } from '../shapes/dependencies';
+import { texts } from '@app/texts';
 
 export interface TextAdornerProps {
     // The current zoom value.
@@ -73,8 +71,8 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
             const { content, sizeX, sizeY, positionX, positionY } = this.getAttribute(event.shape, event.position);
             const x = sizeInPx(zoom * (positionX - 0.5 * sizeX) - 2);
             const y = sizeInPx(zoom * (positionY - 0.5 * sizeY) - 2);
-            const w = sizeInPx(zoom * (Math.max(sizeX, MIN_WIDTH)) + 4);
-            const h = sizeInPx(zoom * (Math.max(sizeY, MIN_HEIGHT)) + 4);
+            const w = sizeInPx(zoom * sizeX + 4);
+            const h = sizeInPx(zoom * sizeY + 4);
 
             this.textareaElement.value = content;
             this.textareaElement.style.top = y;
@@ -133,7 +131,7 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
                     fullText.push(e.join(','));
                 })
 
-                this.props.onChangeItemsAppearance(this.props.selectedDiagram, [this.selectedShape], DefaultAppearance.TEXT, fullText.join("\n"));
+                this.props.onChangeItemsAppearance(this.props.selectedDiagram, [this.selectedShape], DefaultAppearance.TEXT, fullText.join(texts.common.tableDelimiterRow));
             }
         } else {
             const newText = this.textareaElement.value;
@@ -166,7 +164,7 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
             sizeY = shape.transform.aabb.height / parseTable.rowCount;
 
             // Position
-            const cell = this.detectSelectedCell(
+            const cell = detectSelectedCell(
                 {'x': parseInt(position.getX()), 'y': parseInt(position.getY())},
                 {'x': shape.transform.left, 'y': shape.transform.top},
                 {'x': sizeX, 'y': sizeY},
@@ -192,25 +190,6 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
         }
 
         return { sizeX, sizeY, positionX, positionY, content }
-    }
-
-    private detectSelectedCell(position: Record<string, number>, start: Record<string, number>, offset: Record<string, number>, count: Record<string, number>) {
-        let indexRow = 0;
-        let indexCol = 0;
-        
-        for (var i = 1; i < count['y']; i++) {
-            if (position['y'] > start['y'] + offset['y'] * i) {
-                indexRow++;
-            }
-        }
-
-        for (var i = 1; i < count['x']; i++) {
-            if (position['x'] > start['x'] + offset['x'] * i) {
-                indexCol++;
-            }
-        }
-
-        return { indexRow , indexCol }
     }
 
     public render() {

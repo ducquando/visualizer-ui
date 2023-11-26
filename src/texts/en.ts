@@ -89,6 +89,8 @@ export const texts = {
         shapes: 'Shapes',
         strokeColor: 'Stroke Color',
         strokeThickness: 'Stroke Thickness',
+        tableDelimiterCol: ',',
+        tableDelimiterRow: ';',
         textAlignment: 'Text Alignment',
         undo: 'Undo',
         ungroup: 'Ungroup',

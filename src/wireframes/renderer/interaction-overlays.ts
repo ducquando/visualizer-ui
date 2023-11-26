@@ -91,6 +91,40 @@ export class InteractionOverlays {
         }
     }
 
+    public showBox(transform: Transform, offsetX: number, offsetY: number, width: number, height: number) {
+        const STROKE_COLOR = '#080';
+        const STROKE_THICKNESS = 1;
+
+        const left = transform.aabb.left + offsetX;
+        const right = left + width;
+        const top = transform.aabb.top + offsetY;
+        const bottom = top + height;
+
+        this.renderLine(left, top, left, bottom, STROKE_COLOR, STROKE_THICKNESS);
+        this.renderLine(right, top, right, bottom, STROKE_COLOR, STROKE_THICKNESS);
+        this.renderLine(left, top, right, top, STROKE_COLOR, STROKE_THICKNESS);
+        this.renderLine(left, bottom, right, bottom, STROKE_COLOR, STROKE_THICKNESS);
+    }
+
+    public showGrid(transform: Transform, numCol: number, numRow: number) {
+        const STROKE_COLOR = '#c4ffc4';
+        const STROKE_THICKNESS = 1;
+
+        for (let i = 1; i < numCol; i++) {
+            const left = transform.aabb.left + transform.aabb.width / numCol * i;
+            const top = transform.aabb.top;
+            const bottom = top + transform.aabb.height;
+            this.renderLine(left, top, left, bottom, STROKE_COLOR, STROKE_THICKNESS);
+        }
+
+        for (let i = 1; i < numRow; i++) {
+            const top = transform.aabb.top + transform.aabb.height / numRow * i;
+            const left = transform.aabb.left;
+            const right = left + transform.aabb.width;
+            this.renderLine(left, top, right, top, STROKE_COLOR, STROKE_THICKNESS);
+        }
+    }
+
     public showInfo(transform: Transform, text: string, offsetX: number, offsetY: number, top: boolean, left: boolean) {
         const aabb = transform.aabb;
         const horizontal = (left) ? aabb.left : aabb.right;

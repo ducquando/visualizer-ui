@@ -190,7 +190,7 @@ export const Editor = React.memo((props: EditorProps) => {
                         />
                     }
 
-                    {onSelectItems &&
+                    {onSelectItems && onChangeItemsAppearance &&
                         <SelectionAdorner
                             adorners={adornerSelectLayer.current!}
                             interactionService={interactionMainService}
@@ -199,6 +199,7 @@ export const Editor = React.memo((props: EditorProps) => {
                             selectedDiagram={diagram}
                             selectedItems={selectedItemsWithLocked}
                             overlayManager={overlayContext.overlayManager}
+                            onChangeItemsAppearance={onChangeItemsAppearance}
                             zoom={zoom}
                         />
                     }

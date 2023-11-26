@@ -12,9 +12,15 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
+import { texts } from '@app/texts';
 import { DefaultAppearance, Rect2, RenderContext, Shape, ShapePlugin } from '@app/wireframes/interface';
+import { DiagramItem } from '@app/wireframes/model';
 import { CommonTheme } from './_theme';
 
+const DELIMITER_ROW = texts.common.tableDelimiterRow;  // ;
+const DELIMITER_COL = texts.common.tableDelimiterCol;  // ,
+const SELECTED_CELL_X = 'SELECTED_CELL_X';
+const SELECTED_CELL_Y = 'SELECTED_CELL_Y';
 const DEFAULT_APPEARANCE = {
     [DefaultAppearance.BACKGROUND_COLOR]: '#fff',
     [DefaultAppearance.FONT_SIZE]: CommonTheme.CONTROL_FONT_SIZE,
@@ -22,7 +28,9 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.STROKE_COLOR]: CommonTheme.CONTROL_BORDER_COLOR,
     [DefaultAppearance.STROKE_THICKNESS]: CommonTheme.CONTROL_BORDER_THICKNESS,
     [DefaultAppearance.TEXT_ALIGNMENT]: 'center',
-    [DefaultAppearance.TEXT]: 'column1,column2,column3\nrow1,row1,row1\nrow2,row2',
+    [DefaultAppearance.TEXT]: 'cell,cell,cell;cell,cell,cell;cell,cell,cell',
+    [SELECTED_CELL_X]: null,
+    [SELECTED_CELL_Y]: null,
 };
 
 export class Table implements ShapePlugin {
@@ -121,7 +129,7 @@ export class Table implements ShapePlugin {
 }
 
 export function parseTableText(text: string) {
-    const rows = text.split('\n').map(x => x.split(',').map(c => c.trim()));
+    const rows = text.split(DELIMITER_ROW).map(x => x.split(DELIMITER_COL).map(c => c.trim()));
     const rowCount = rows.length;
 
     let columnCount = 0;
@@ -140,6 +148,63 @@ export function parseTableText(text: string) {
     }
 
     return { rows, columnCount, rowCount };
+}
+
+export function getAddToTable(item: DiagramItem, index: number, delimiter: string) {
+    const text = item.text;
+    let newText = '';
+
+    if (item.renderer == 'Table') {
+        let counter = 0;
+        let startString = 0;
+        let writeEnable = true;
+
+        // FSA for adding delimiter to the specific position
+        for (var i = 0; i < text.length; i++) {
+            if (delimiter == DELIMITER_COL) {
+                counter = (text[i] != DELIMITER_ROW) ? (text[i] != delimiter) ? counter : counter + 1 : 0;
+                if (writeEnable && ((counter == index) || (text[i] == DELIMITER_ROW))) {
+                    newText += `${text.substring(startString, i)}${delimiter}`;
+                    startString = i;
+                    writeEnable = false;
+                }
+                writeEnable = (text[i] != DELIMITER_ROW) ? writeEnable : true;
+            } else if (delimiter == DELIMITER_ROW) {
+                counter = (text[i] != delimiter) ? counter : counter + 1;
+                if (writeEnable && ((counter == index) || (i == text.length - 1))) {
+                    newText += `${text.substring(startString, i)}${delimiter}`;
+                    startString = i;
+                    writeEnable = false;
+                }
+            }
+        }
+
+        // Add the rest
+        if (startString != text.length - 1) {
+            newText += `${text.substring(startString, text.length)}`;
+        }
+    }
+
+    return newText;
+}
+
+export function detectSelectedCell(position: Record<string, number>, start: Record<string, number>, offset: Record<string, number>, count: Record<string, number>) {
+    let indexRow = 0;
+    let indexCol = 0;
+    
+    for (let i = 1; i < count['y']; i++) {
+        if (position['y'] > start['y'] + offset['y'] * i) {
+            indexRow++;
+        }
+    }
+
+    for (let i = 1; i < count['x']; i++) {
+        if (position['x'] > start['x'] + offset['x'] * i) {
+            indexCol++;
+        }
+    }
+
+    return { indexRow, indexCol };
 }
 
 type Parsed = { rows: string[][]; columnCount: number; rowCount: number };
