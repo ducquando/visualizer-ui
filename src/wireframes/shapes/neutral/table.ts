@@ -29,8 +29,8 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.STROKE_THICKNESS]: CommonTheme.CONTROL_BORDER_THICKNESS,
     [DefaultAppearance.TEXT_ALIGNMENT]: 'center',
     [DefaultAppearance.TEXT]: 'cell,cell,cell;cell,cell,cell;cell,cell,cell',
-    [SELECTED_CELL_X]: null,
-    [SELECTED_CELL_Y]: null,
+    [SELECTED_CELL_X]: 0,
+    [SELECTED_CELL_Y]: 0,
 };
 
 export class Table implements ShapePlugin {
@@ -160,22 +160,22 @@ export function getAddToTable(item: DiagramItem, index: number, delimiter: strin
         let writeEnable = true;
 
         // FSA for adding delimiter to the specific position
-        for (var i = 0; i < text.length; i++) {
+        for (var i = 0; i <= text.length; i++) {
             if (delimiter == DELIMITER_COL) {
-                counter = (text[i] != DELIMITER_ROW) ? (text[i] != delimiter) ? counter : counter + 1 : 0;
-                if (writeEnable && ((counter == index) || (text[i] == DELIMITER_ROW))) {
+                if (writeEnable && ((counter == index))) {
                     newText += `${text.substring(startString, i)}${delimiter}`;
                     startString = i;
                     writeEnable = false;
                 }
+                counter = (text[i] != DELIMITER_ROW) ? (text[i] != delimiter) ? counter : counter + 1 : 0;
                 writeEnable = (text[i] != DELIMITER_ROW) ? writeEnable : true;
             } else if (delimiter == DELIMITER_ROW) {
-                counter = (text[i] != delimiter) ? counter : counter + 1;
-                if (writeEnable && ((counter == index) || (i == text.length - 1))) {
+                if (writeEnable && ((counter == index))) {
                     newText += `${text.substring(startString, i)}${delimiter}`;
                     startString = i;
                     writeEnable = false;
                 }
+                counter = (text[i] != delimiter) ? counter : counter + 1;
             }
         }
 
@@ -184,6 +184,15 @@ export function getAddToTable(item: DiagramItem, index: number, delimiter: strin
             newText += `${text.substring(startString, text.length)}`;
         }
     }
+
+    return newText;
+}
+
+export function getRemoveFrTable(item: DiagramItem, index: number, delimiter: string) {
+    const text = item.text;
+    let newText = text;
+
+    console.log(index, delimiter);
 
     return newText;
 }

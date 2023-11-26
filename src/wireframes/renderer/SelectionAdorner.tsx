@@ -277,8 +277,6 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
                 {'x': parseTable.columnCount, 'y': parseTable.rowCount});
             this.props.onChangeItemsAppearance(this.props.selectedDiagram, [shape], 'SELECTED_CELL_X', cell.indexCol);
             this.props.onChangeItemsAppearance(this.props.selectedDiagram, [shape], 'SELECTED_CELL_Y', cell.indexRow);
-
-            console.log(cell.indexCol, cell.indexRow);
         }
     }
 
