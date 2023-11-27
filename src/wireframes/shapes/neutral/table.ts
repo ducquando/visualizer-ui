@@ -162,16 +162,16 @@ export function getAddToTable(item: DiagramItem, index: number, delimiter: strin
         // FSA for adding delimiter to the specific position
         for (var i = 0; i <= text.length; i++) {
             if (delimiter == DELIMITER_COL) {
-                if (writeEnable && ((counter == index))) {
-                    newText += `${text.substring(startString, i)}${delimiter}`;
+                if (writeEnable && ((counter == index) || (text[i] == DELIMITER_ROW))) {
+                    newText += `${text.substring(startString, i)}${delimiter} `;
                     startString = i;
                     writeEnable = false;
                 }
                 counter = (text[i] != DELIMITER_ROW) ? (text[i] != delimiter) ? counter : counter + 1 : 0;
                 writeEnable = (text[i] != DELIMITER_ROW) ? writeEnable : true;
             } else if (delimiter == DELIMITER_ROW) {
-                if (writeEnable && ((counter == index))) {
-                    newText += `${text.substring(startString, i)}${delimiter}`;
+                if (writeEnable && ((counter == index) || (i == text.length))) {
+                    newText += `${text.substring(startString, i)}${delimiter} `;
                     startString = i;
                     writeEnable = false;
                 }

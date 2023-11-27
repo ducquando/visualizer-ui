@@ -33,7 +33,7 @@ export const TableMenu = React.memo(() => {
                     delimiter = texts.common.tableDelimiterCol;
                     break;
                 case 'right':
-                    selectedIndex = selectedItem.getAppearance('SELECTED_CELL_X');
+                    selectedIndex = selectedItem.getAppearance('SELECTED_CELL_X') + 1;
                     delimiter = texts.common.tableDelimiterCol;
                     break;
                 case 'row':
@@ -42,7 +42,7 @@ export const TableMenu = React.memo(() => {
                     delimiter = texts.common.tableDelimiterRow;
                     break;
                 case 'below':
-                    selectedIndex = selectedItem.getAppearance('SELECTED_CELL_Y');
+                    selectedIndex = selectedItem.getAppearance('SELECTED_CELL_Y') + 1;
                     delimiter = texts.common.tableDelimiterRow;
                     break;
             }
@@ -51,8 +51,10 @@ export const TableMenu = React.memo(() => {
                 case 'add':
                 default:
                     newText = getAddToTable(selectedItem, selectedIndex, delimiter);
+                    break;
                 case 'remove':
                     newText = getRemoveFrTable(selectedItem, selectedIndex, delimiter);
+                    break;
             }
 
             dispatch(changeItemsAppearance(selectedDiagram, [selectedItem.id], 'TEXT', newText));
@@ -99,7 +101,6 @@ export const TableMenu = React.memo(() => {
             </Tooltip>
             <Tooltip mouseEnterDelay={1} title={ 'Delete Row' }>
                 <Button size='large' disabled={selectedItem?.renderer != 'Table'} className='menu-item' onClick={ removeRow }>
-                    
                     <DeleteRowOutlined />
                 </Button>
             </Tooltip>
