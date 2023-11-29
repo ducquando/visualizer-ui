@@ -200,6 +200,7 @@ export function getRemoveFromTable(item: DiagramItem, index: number, delimiter: 
     let newText = (text.includes(delimiter)) ? '' : text;
 
     if (item.renderer == 'Table' && text.includes(delimiter)) {
+        const FIRST_CELL = 0;
         let counter = 0;
 
         // FSA for deleting texts in the specific position
@@ -207,7 +208,7 @@ export function getRemoveFromTable(item: DiagramItem, index: number, delimiter: 
             // Delete a col in every row
             case DELIMITER_COL:
                 for (let i = 0; i <= text.length; i++) {
-                    const startString = (index == 0) ? i : i - 1;
+                    const startString = (index == FIRST_CELL) ? i : i - 1;
                     if (counter != index) {
                         newText += `${text.substring(startString, startString + 1)}`;
                     }
@@ -217,7 +218,7 @@ export function getRemoveFromTable(item: DiagramItem, index: number, delimiter: 
             // Delete an entire row
             case DELIMITER_ROW:
                 for (let i = 0; i <= text.length; i++) {
-                    const startString = (index == 0) ? i : i - 1;
+                    const startString = (index == FIRST_CELL) ? i : i - 1;
                     if (counter != index) {
                         newText += `${text.substring(startString, startString + 1)}`;
                     }
