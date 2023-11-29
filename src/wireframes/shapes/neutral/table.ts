@@ -50,10 +50,10 @@ export class Table implements ShapePlugin {
         const w = ctx.rect.width;
         const h = ctx.rect.height;
 
-        const { rows, columnCount } = this.parseText(ctx.shape);
+        const { rows, columnCount, rowCount } = this.parseText(ctx.shape);
 
         const cellWidth = w / columnCount;
-        const cellHeight = h / rows.length;
+        const cellHeight = h / rowCount;
 
         this.createFrame(ctx);
         this.createBorders(ctx, columnCount, cellWidth, rows, cellHeight);
@@ -118,7 +118,7 @@ export class Table implements ShapePlugin {
         let result = shape.renderCache['PARSED'] as { key: string; parsed: Parsed };
 
         if (!result || result.key !== key) {
-            const { rows, columnCount, rowCount } = parseTableText(key);
+            const { rows, columnCount, rowCount } = getTableAttributes(key);
             result = { parsed: { rows, columnCount, rowCount }, key };
 
             shape.renderCache['PARSED'] = result;
@@ -128,17 +128,13 @@ export class Table implements ShapePlugin {
     }
 }
 
-export function parseTableText(text: string) {
+export function getTableAttributes(text: string) {
     const rows = text.split(DELIMITER_ROW).map(x => x.split(DELIMITER_COL).map(c => c.trim()));
     const rowCount = rows.length;
 
     let columnCount = 0;
     for (const row of rows) {
         columnCount = Math.max(columnCount, row.length);
-    }
-
-    while (rows.length < 2) {
-        rows.push([]);
     }
 
     for (const row of rows) {
@@ -160,23 +156,34 @@ export function getAddToTable(item: DiagramItem, index: number, delimiter: strin
         let writeEnable = true;
 
         // FSA for adding delimiter to the specific position
-        for (var i = 0; i <= text.length; i++) {
-            if (delimiter == DELIMITER_COL) {
-                if (writeEnable && ((counter == index) || (text[i] == DELIMITER_ROW))) {
-                    newText += `${text.substring(startString, i)}${delimiter} `;
-                    startString = i;
-                    writeEnable = false;
+        switch (delimiter) {
+            // Add new col into every rows
+            case DELIMITER_COL:
+                for (let i = 0; i <= text.length; i++) {
+                    const isLastChar = (counter == index) || (text[i] == DELIMITER_ROW) || (i == text.length);
+                    if (writeEnable && isLastChar) {
+                        newText += `${text.substring(startString, i)}${delimiter} `;
+                        startString = i;
+                        writeEnable = false;
+                    }
+                    counter = (text[i] != DELIMITER_ROW) ? (text[i] != delimiter) ? counter : counter + 1 : 0;
+                    writeEnable = (text[i] != DELIMITER_ROW) ? writeEnable : true;
                 }
-                counter = (text[i] != DELIMITER_ROW) ? (text[i] != delimiter) ? counter : counter + 1 : 0;
-                writeEnable = (text[i] != DELIMITER_ROW) ? writeEnable : true;
-            } else if (delimiter == DELIMITER_ROW) {
-                if (writeEnable && ((counter == index) || (i == text.length))) {
-                    newText += `${text.substring(startString, i)}${delimiter} `;
-                    startString = i;
-                    writeEnable = false;
+                break;
+            // Add new row into the table
+            case DELIMITER_ROW:
+                for (let i = 0; i <= text.length; i++) {
+                    const isLastChar = (counter == index) || (i == text.length);
+                    if (writeEnable && isLastChar) {
+                        newText += `${text.substring(startString, i)}${delimiter} `;
+                        startString = i;
+                        writeEnable = false;
+                    }
+                    counter = (text[i] != delimiter) ? counter : counter + 1;
                 }
-                counter = (text[i] != delimiter) ? counter : counter + 1;
-            }
+                break;
+            default:
+                break;
         }
 
         // Add the rest
@@ -188,16 +195,44 @@ export function getAddToTable(item: DiagramItem, index: number, delimiter: strin
     return newText;
 }
 
-export function getRemoveFrTable(item: DiagramItem, index: number, delimiter: string) {
+export function getRemoveFromTable(item: DiagramItem, index: number, delimiter: string) {
     const text = item.text;
-    let newText = text;
+    let newText = (text.includes(delimiter)) ? '' : text;
 
-    console.log(index, delimiter);
+    if (item.renderer == 'Table' && text.includes(delimiter)) {
+        let counter = 0;
+
+        // FSA for deleting texts in the specific position
+        switch (delimiter) {
+            // Delete a col in every row
+            case DELIMITER_COL:
+                for (let i = 0; i <= text.length; i++) {
+                    const startString = (index == 0) ? i : i - 1;
+                    if (counter != index) {
+                        newText += `${text.substring(startString, startString + 1)}`;
+                    }
+                    counter = (text[i] != DELIMITER_ROW) ? (text[i] != delimiter) ? counter : counter + 1 : 0;
+                }
+                break;
+            // Delete an entire row
+            case DELIMITER_ROW:
+                for (let i = 0; i <= text.length; i++) {
+                    const startString = (index == 0) ? i : i - 1;
+                    if (counter != index) {
+                        newText += `${text.substring(startString, startString + 1)}`;
+                    }
+                    counter = (text[i] != delimiter) ? counter : counter + 1;
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
     return newText;
 }
 
-export function detectSelectedCell(position: Record<string, number>, start: Record<string, number>, offset: Record<string, number>, count: Record<string, number>) {
+export function getSelectedCell(position: Record<string, number>, start: Record<string, number>, offset: Record<string, number>, count: Record<string, number>) {
     let indexRow = 0;
     let indexCol = 0;
     

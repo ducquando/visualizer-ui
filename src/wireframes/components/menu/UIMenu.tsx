@@ -8,10 +8,10 @@
 import * as React from 'react';
 import { ActionMenuButton, useUI } from '../actions';
 
-export interface UIMenuProps {
+export interface ZoomMenuProps {
 }
 
-export const UIMenu = React.memo((props: UIMenuProps) => {
+export const ZoomMenu = React.memo((props: ZoomMenuProps) => {
     const forUI = useUI();
 
     return (

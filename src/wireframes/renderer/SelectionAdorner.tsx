@@ -12,7 +12,7 @@ import { calculateSelection, Diagram, DiagramItem, Transform } from '@app/wirefr
 import { InteractionHandler, InteractionService, SvgEvent } from './interaction-service';
 import { PreviewEvent } from './preview';
 import { OverlayManager } from '../contexts/OverlayContext';
-import { detectSelectedCell, parseTableText } from '../shapes/dependencies';
+import { getSelectedCell, getTableAttributes } from '../shapes/dependencies';
 
 const SELECTION_STROKE_COLOR = '#080';
 const SELECTION_STROKE_LOCK_COLOR = '#f00';
@@ -254,7 +254,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
 
     protected renderSelectedCell(item: DiagramItem, bounds: Transform) {
         if (item.renderer == 'Table') {
-            const parseTable = parseTableText(item.text);
+            const parseTable = getTableAttributes(item.text);
             const sizeX = bounds.aabb.width / parseTable.columnCount;
             const sizeY = bounds.aabb.height / parseTable.rowCount;
             const rowIndex = item.getAppearance('SELECTED_CELL_X');
@@ -267,10 +267,10 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
 
     protected changeSelectedCell(shape: DiagramItem, position: Vec2, aabb: Rect2) {
         if (shape.renderer == 'Table') {
-            const parseTable = parseTableText(shape.text);
+            const parseTable = getTableAttributes(shape.text);
             const sizeX = aabb.width / parseTable.columnCount;
             const sizeY = aabb.height / parseTable.rowCount;
-            const cell = detectSelectedCell(
+            const cell = getSelectedCell(
                 {'x': parseInt(position.getX()), 'y': parseInt(position.getY())},
                 {'x': shape.transform.left, 'y': shape.transform.top},
                 {'x': sizeX, 'y': sizeY},

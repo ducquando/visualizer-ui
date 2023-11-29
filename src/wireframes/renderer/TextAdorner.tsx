@@ -10,7 +10,7 @@ import { Keys, Vec2, sizeInPx } from '@app/core';
 import { DefaultAppearance } from '@app/wireframes/interface';
 import { Diagram, DiagramItem } from '@app/wireframes/model';
 import { InteractionHandler, InteractionService, SvgEvent } from './interaction-service';
-import { detectSelectedCell, parseTableText } from '../shapes/dependencies';
+import { getSelectedCell, getTableAttributes } from '../shapes/dependencies';
 import { texts } from '@app/texts';
 
 export interface TextAdornerProps {
@@ -120,10 +120,10 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
 
         if (this.selectedShape.renderer == 'Table') {
             const newText = this.textareaElement.value;
-            const oldText = parseTableText(this.selectedShape.text).rows[this.selectedRow][this.selectedCol];
+            const oldText = getTableAttributes(this.selectedShape.text).rows[this.selectedRow][this.selectedCol];
     
             if (newText !== oldText) {
-                let tableText = parseTableText(this.selectedShape.text).rows;
+                let tableText = getTableAttributes(this.selectedShape.text).rows;
                 tableText[this.selectedRow][this.selectedCol] = newText;
 
                 let fullText: string[] = [];
@@ -159,12 +159,12 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
 
         if (shape.renderer == 'Table') {
             // Size
-            const parseTable = parseTableText(shape.text);
+            const parseTable = getTableAttributes(shape.text);
             sizeX = shape.transform.aabb.width / parseTable.columnCount;
             sizeY = shape.transform.aabb.height / parseTable.rowCount;
 
             // Position
-            const cell = detectSelectedCell(
+            const cell = getSelectedCell(
                 {'x': parseInt(position.getX()), 'y': parseInt(position.getY())},
                 {'x': shape.transform.left, 'y': shape.transform.top},
                 {'x': sizeX, 'y': sizeY},
@@ -175,7 +175,7 @@ export class TextAdorner extends React.PureComponent<TextAdornerProps> implement
             // Text
             this.selectedRow = cell.indexRow;
             this.selectedCol = cell.indexCol;
-            content = parseTableText(shape.text).rows[this.selectedRow][this.selectedCol];
+            content = getTableAttributes(shape.text).rows[this.selectedRow][this.selectedCol];
         } else {
             // Size
             sizeX = transform.size.x;
