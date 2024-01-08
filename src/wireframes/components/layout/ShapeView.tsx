@@ -11,7 +11,7 @@ import { getDiagramId, useStore,addShape } from '@app/wireframes/model';
 import * as React from 'react';
 import { CircleIcon, FunctionIcon, ImageIcon, RectangleIcon, TableIcon, TextIcon, TriangleIcon } from '@app/icons/icon';
 
-export const ShapeMenu = React.memo(() => {
+export const ShapeView = React.memo(() => {
     const dispatch = useDispatch();
     const selectedDiagramId = useStore(getDiagramId);
 
@@ -34,7 +34,7 @@ export const ShapeMenu = React.memo(() => {
                 </Button>
             </Tooltip>
             <Tooltip mouseEnterDelay={1} title={ 'Table' }>
-                <Button className='item' onClick={ () => createNewShape('Cell') }>
+                <Button className='item' onClick={ () => createNewShape('Table') }>
                     <TableIcon />
                 </Button>
             </Tooltip>

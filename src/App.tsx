@@ -6,13 +6,12 @@
 */
 
 import { Layout } from 'antd';
-// import classNames from 'classnames';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import { ClipboardContainer } from '@app/core';
-import { ArrangeMenu, ClipboardMenu, EditorView, PanelView, HistoryMenu, LoadingMenu, LockMenu,  PresentMenu, ShapeMenu, TableMenu, TabView } from '@app/wireframes/components';
-import { loadDiagramFromServer, newDiagram, useStore } from '@app/wireframes/model';
+import { EditorView, PanelView, LoadingMenu, PresentMenu, ShapeView, TabView, ToolView } from '@app/wireframes/components';
+import { getSelectedItems, getSelectedShape, loadDiagramFromServer, newDiagram, useStore } from '@app/wireframes/model';
 import { CustomDragLayer } from './wireframes/components/CustomDragLayer';
 import { OverlayContainer } from './wireframes/contexts/OverlayContext';
 
@@ -22,6 +21,8 @@ export const App = () => {
     const routeToken = route.params['token'] || null;
     const routeTokenSnapshot = React.useRef(routeToken);
     const showRightSidebar = useStore(s => s.ui.showRightSidebar);
+    const selectedItem = useStore(getSelectedShape);
+    const selectedSet = useStore(getSelectedItems);
 
     React.useEffect(() => {
         const token = routeTokenSnapshot.current;
@@ -40,19 +41,7 @@ export const App = () => {
                     <Layout.Header>
                         <LoadingMenu />
 
-                        <HistoryMenu />
-                        <span className='menu-separator' />
-
-                        <LockMenu />
-                        <span className='menu-separator' />
-
-                        <ArrangeMenu />
-                        <span className='menu-separator' />
-
-                        <ClipboardMenu />
-                        <span className='menu-separator' />
-
-                        <TableMenu />
+                        <ToolView item={selectedItem} set={selectedSet}/>
 
                         <span style={{ float: 'right' }}>
                             <PresentMenu />
@@ -61,7 +50,7 @@ export const App = () => {
 
                     <Layout className='content'>
                         <Layout.Sider width={50} className='sidebar-left'>
-                            <ShapeMenu />
+                            <ShapeView />
                         </Layout.Sider>
 
                         <Layout>

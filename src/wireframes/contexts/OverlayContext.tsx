@@ -18,6 +18,12 @@ export interface OverlayManager {
     // Renders a horizontal line.
     renderYLine(line: SnapLine): void;
 
+    // Renders a box
+    showBox(transform: Transform, offsetX: number, offsetY: number, width: number, height: number): void;
+
+    // Renders a grid for box
+    showGrid(transform: Transform, numCol: number, numRow: number): void;
+
     // Renders a line next to a transform.
     showInfo(transform: Transform, text: string, offsetX: number, offsetY: number, top: boolean, left: boolean): void;
 
@@ -49,6 +55,14 @@ const DEFAULT_VALUE: OverlayContextType = {
         },
 
         renderYLine() {
+            return;
+        },
+
+        showBox() {
+            return;
+        },
+
+        showGrid() {
             return;
         },
 

@@ -9,12 +9,11 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { Shortcut, useEventCallback } from '@app/core';
 import { calculateSelection, getDiagram, selectItems, useStore } from '@app/wireframes/model';
-import { ActionMenuButton, useGrouping, useRemove } from './../actions';
+import { useRemove } from './../actions';
 
 export const ArrangeMenu = React.memo(() => {
     const dispatch = useDispatch();
-    const forRemvoe = useRemove();
-    const forGrouping = useGrouping();
+    const forRemove = useRemove();
     const selectedDiagram = useStore(getDiagram);
 
     const doSelectAll = useEventCallback(() => {
@@ -30,13 +29,11 @@ export const ArrangeMenu = React.memo(() => {
 
     return (
         <>
-            <ActionMenuButton action={forGrouping.group} />
-            <ActionMenuButton action={forGrouping.ungroup} />
-
-            <Shortcut disabled={forRemvoe.remove.disabled} onPressed={forRemvoe.remove.onAction} keys='del' />
-            <Shortcut disabled={forRemvoe.remove.disabled} onPressed={forRemvoe.remove.onAction} keys='backspace' />
+            <Shortcut disabled={forRemove.remove.disabled} onPressed={forRemove.remove.onAction} keys='del' />
+            <Shortcut disabled={forRemove.remove.disabled} onPressed={forRemove.remove.onAction} keys='backspace' />
 
             <Shortcut disabled={!selectedDiagram} onPressed={doSelectAll} keys='MOD + A' />
         </>
     );
 });
+
