@@ -11,8 +11,8 @@ import { Diagram, EditorState } from './../internal';
 import { createDiagramAction, DiagramRef } from './utils';
 
 export const addDiagram =
-    createAction('diagram/add', (diagramId?: string) => {
-        return { payload: createDiagramAction(diagramId || IDHelper.nextId('Diagram')) };
+    createAction('diagram/add', (diagramId?: string, index?: number) => {
+        return { payload: createDiagramAction(diagramId || IDHelper.nextId('Diagram'), { index }) };
     });
 
 export const selectDiagram =
@@ -26,8 +26,8 @@ export const removeDiagram =
     });
 
 export const duplicateDiagram =
-    createAction('diagram/diagram', (diagram: DiagramRef) => {
-        return { payload: createDiagramAction(diagram) };
+    createAction('diagram/diagram', (diagram: DiagramRef, index?: number) => {
+        return { payload: createDiagramAction(diagram, { index }) };
     });
 
 export const moveDiagram =
@@ -103,7 +103,7 @@ export function buildDiagrams(builder: ActionReducerMapBuilder<EditorState>) {
             return state.changeColor(Color.fromString(color));
         })
         .addCase(duplicateDiagram, (state, action) => {
-            const { diagramId } = action.payload;
+            const { diagramId, index } = action.payload;
 
             const diagram = state.diagrams.get(diagramId);
 
@@ -111,15 +111,28 @@ export function buildDiagrams(builder: ActionReducerMapBuilder<EditorState>) {
                 return state;
             }
 
-            return state.addDiagram(diagram.clone());
+            const newDiagram = diagram.clone();
+
+            let newState = state.addDiagram(newDiagram);
+            let newID = newState.diagramIds.at(newState.diagramIds.size - 1);
+
+            if ((!index) || (!newID)) {
+                return newState;
+            }
+
+            return newState.moveDiagram(newID, index);
         })
         .addCase(addDiagram, (state, action) => {
-            const { diagramId } = action.payload;
+            const { diagramId, index } = action.payload;
 
             let newState = state.addDiagram(Diagram.create({ id: diagramId }));
 
             if (newState.diagrams.size === 1) {
                 newState = newState.selectDiagram(diagramId);
+            }
+
+            if (index != undefined) {
+                newState = newState.moveDiagram(diagramId, index);
             }
 
             return newState;

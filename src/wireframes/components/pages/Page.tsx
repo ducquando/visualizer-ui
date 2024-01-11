@@ -9,7 +9,7 @@ import * as svg from '@svgdotjs/svg.js';
 import * as React from 'react';
 import { Diagram, getEditor, useStore } from '@app/wireframes/model';
 import { Button, Card, Dropdown, Menu } from 'antd';
-import { DeleteOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
+import { CopyOutlined, DeleteOutlined, FileAddOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import { SVGHelper, Subscription, Vec2, useEventCallback } from '@app/core';
 import { texts } from '@app/texts';
@@ -43,7 +43,7 @@ interface PageThumbnailProps extends PageProps {
     diagram: Diagram;
 
     // Name.
-    pageName: string;
+    pageIndex: number;
 
     // True if selected.
     selected?: boolean;
@@ -52,7 +52,7 @@ interface PageThumbnailProps extends PageProps {
     onAction: (diagramId: string, action: PageAction, arg?: any) => void;
 }
 
-export type PageAction = 'Delete' | 'Rename' | 'SetMaster' | 'Select' | 'Duplicate';
+export type PageAction = 'Delete' | 'Add' | 'Select' | 'Duplicate';
 
 const PageCover = (props: PageCoverProps) => {
     const { diagram, cardWidth, cardHeight, onRender } = props;
@@ -143,29 +143,36 @@ export const PageAdd = (props: PageAddProps) => {
 }
 
 export const PageThumbnail = (props: PageThumbnailProps) => {
-    const { diagram, pageName, cardWidth, cardHeight, selected, onAction } = props;
-
-    const doDelete = useEventCallback(() => {
-        onAction(diagram.id, 'Delete');
-    });
-
-    const doDuplicate = useEventCallback(() => {
-        onAction(diagram.id, 'Duplicate');
-    });
+    const { diagram, pageIndex, cardWidth, cardHeight, selected, onAction } = props;
 
     const doSelect = useEventCallback(() => {
         onAction(diagram.id, 'Select');
     });
 
+    const doAdd = useEventCallback(() => {
+        onAction(diagram.id, 'Add', { index: pageIndex });
+    });
+
+    const doDuplicate = useEventCallback(() => {
+        onAction(diagram.id, 'Duplicate', { index: pageIndex });
+    });
+
+    const doDelete = useEventCallback(() => {
+        onAction(diagram.id, 'Delete');
+    });
+
     const PageItem = <>
         <Menu selectable={false}>
+            <Menu.Item key='add' icon={<FileAddOutlined />} onClick={doAdd}>
+                {`${texts.common.newDiagram} page`}
+            </Menu.Item>
+            <Menu.Item key='duplicate' icon={<CopyOutlined />} onClick={doDuplicate}>
+                {`${texts.common.duplicate} page`}
+            </Menu.Item>
             <Menu.Item key='delete' icon={<DeleteOutlined />} onClick={doDelete}>
-                {texts.common.delete}
+                {`${texts.common.delete} page`}
             </Menu.Item>
-
-            <Menu.Item key='duplicate' onClick={doDuplicate}>
-                {texts.common.duplicate}
-            </Menu.Item>
+            
         </Menu>
     </>;
 
@@ -173,12 +180,14 @@ export const PageThumbnail = (props: PageThumbnailProps) => {
         <div className='tree-item'>
             <div className='tree-item-header-container'>
                 <div className={classNames('pages-thumbnail', { selected }) } >
-                    <Card
-                        className='pages-card'
-                        style={{ width: cardWidth, height: cardHeight, borderRadius: 20, overflow: "hidden" }} 
-                        onClick={doSelect}
-                        cover={<PageCover diagram={diagram} cardWidth={cardWidth} cardHeight={cardHeight} />}
-                    />
+                    <Dropdown overlay={PageItem} trigger={['contextMenu']}>
+                        <Card
+                            className='pages-card'
+                            style={{ width: cardWidth, height: cardHeight, borderRadius: 20, overflow: "hidden" }} 
+                            onClick={doSelect}
+                            cover={<PageCover diagram={diagram} cardWidth={cardWidth} cardHeight={cardHeight} />}
+                        />
+                    </Dropdown>
                     <Dropdown overlay={PageItem} >
                         <Button 
                             className='pages-action'
@@ -188,7 +197,7 @@ export const PageThumbnail = (props: PageThumbnailProps) => {
                             type="text"
                             style={{ top: `calc(-${cardHeight}px + 4px)` }} />
                     </Dropdown>
-                    <h4 className='pages-index' >{pageName}</h4>
+                    <h5 className='pages-index'>{pageIndex}</h5>
                 </div>
             </div>
         </div>

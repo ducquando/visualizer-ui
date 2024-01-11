@@ -9,7 +9,7 @@ import * as React from 'react';
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useDispatch } from 'react-redux';
 import { useEventCallback } from '@app/core';
-import { addDiagram, duplicateDiagram, getDiagramId, getFilteredDiagrams, moveDiagram, removeDiagram, renameDiagram, selectDiagram, setDiagramMaster, useStore } from '@app/wireframes/model';
+import { addDiagram, duplicateDiagram, getDiagramId, getFilteredDiagrams, moveDiagram, removeDiagram, selectDiagram, useStore } from '@app/wireframes/model';
 import { PageThumbnail, PageAdd, PageAction } from './Page';
 import './Pages.scss';
 
@@ -28,18 +28,14 @@ export const Pages = () => {
                 dispatch(removeDiagram(diagramId));
                 break;
             case 'Duplicate':
-                dispatch(duplicateDiagram(diagramId));
+                dispatch(duplicateDiagram(diagramId, arg.index));
                 break;
-            case 'SetMaster':
-                dispatch(setDiagramMaster(diagramId, arg));
-                break;
-            case 'Rename':
-                dispatch(renameDiagram(diagramId, arg));
+            case 'Add':
+                dispatch(addDiagram(undefined, arg.index));
                 break;
             case 'Select':
                 dispatch(selectDiagram(diagramId));
                 break;
-
         }
     });
 
@@ -60,7 +56,7 @@ export const Pages = () => {
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
                                             >
-                                            <PageThumbnail diagram={item} pageName={String(index + 1)} cardWidth={160} cardHeight={90} selected={item.id === diagramId} onAction={doAction} />
+                                            <PageThumbnail diagram={item} pageIndex={index + 1} cardWidth={160} cardHeight={90} selected={item.id === diagramId} onAction={doAction} />
                                         </div>
                                     )}
                                 </Draggable>
