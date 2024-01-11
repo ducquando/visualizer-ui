@@ -5,25 +5,45 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
-import { CheckOutlined, DeleteOutlined, FileMarkdownOutlined, FileOutlined } from '@ant-design/icons';
-import { Col, Dropdown, Input, Menu, Row } from 'antd';
-import classNames from 'classnames';
+import * as svg from '@svgdotjs/svg.js';
 import * as React from 'react';
-import { Keys, useEventCallback } from '@app/core';
+import { Diagram, getEditor, useStore } from '@app/wireframes/model';
+import { Button, Card, Dropdown, Menu } from 'antd';
+import { DeleteOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
+import classNames from 'classnames';
+import { SVGHelper, Subscription, Vec2, useEventCallback } from '@app/core';
 import { texts } from '@app/texts';
-import { Diagram, getPageName } from '@app/wireframes/model';
+import { InteractionService } from '@app/wireframes/renderer/interaction-service';
+import { RenderLayer } from '@app/wireframes/renderer/RenderLayer';
+import { PreviewEvent } from '@app/wireframes/renderer/preview';
 
-export type PageAction = 'Delete' | 'Rename' | 'SetMaster' | 'Select' | 'Duplicate';
+interface PageProps {
+    // Width.
+    cardWidth: number;
 
-export interface PageProps {
-    // The page index.
-    index: number;
+    // Height.
+    cardHeight: number;
+}
 
+interface PageCoverProps extends PageProps {
+    // The selected diagram.
+    diagram: Diagram;
+
+    // True when rendered.
+    onRender?: () => void;
+}
+
+interface PageAddProps extends PageProps {
+    // Action onClick.
+    onClick: React.MouseEventHandler
+}
+
+interface PageThumbnailProps extends PageProps {
     // The diagram.
     diagram: Diagram;
 
-    // All diagrams.
-    diagrams: ReadonlyArray<Diagram>;
+    // Name.
+    pageName: string;
 
     // True if selected.
     selected?: boolean;
@@ -32,38 +52,98 @@ export interface PageProps {
     onAction: (diagramId: string, action: PageAction, arg?: any) => void;
 }
 
-export const Page = (props: PageProps) => {
-    const {
-        diagram,
-        diagrams,
-        index,
-        onAction,
-        selected,
-    } = props;
+export type PageAction = 'Delete' | 'Rename' | 'SetMaster' | 'Select' | 'Duplicate';
 
-    const [editName, setEditName] = React.useState('');
-    const [editing, setEditing] = React.useState(false);
+const PageCover = (props: PageCoverProps) => {
+    const { diagram, cardWidth, cardHeight, onRender } = props;
+    
+    const editor = useStore(getEditor);
+    const color = editor.color;
+    const zoomSize = new Vec2(cardWidth, cardHeight);
+    const viewSize = editor.size;
 
-    const pageMaster = React.useMemo(() => {
-        return diagrams.find(x => x.id === diagram.master)?.id;
-    }, [diagrams, diagram.master]);
+    // Use a stream of preview updates to bypass react for performance reasons.
+    const renderPreview = React.useRef(new Subscription<PreviewEvent>());
+    const renderMainLayer = React.useRef<svg.Container>();
+    const [interactionMainService, setInteractionMainService] = React.useState<InteractionService>();
 
-    const pageName = React.useMemo(() => {
-        return getPageName(diagram, index);
-    }, [diagram, index]);
+    const onInit = React.useCallback((doc: svg.Svg) => {
+        renderMainLayer.current = doc.group().id('parentLayer');
 
-    const setText = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        setEditName(event.target.value);
-    });
+        setInteractionMainService(new InteractionService([],
+        renderMainLayer.current, doc));
+    }, []);
 
-    const doRenameStart = useEventCallback(() => {
-        setEditName(pageName);
-        setEditing(true);
-    });
+    React.useEffect(() => {
+        if (!interactionMainService) return;
+        
+        SVGHelper.setSize(renderMainLayer.current!, cardWidth, cardHeight); 
 
-    const doRenameCancel = useEventCallback(() => {
-        setEditing(false);
-    });
+    }, [viewSize, interactionMainService]);
+
+    const [document, setDocument] = React.useState<svg.Svg>();
+
+    const doInit = React.useCallback((ref: HTMLDivElement) => {
+        if (!ref) {
+            return;
+        }
+
+        const doc = svg.SVG().addTo(ref).css({ position: 'relative', overflow: 'visible' }).attr('tabindex', 0);
+
+        setDocument(doc);
+    }, []);
+
+    React.useEffect(() => {
+        if (document && onInit) {
+            onInit(document);
+        }
+    }, [document, onInit]);
+
+    React.useEffect(() => {
+        if (document) {
+            const x = 0;
+            const y = 0;
+            const w = viewSize.x;
+            const h = viewSize.y;
+
+            document.size(zoomSize.x, zoomSize.y).viewbox(x, y, w, h);
+        }
+    }, [viewSize, zoomSize, document]);
+
+    return (
+        <div style={{ background: color.toString() }}>
+            <div style={{ width: cardWidth, height: cardHeight }} ref={doInit} />
+            {interactionMainService && diagram && (
+                <RenderLayer
+                    diagram={diagram}
+                    diagramLayer={renderMainLayer.current!}
+                    preview={renderPreview.current}
+                    onRender={onRender}
+                />
+            )}
+        </div>
+    )
+}
+
+export const PageAdd = (props: PageAddProps) => {
+    const { cardWidth, cardHeight, onClick } = props;
+    return (
+        <Card
+            className='pages-add'
+            style={{ width: cardWidth, height: cardHeight, borderRadius: 20, overflow: "hidden" }} 
+            bordered={false}
+            onClick={onClick}
+            cover={
+                <div id='pages-cover' style={{ height: cardHeight }}>
+                    <PlusOutlined />
+                </div>   
+            }
+        />
+    )
+}
+
+export const PageThumbnail = (props: PageThumbnailProps) => {
+    const { diagram, pageName, cardWidth, cardHeight, selected, onAction } = props;
 
     const doDelete = useEventCallback(() => {
         onAction(diagram.id, 'Delete');
@@ -77,111 +157,40 @@ export const Page = (props: PageProps) => {
         onAction(diagram.id, 'Select');
     });
 
-    const doSetMaster = useEventCallback((master: string | undefined) => {
-        onAction(diagram.id, 'SetMaster', master);
-    });
+    const PageItem = <>
+        <Menu selectable={false}>
+            <Menu.Item key='delete' icon={<DeleteOutlined />} onClick={doDelete}>
+                {texts.common.delete}
+            </Menu.Item>
 
-    const doEnter = useEventCallback((event: React.KeyboardEvent) => {
-        if (Keys.isEnter(event) || Keys.isEscape(event)) {
-            setEditing(false);
-        }
-
-        if (Keys.isEnter(event)) {
-            onAction(diagram.id, 'Rename', editName);
-        }
-    });
-
-    const initInput = React.useCallback((event: Input) => {
-        event?.focus();
-    }, []);
+            <Menu.Item key='duplicate' onClick={doDuplicate}>
+                {texts.common.duplicate}
+            </Menu.Item>
+        </Menu>
+    </>;
 
     return (
         <div className='tree-item'>
             <div className='tree-item-header-container'>
-                {editing ? (
-                    <Input value={editName} onChange={setText} onBlur={doRenameCancel} onKeyUp={doEnter} ref={initInput} />
-                ) : (
-                    <Dropdown overlay={
-                        <Menu selectable={false}>
-                            <Menu.Item key='delete' icon={<DeleteOutlined />} onClick={doDelete}>
-                                {texts.common.delete}
-                            </Menu.Item>
-
-                            <Menu.Item key='duplicate' onClick={doDuplicate}>
-                                {texts.common.duplicate}
-                            </Menu.Item>
-
-                            <Menu.Item key='rename' onClick={doRenameStart}>
-                                {texts.common.rename}
-                            </Menu.Item>
-
-                            <Menu.SubMenu title={texts.common.masterPage}>
-                                <MasterPage
-                                    id={undefined}
-                                    title={texts.common.none}
-                                    diagramId={diagram.id}
-                                    diagramMaster={pageMaster}
-                                    hide={false}
-                                    onSetMaster={doSetMaster}
-                                />
-
-                                {diagrams.map((item, index) =>
-                                    <MasterPage key={item.id}
-                                        id={item.id}
-                                        title={getPageName(item, index)}
-                                        diagramId={diagram.id}
-                                        diagramMaster={pageMaster}
-                                        hide={item.id === diagram.id}
-                                        onSetMaster={doSetMaster}
-                                    />,
-                                )}
-                            </Menu.SubMenu>
-                        </Menu>
-                    } trigger={['contextMenu']}>
-                        <Row className={classNames('tree-item-header', { selected })} wrap={false} onDoubleClick={doRenameStart} onClick={doSelect}>
-                            <Col flex='none'>
-                                {pageMaster ? (
-                                    <FileMarkdownOutlined />
-                                ) : (
-                                    <FileOutlined />
-                                )}
-                            </Col>
-                            <Col flex='auto' className='tree-item-title no-select'>
-                                {pageName}
-                            </Col>
-                        </Row>
+                <div className={classNames('pages-thumbnail', { selected }) } >
+                    <Card
+                        className='pages-card'
+                        style={{ width: cardWidth, height: cardHeight, borderRadius: 20, overflow: "hidden" }} 
+                        onClick={doSelect}
+                        cover={<PageCover diagram={diagram} cardWidth={cardWidth} cardHeight={cardHeight} />}
+                    />
+                    <Dropdown overlay={PageItem} >
+                        <Button 
+                            className='pages-action'
+                            icon={<MoreOutlined />}
+                            value="small"
+                            shape='circle'
+                            type="text"
+                            style={{ top: `calc(-${cardHeight}px + 4px)` }} />
                     </Dropdown>
-                )}
+                    <h4 className='pages-index' >{pageName}</h4>
+                </div>
             </div>
         </div>
-    );
-};
-
-const MasterPage = (props: {
-    title: string;
-    id: string | undefined;
-    diagramId: string;
-    diagramMaster: string | undefined;
-    hide: boolean;
-    onSetMaster: (master: string | undefined) => void;
-}) => {
-    const {
-        id,
-        diagramMaster,
-        hide,
-        onSetMaster,
-        title,
-    } = props;
-
-    if (hide) {
-        return null;
-    }
-
-    const selected = id === diagramMaster;
-
-    return (
-        <Menu.Item key={id} icon={selected ? <CheckOutlined /> : null} onClick={() => onSetMaster(id)}>
-            {title}
-        </Menu.Item>
     );
 };

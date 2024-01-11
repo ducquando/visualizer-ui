@@ -5,23 +5,18 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Row } from 'antd';
 import * as React from 'react';
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useDispatch } from 'react-redux';
 import { useEventCallback } from '@app/core';
-import { texts } from '@app/texts';
-import { addDiagram, duplicateDiagram, filterDiagrams, getDiagramId, getDiagramsFilter, getFilteredDiagrams, moveDiagram, removeDiagram, renameDiagram, selectDiagram, setDiagramMaster, useStore } from '@app/wireframes/model';
-import { Page, PageAction } from './Page';
+import { addDiagram, duplicateDiagram, getDiagramId, getFilteredDiagrams, moveDiagram, removeDiagram, renameDiagram, selectDiagram, setDiagramMaster, useStore } from '@app/wireframes/model';
+import { PageThumbnail, PageAdd, PageAction } from './Page';
 import './Pages.scss';
 
 export const Pages = () => {
     const dispatch = useDispatch();
     const diagramId = useStore(getDiagramId);
     const diagrams = useStore(getFilteredDiagrams);
-    const diagramsFilter = useStore(getDiagramsFilter);
-    const diagramsOrdered = useStore(x => x.editor.present.orderedDiagrams);
 
     const doAddDiagram = useEventCallback(() => {
         dispatch(addDiagram());
@@ -48,33 +43,14 @@ export const Pages = () => {
         }
     });
 
-    const doFilterShapes = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(filterDiagrams(event.target.value));
-    });
-
     const doSort = useEventCallback((result: DropResult) => {
         dispatch(moveDiagram(result.draggableId, result.destination!.index));
     });
 
     return (
-        <>
-            <Row className='pages-search' wrap={false}>
-                <Col flex='auto'>
-                    <Input value={diagramsFilter} onChange={doFilterShapes}
-                        placeholder={texts.common.findPage}
-                        prefix={
-                            <SearchOutlined style={{ color: 'rgba(0,0,0,.25)' }} />
-                        } />
-                </Col>
-                <Col flex='none'>
-                    <Button type='primary' onClick={doAddDiagram}>
-                        <PlusOutlined />
-                    </Button>
-                </Col>
-            </Row>
-
+        <div className='pages-container'>
             <DragDropContext onDragEnd={doSort}>
-                <Droppable droppableId='droppable'>
+                <Droppable droppableId='droppable' direction='horizontal'>
                     {(provided) => (
                         <div className='pages-list' {...provided.droppableProps} ref={provided.innerRef} >
                             {diagrams.map((item, index) =>
@@ -82,22 +58,19 @@ export const Pages = () => {
                                     {(provided) => (
                                         <div ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            {...provided.dragHandleProps}>
-                                            <Page
-                                                diagram={item}
-                                                diagrams={diagramsOrdered}
-                                                index={index}
-                                                onAction={doAction}
-                                                selected={item.id === diagramId}
-                                            />
+                                            {...provided.dragHandleProps}
+                                            >
+                                            <PageThumbnail diagram={item} pageName={String(index + 1)} cardWidth={160} cardHeight={90} selected={item.id === diagramId} onAction={doAction} />
                                         </div>
                                     )}
-                                </Draggable>,
+                                </Draggable>
                             )}
+                            {provided.placeholder}
+                            <PageAdd cardWidth={160} cardHeight={90} onClick={doAddDiagram} />
                         </div>
                     )}
                 </Droppable>
             </DragDropContext>
-        </>
+        </div>
     );
 };
