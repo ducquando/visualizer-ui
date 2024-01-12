@@ -83,7 +83,7 @@ export class EditorState extends Record<Props> {
             diagrams: ImmutableMap.of(diagrams),
             diagramIds: ImmutableList.of(diagramIds),
             id: MathHelper.guid(),
-            size: size || new Vec2(800, 450),
+            size: size || new Vec2(1280, 720),
         };
 
         return new EditorState(props);
