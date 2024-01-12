@@ -18,6 +18,7 @@ export function useOpenFile(fileType: string, onOpened: (file: File) => void): (
         let invisibleInput = document.createElement('input');
         invisibleInput.type = 'file';
         invisibleInput.style.visibility = 'hidden';
+        invisibleInput.style.display = 'none';
         invisibleInput.accept = fileType;
     
         invisibleInput.addEventListener('change', () => {

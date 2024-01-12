@@ -1,0 +1,57 @@
+@import 'mixins';
+@import 'vars';
+
+.menu {
+    &-dropdown {
+        position: absolute;
+        right: -175px;
+        top: -50px;
+        background-color: $color-white;
+        border: 0;
+        border-radius: 10px;
+        padding: 10px;
+        filter: drop-shadow($color-border-dark 0 0 5px);
+
+        p {
+            margin: 0;
+        }
+    }
+
+    &-shape {
+        align-items: center;
+        justify-content: start;
+        background-color: $color-white;
+        gap: 10px;
+    }
+
+    &-shape:first-of-type {
+        border-radius: 10px 10px 0 0;
+    }
+
+    &-shape:last-of-type {
+        border-radius: 0 0 10px 10px;
+    }
+
+    &-table {
+        display: flex;
+        flex-flow: row;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 4px 0;
+    }
+
+    &-table-text {
+        text-align: center;
+        margin: 0;
+    }
+
+    &-cell {
+        border: 1px $color-border-dark solid;
+        background-color: $color-white;
+    }
+
+    &-cell:hover,
+    &-cell.active {
+        background-color: $color-border;
+    }
+}

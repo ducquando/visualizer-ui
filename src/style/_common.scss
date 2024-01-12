@@ -96,7 +96,6 @@ tspan {
 //
 // Sidebars
 //
-.sidebar-left,
 .sidebar-right {
     background: $color-white;
     border: 0;
@@ -107,13 +106,12 @@ tspan {
 
 .sidebar-left {
     & {
-        background: $color-white;
-        border: 0;
-        border-right: 1px solid $color-border;
-        padding-top: 10px;
+        background: $color-theme-blue-lightest;
         display: flex;
         flex-flow: column;
-        flex-grow: 1;
+        height: fit-content;
+        border-radius: 20px;
+        margin: 20px 0 20px 20px;
     }
 
     .ant-layout-sider-children,
@@ -123,9 +121,6 @@ tspan {
     .tab-panel {
         display: flex;
         flex-flow: column;
-        flex-grow: 1;
-        max-height: 100%;
-        min-height: 100%;
     }
 
     .ant-tabs-tabpane {
@@ -137,12 +132,26 @@ tspan {
     }
 
     .item {
-        background: transparent !important;
+        background: $color-theme-blue-lightest;
         border: 0;
         border-radius: 0;
         max-height: 45px;
         min-height: 45px;
-        opacity: .8;
+        padding: 0;
+    }
+
+    .item:hover {
+        background: $color-theme-secondary;
+    }
+
+    .item:first-of-type {
+        border-radius: 20px 20px 0 0;
+        padding: 10px 0 0;
+    }
+
+    .item:last-of-type {
+        border-radius: 0 0 20px 20px;
+        padding: 0 0 10px;
     }
 }
 

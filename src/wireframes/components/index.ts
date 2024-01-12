@@ -5,7 +5,6 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
-export * from './assets/Shapes';
 export * from './layout/EditorView';
 export * from './layout/PanelView';
 export * from './layout/TabView';

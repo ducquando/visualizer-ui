@@ -28,7 +28,7 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.STROKE_COLOR]: CommonTheme.CONTROL_BORDER_COLOR,
     [DefaultAppearance.STROKE_THICKNESS]: CommonTheme.CONTROL_BORDER_THICKNESS,
     [DefaultAppearance.TEXT_ALIGNMENT]: 'center',
-    [DefaultAppearance.TEXT]: 'cell,cell,cell;cell,cell,cell;cell,cell,cell',
+    [DefaultAppearance.TEXT]: '',
     [SELECTED_CELL_X]: 0,
     [SELECTED_CELL_Y]: 0,
 };

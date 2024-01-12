@@ -8,16 +8,27 @@
 import * as React from 'react';
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useDispatch } from 'react-redux';
-import { useEventCallback } from '@app/core';
+import { useEventCallback, Vec2 } from '@app/core';
 import { addDiagram, duplicateDiagram, getDiagramId, getFilteredDiagrams, moveDiagram, removeDiagram, selectDiagram, useStore } from '@app/wireframes/model';
 import { PageThumbnail, PageAdd, PageAction } from './Page';
 import './Pages.scss';
 
-export const Pages = () => {
+export interface PagesProps {
+    // Preview width;
+    prevWidth: number;
+
+    // Preview height
+    prevHeight: number
+}
+
+export const Pages = (props: PagesProps) => {
+    const { prevWidth, prevHeight } = props;
+    const viewSize = new Vec2(prevWidth, prevHeight);
+
     const dispatch = useDispatch();
     const diagramId = useStore(getDiagramId);
     const diagrams = useStore(getFilteredDiagrams);
-
+    
     const doAddDiagram = useEventCallback(() => {
         dispatch(addDiagram());
     });
@@ -56,13 +67,13 @@ export const Pages = () => {
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
                                             >
-                                            <PageThumbnail diagram={item} pageIndex={index + 1} cardWidth={160} cardHeight={90} selected={item.id === diagramId} onAction={doAction} />
+                                            <PageThumbnail diagram={item} pageIndex={index + 1} cardWidth={viewSize.x} cardHeight={viewSize.y} selected={item.id === diagramId} onAction={doAction} />
                                         </div>
                                     )}
                                 </Draggable>
                             )}
                             {provided.placeholder}
-                            <PageAdd cardWidth={160} cardHeight={90} onClick={doAddDiagram} />
+                            <PageAdd cardWidth={viewSize.x} cardHeight={viewSize.y} onClick={doAddDiagram} />
                         </div>
                     )}
                 </Droppable>

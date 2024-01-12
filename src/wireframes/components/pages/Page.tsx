@@ -8,8 +8,8 @@
 import * as svg from '@svgdotjs/svg.js';
 import * as React from 'react';
 import { Diagram, getEditor, useStore } from '@app/wireframes/model';
-import { Button, Card, Dropdown, Menu } from 'antd';
-import { CopyOutlined, DeleteOutlined, FileAddOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
+import { Card, Dropdown, Menu, Tooltip } from 'antd';
+import { CopyOutlined, DeleteOutlined, FileAddOutlined, PlusOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import { SVGHelper, Subscription, Vec2, useEventCallback } from '@app/core';
 import { texts } from '@app/texts';
@@ -179,24 +179,19 @@ export const PageThumbnail = (props: PageThumbnailProps) => {
     return (
         <div className='tree-item'>
             <div className='tree-item-header-container'>
-                <div className={classNames('pages-thumbnail', { selected }) } >
-                    <Dropdown overlay={PageItem} trigger={['contextMenu']}>
-                        <Card
-                            className='pages-card'
-                            style={{ width: cardWidth, height: cardHeight, borderRadius: 20, overflow: "hidden" }} 
-                            onClick={doSelect}
-                            cover={<PageCover diagram={diagram} cardWidth={cardWidth} cardHeight={cardHeight} />}
-                        />
-                    </Dropdown>
-                    <Dropdown overlay={PageItem} >
-                        <Button 
-                            className='pages-action'
-                            icon={<MoreOutlined />}
-                            value="small"
-                            shape='circle'
-                            type="text"
-                            style={{ top: `calc(-${cardHeight}px + 4px)` }} />
-                    </Dropdown>
+                <div
+                    className={classNames('pages-thumbnail', { selected }) }
+                    style={{ height: cardHeight }} >
+                    <Tooltip title={`Page ${pageIndex}`}>
+                        <Dropdown overlay={PageItem} trigger={['contextMenu']}>
+                            <Card
+                                className='pages-card'
+                                style={{ width: cardWidth, height: cardHeight, borderRadius: 20, overflow: "hidden" }} 
+                                onClick={doSelect}
+                                cover={<PageCover diagram={diagram} cardWidth={cardWidth} cardHeight={cardHeight} />}
+                            />
+                        </Dropdown>
+                    </Tooltip>
                     <h5 className='pages-index'>{pageIndex}</h5>
                 </div>
             </div>

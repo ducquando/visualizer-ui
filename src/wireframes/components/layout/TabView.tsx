@@ -3,10 +3,8 @@ import * as React from "react";
 import { Diagram, getDiagram, selectTab, toggleRightSidebar, useStore } from "@app/wireframes/model";
 import { useDispatch } from "react-redux";
 import { texts } from "@app/texts";
-import { CloseOutlined, ControlOutlined, ProfileOutlined } from "@ant-design/icons";
+import { CloseOutlined, ControlOutlined } from "@ant-design/icons";
 import { Properties } from "../properties/Properties";
-// import { Pages } from "../pages/Pages";
-import { Outline } from "../outline/Outline";
 import { useEventCallback } from "@app/core";
 
 export interface TabViewProps {
@@ -58,12 +56,12 @@ export const TabViewInner = ({ diagram, collapse }: TabViewProps & { diagram: Di
             {/* <Tabs.TabPane key='pages'
                 tab={!collapse ? texts.common.pages : <AppstoreOutlined />} >
                 <Pages />
-            </Tabs.TabPane> */}
+            </Tabs.TabPane> 
             
             <Tabs.TabPane key='outline'
                 tab={!collapse ? texts.common.outline : <ProfileOutlined />} >
                 <Outline />
-            </Tabs.TabPane>
+            </Tabs.TabPane>*/}
         </Tabs>
     );
 };

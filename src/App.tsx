@@ -24,6 +24,13 @@ export const App = () => {
     const selectedItem = useStore(getSelectedShape);
     const selectedSet = useStore(getSelectedItems);
 
+    const SHAPE_WIDTH = 45;
+    const PREVIEW_WIDTH = 128;
+    const PREVIEW_HEIGHT = 72;
+    const EDITOR_MARGIN = 30;
+    const TAB_WIDTH = 330;
+    const TAB_MIN_WIDTH = 40;
+
     React.useEffect(() => {
         const token = routeTokenSnapshot.current;
 
@@ -49,26 +56,24 @@ export const App = () => {
                     </Layout.Header>
 
                     <Layout className='content'>
-                        <Layout.Sider width={50} className='sidebar-left'>
+                        <Layout.Sider width={SHAPE_WIDTH} className='sidebar-left'>
                             <ShapeView />
                         </Layout.Sider>
 
-                        <Layout>
-                            <Layout.Content className='editor-content'>
-                                <EditorView spacing={40} />
-                            </Layout.Content>
-                            <Layout.Footer style={{ padding: 0 }} >
-                                <Pages />
-                                {/* <PanelView /> */}
-                            </Layout.Footer>
+                        <Layout className='editor-content'>
+                            <EditorView spacing={EDITOR_MARGIN} />
                         </Layout>
 
-                        <Layout.Sider width={330} className='sidebar-right'
+                        <Layout.Sider width={TAB_WIDTH} className='sidebar-right'
                             collapsed={!showRightSidebar}
-                            collapsedWidth={40}>
+                            collapsedWidth={TAB_MIN_WIDTH}>
                                 <TabView collapse={!showRightSidebar}/>
                         </Layout.Sider>
                     </Layout>
+
+                    <Layout.Footer style={{ padding: 0 }} >
+                        <Pages prevWidth={PREVIEW_WIDTH} prevHeight={PREVIEW_HEIGHT} />
+                    </Layout.Footer>
                 </Layout>
 
                 <CustomDragLayer />
