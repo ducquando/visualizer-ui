@@ -38,7 +38,7 @@ export const ZoomMenu = React.memo(() => {
 
         return () => {
             window.removeEventListener('resize', getWindowSize);
-          };
+        };
     }, [isZoom])
 
     const getZoomValue = (value: string) => {
@@ -57,15 +57,15 @@ export const ZoomMenu = React.memo(() => {
     }
 
     const zoomMenu = (
-        <Menu className='action-dropdown' selectedKeys={[zoomValue]}>
-            <Menu.Item key='Fit' className='action-item' onClick={(e) => isZoom(e.key)}>Fit</Menu.Item>
+        <Menu className='loading-action-dropdown' selectedKeys={[zoomValue]}>
+            <Menu.Item key='Fit' className='loading-action-item' onClick={(e) => isZoom(e.key)}>Fit</Menu.Item>
             <hr style={{ margin: '4px 0' }} />
-            <Menu.Item key='50' className='action-item' onClick={(e) => isZoom(e.key)}>50%</Menu.Item>
-            <Menu.Item key='75' className='action-item' onClick={(e) => isZoom(e.key)}>75%</Menu.Item>
-            <Menu.Item key='100' className='action-item' onClick={(e) => isZoom(e.key)}>100%</Menu.Item>
-            <Menu.Item key='125' className='action-item' onClick={(e) => isZoom(e.key)}>125%</Menu.Item>
-            <Menu.Item key='150' className='action-item' onClick={(e) => isZoom(e.key)}>150%</Menu.Item>
-            <Menu.Item key='200' className='action-item' onClick={(e) => isZoom(e.key)}>200%</Menu.Item>
+            <Menu.Item key='50' className='loading-action-item' onClick={(e) => isZoom(e.key)}>50%</Menu.Item>
+            <Menu.Item key='75' className='loading-action-item' onClick={(e) => isZoom(e.key)}>75%</Menu.Item>
+            <Menu.Item key='100' className='loading-action-item' onClick={(e) => isZoom(e.key)}>100%</Menu.Item>
+            <Menu.Item key='125' className='loading-action-item' onClick={(e) => isZoom(e.key)}>125%</Menu.Item>
+            <Menu.Item key='150' className='loading-action-item' onClick={(e) => isZoom(e.key)}>150%</Menu.Item>
+            <Menu.Item key='200' className='loading-action-item' onClick={(e) => isZoom(e.key)}>200%</Menu.Item>
         </Menu>
     );
 
@@ -73,9 +73,11 @@ export const ZoomMenu = React.memo(() => {
         <>
             <Dropdown
                 overlay={zoomMenu}
-                className='action-dropdown'
+                className='loading-action-button'
                 trigger={['click']}>
-                    <Button type="text"><h4>{`${Math.round(getZoomValue(zoomValue) * 100)}%`}</h4></Button>
+                <Button type="text">
+                    <h4>{`${Math.round(getZoomValue(zoomValue) * 100)}%`}</h4>
+                </Button>
             </Dropdown>
         </>
     );

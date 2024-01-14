@@ -20,9 +20,12 @@ export const FileMenu = React.memo((props: FileMenuProps & DropdownButtonProps) 
 
     return (
         <Dropdown
+            className='loading-action-button'
             overlay={overlay}
             trigger={['click']}>
-                <Button type="text" icon={icon}><h3>{label}</h3></Button>
+                <Button type="text" icon={icon} size='middle'>
+                    <h3>{label}</h3>
+                </Button>
         </Dropdown>
     );
 });

@@ -6,7 +6,7 @@
 */
 
 import { useDispatch } from 'react-redux';
-import { Button, Dropdown, Form, Input, Modal, Tooltip } from 'antd';
+import { Button, Dropdown, Form, Input, Modal } from 'antd';
 import { getDiagramId, useStore, addShape } from '@app/wireframes/model';
 import * as React from 'react';
 import { CircleIcon, FunctionIcon, ImageIcon, RectangleIcon, TableIcon, TextIcon, TriangleIcon, ShapesIcon, LinkIcon, HeadingIcon, SubHeadingIcon, ParagraphIcon } from '@app/icons/icon';
@@ -20,7 +20,6 @@ export const ShapeView = React.memo(() => {
     const [selectedCell, setSelectedCell] = useState(0);
     const [isImageURL, setIsImageURL] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState({'image': false, 'textbox': false, 'shape': false, 'cell': false});
-    const [isTooltipOpen, setIsTooltipOpen] = useState({'image': false, 'textbox': false, 'shape': false, 'cell': false});
 
     const cellAttr = { size: 16, cols: 8, rows: 8 };
     const dropdownWidth = (cellAttr.size + 4) * cellAttr.cols - 4;
@@ -182,87 +181,53 @@ export const ShapeView = React.memo(() => {
 
     return (
         <>
-            <Tooltip title='Add text'
-                mouseEnterDelay={0.25}
-                mouseLeaveDelay={0}
-                placement='left'
-                visible={isTooltipOpen.textbox && !isDropdownOpen.textbox}
-                onVisibleChange={(e) => setIsTooltipOpen({...isTooltipOpen, textbox: e.valueOf()})}>
-                    <Dropdown
-                        overlay={<TextButton />}
-                        trigger={['click']}
-                        visible={isDropdownOpen.textbox}
-                        onVisibleChange={(e) => {
-                            setIsDropdownOpen({...isDropdownOpen, textbox: e.valueOf()});
-                            setIsTooltipOpen({...isTooltipOpen, textbox: false});
-                        }} >
-                            <Button className='item' type='text' >
-                                <TextIcon />
-                            </Button>
-                    </Dropdown>
-            </Tooltip>
+            <Dropdown
+                overlay={<TextButton />}
+                trigger={['click']}
+                visible={isDropdownOpen.textbox}
+                onVisibleChange={(e) => {
+                    setIsDropdownOpen({...isDropdownOpen, textbox: e.valueOf()});
+                }} >
+                    <Button className='item' type='text' >
+                        <TextIcon />
+                    </Button>
+            </Dropdown>
 
-            <Tooltip title='Add table'
-                mouseEnterDelay={0.25}
-                mouseLeaveDelay={0}
-                placement='left'
-                visible={isTooltipOpen.cell && !isDropdownOpen.cell}
-                onVisibleChange={(e) => setIsTooltipOpen({...isTooltipOpen, cell: e.valueOf()})}>
-                    <Dropdown
-                        overlay={<CellButton />}
-                        trigger={['click']}
-                        visible={isDropdownOpen.cell}
-                        onVisibleChange={(e) => {
-                            setIsDropdownOpen({...isDropdownOpen, cell: e.valueOf()});
-                            setIsTooltipOpen({...isTooltipOpen, cell: false});
-                        }} >
-                            <Button className='item' type='text' >
-                                <TableIcon />
-                            </Button>
-                    </Dropdown>
-            </Tooltip>
+            <Dropdown
+                overlay={<CellButton />}
+                trigger={['click']}
+                visible={isDropdownOpen.cell}
+                onVisibleChange={(e) => {
+                    setIsDropdownOpen({...isDropdownOpen, cell: e.valueOf()});
+                }} >
+                    <Button className='item' type='text' >
+                        <TableIcon />
+                    </Button>
+            </Dropdown>
 
-            <Tooltip
-                title='Add shape'
-                mouseEnterDelay={0.25}
-                mouseLeaveDelay={0}
-                placement='left'
-                visible={isTooltipOpen.shape && !isDropdownOpen.shape}
-                onVisibleChange={(e) => setIsTooltipOpen({...isTooltipOpen, shape: e.valueOf()})}>
-                    <Dropdown
-                        overlay={<ShapeButton />}
-                        trigger={['click']}
-                        visible={isDropdownOpen.shape}
-                        onVisibleChange={(e) => {
-                            setIsDropdownOpen({...isDropdownOpen, shape: e.valueOf()});
-                            setIsTooltipOpen({...isTooltipOpen, shape: false});
-                        }} >
-                            <Button className='item' type='text' >
-                                <ShapesIcon />
-                            </Button>
-                    </Dropdown>
-            </Tooltip>
+            <Dropdown
+                overlay={<ShapeButton />}
+                trigger={['click']}
+                visible={isDropdownOpen.shape}
+                onVisibleChange={(e) => {
+                    setIsDropdownOpen({...isDropdownOpen, shape: e.valueOf()});
+                }} >
+                    <Button className='item' type='text' >
+                        <ShapesIcon />
+                    </Button>
+            </Dropdown>
 
-            <Tooltip
-                title='Add image'
-                mouseEnterDelay={0.25}
-                mouseLeaveDelay={0}
-                placement='left'
-                visible={isTooltipOpen.image && !isDropdownOpen.image}
-                onVisibleChange={(e) => setIsTooltipOpen({...isTooltipOpen, image: e.valueOf()})}>
-                    <Dropdown
-                        overlay={<ImageButton />}
-                        trigger={['click']}
-                        visible={isDropdownOpen.image}
-                        onVisibleChange={(e) => {
-                            setIsDropdownOpen({...isDropdownOpen, image: e.valueOf()});
-                            setIsTooltipOpen({...isTooltipOpen, image: false});
-                        }} >
-                            <Button className='item' type='text' >
-                                <ImageIcon />
-                            </Button>
-                    </Dropdown>
-            </Tooltip>
+            <Dropdown
+                overlay={<ImageButton />}
+                trigger={['click']}
+                visible={isDropdownOpen.image}
+                onVisibleChange={(e) => {
+                    setIsDropdownOpen({...isDropdownOpen, image: e.valueOf()});
+                }} >
+                    <Button className='item' type='text' >
+                        <ImageIcon />
+                    </Button>
+            </Dropdown>
         </>
     );
 });

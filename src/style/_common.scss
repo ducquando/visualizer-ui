@@ -34,8 +34,21 @@ body {
 }
 
 .header-right {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
     margin-right: 15px;
     height: 40px;
+    background-color: $color-theme-blue-lightest;
+
+    h4 {
+        margin-bottom: 0;
+    }
+}
+
+.header-right:hover {
+    background-color: $color-border;
 }
 
 .ant-layout {

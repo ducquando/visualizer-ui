@@ -1,37 +1,50 @@
 @import 'mixins';
 @import 'vars';
 
-.action {
-    &-dropdown {
-        background-color: $color-white;
-        border: 0;
-        border-radius: 10px !important;
-        padding: 10px !important;
-        filter: drop-shadow($color-border-dark 0 0 5px);
-    }
+.loading {
+    &-action {
+        &-button {
+            border-radius: 10px !important;
+            height: 40px !important;
 
-    &-dropdown h3 {
-        margin: 0;
-    }
-
-    &-item {
-        align-items: center;
-        justify-content: start;
-        background-color: $color-white;
-        gap: 10px;
-
-        .anticon {
-            width: 15px;
+            h3,
+            h4 {
+                margin: 0 !important;
+            }
         }
-    }
 
-    &-item:first-of-type {
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-    }
+        &-button:hover,
+        &-button:active {
+            background-color: $color-border !important;
+        }
 
-    &-item:last-of-type {
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
+        &-dropdown {
+            background-color: $color-white;
+            border: 0;
+            border-radius: 10px !important;
+            padding: 10px !important;
+            filter: drop-shadow($color-border-dark 0 0 5px);
+        }
+
+        &-item {
+            color: black !important;
+            background-color: $color-white;
+            height: 36px;
+            gap: 10px;
+
+            .anticon {
+                width: 15px;
+            }
+        }
+
+        &-item:first-of-type {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        &-item:last-of-type {
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
     }
 }

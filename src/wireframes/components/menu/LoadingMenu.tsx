@@ -59,7 +59,7 @@ export const LoadingMenu = React.memo(() => {
     }, [tokenToWrite, editor]);
 
     const menu = (
-        <Menu className='action-dropdown'>
+        <Menu className='loading-action-dropdown'>
             <ActionMenuItem displayMode='IconLabel' action={forLoading.newDiagram} />
             <ActionMenuItem displayMode='IconLabel' action={forLoading.openDiagramAction} />
             <ActionMenuItem displayMode='IconLabel' action={forLoading.saveDiagram} />

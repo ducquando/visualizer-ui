@@ -161,20 +161,20 @@ export const PageThumbnail = (props: PageThumbnailProps) => {
         onAction(diagram.id, 'Delete');
     });
 
-    const PageItem = <>
-        <Menu selectable={false}>
-            <Menu.Item key='add' icon={<FileAddOutlined />} onClick={doAdd}>
+    const PageItem = (
+        <Menu className='action-dropdown' selectable={false}>
+            <Menu.Item className='action-item' key='add' icon={<FileAddOutlined />} onClick={doAdd}>
                 {`${texts.common.newDiagram} page`}
             </Menu.Item>
-            <Menu.Item key='duplicate' icon={<CopyOutlined />} onClick={doDuplicate}>
+            <Menu.Item className='action-item' key='duplicate' icon={<CopyOutlined />} onClick={doDuplicate}>
                 {`${texts.common.duplicate} page`}
             </Menu.Item>
-            <Menu.Item key='delete' icon={<DeleteOutlined />} onClick={doDelete}>
+            <Menu.Item className='action-item' key='delete' icon={<DeleteOutlined />} onClick={doDelete}>
                 {`${texts.common.delete} page`}
             </Menu.Item>
             
         </Menu>
-    </>;
+    );
 
     return (
         <div className='tree-item'>

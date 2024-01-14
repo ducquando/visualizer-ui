@@ -100,7 +100,7 @@ export const ActionMenuItem = React.memo((props: ActionProps & MenuItemProps) =>
     }
 
     return (
-        <Menu.Item {...other} key={label} className='force-color action-item' disabled={disabled} onClick={onAction}
+        <Menu.Item {...other} key={label} className='force-color loading-action-item' disabled={disabled} onClick={onAction}
             icon={(actualDisplayMode === 'Icon' || actualDisplayMode === 'IconLabel') ? (
                 <>
                     {Types.isString(icon) ? (

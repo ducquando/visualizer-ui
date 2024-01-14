@@ -1,7 +1,11 @@
-import { ExportOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import Icon, { ExportOutlined } from "@ant-design/icons";
+import { Button, Dropdown, Menu } from "antd";
 import React = require("react");
 import { getDiagrams, getEditor, useStore } from "@app/wireframes/model";
+import { AnimationIcon, DesignIcon } from "@app/icons/icon";
+import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
+import './PresentMenu.scss'
+import { useState } from "react";
 
 export const PresentMenu = React.memo(() => {
     const html = document.querySelector('.editor-diagram')?.innerHTML;
@@ -10,7 +14,8 @@ export const PresentMenu = React.memo(() => {
     const fileName = new Date().getTime();
     const diagrams = useStore(getDiagrams);
     const editor = useStore(getEditor);
-    
+    const [mode, setMode] = useState('design');
+
     const retrieveObjects = () => {
         let allDiagrams = new Array();
         let allObjects = {};
@@ -55,10 +60,10 @@ export const PresentMenu = React.memo(() => {
                         break;
                 }
 
-                allObjects[item.renderer] = (item.renderer in allObjects) ? allObjects[item.renderer] : new Array() ;
+                allObjects[item.renderer] = (item.renderer in allObjects) ? allObjects[item.renderer] : new Array();
                 allObjects[item.renderer].push(object);
             });
-    
+
             allDiagrams.push({
                 id: diagramID,
                 index: i,
@@ -71,11 +76,11 @@ export const PresentMenu = React.memo(() => {
         });
 
         return {
-            diagram: allDiagrams, 
+            diagram: allDiagrams,
             object: allObjects
         }
     }
-    
+
 
     const fetchAPI = () => {
         const allObjects = retrieveObjects();
@@ -111,10 +116,41 @@ export const PresentMenu = React.memo(() => {
         }
     }
 
+    const DesignIconOutline = (props: Partial<CustomIconComponentProps>) => (
+        <Icon component={DesignIcon} {...props} />
+    );
+    const AnimationIconOutline = (props: Partial<CustomIconComponentProps>) => (
+        <Icon component={AnimationIcon} {...props} />
+    );
+    const modeMenu = (
+        <Menu className='present-action-dropdown' selectedKeys={[mode]}>
+            <Menu.Item
+                key='design'
+                className='present-action-item'
+                icon={<DesignIconOutline />}
+                onClick={(e) => setMode(e.key)}>
+                Design
+            </Menu.Item>
+            <Menu.Item
+                key='animation'
+                className='present-action-item'
+                icon={<AnimationIconOutline />}
+                onClick={(e) => setMode(e.key)}>
+                Animation
+            </Menu.Item>
+        </Menu>
+    )
+
     return (
         <>
-            <Button icon={<ExportOutlined />} onClick={ fetchAPI } className="header-right" type="primary">
-                Present
+            <Dropdown className='header-mode' overlay={modeMenu} trigger={['click']}>
+                <Button
+                    icon={(mode == 'animation') ? <AnimationIconOutline /> : <DesignIconOutline />}
+                    shape='circle' />
+            </Dropdown>
+            <span className='menu-separator' />
+            <Button icon={<ExportOutlined style={{ marginTop: '2px' }} />} onClick={fetchAPI} className="header-right" type="text" shape='round'>
+                <h4>Present</h4>
             </Button>
         </>
     )
