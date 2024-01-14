@@ -6,7 +6,7 @@
 */
 
 import * as React from 'react';
-import { ActionMenuButton, useHistory } from './../actions/';
+import { ActionMenuButton, useHistory } from '../../actions';
 
 export const HistoryMenu = React.memo(() => {
     const forHistory = useHistory();

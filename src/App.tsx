@@ -46,6 +46,9 @@ export const App = () => {
             <ClipboardContainer>
                 <Layout className='screen-mode'>
                     <Layout.Header>
+                        <div className='header-left'>
+                        </div>
+
                         <LoadingMenu />
 
                         <ToolView item={selectedItem} set={selectedSet}/>

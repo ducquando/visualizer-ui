@@ -15,7 +15,7 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.BACKGROUND_COLOR]: 0xFFFFFF,
     [DefaultAppearance.STROKE_COLOR]: CommonTheme.CONTROL_BORDER_COLOR,
     [DefaultAppearance.STROKE_THICKNESS]: CommonTheme.CONTROL_BORDER_THICKNESS,
-    [DefaultAppearance.TEXT]: '[Image URL]',
+    [DefaultAppearance.TEXT]: '',
     [IMAGE_ASPECT_RATIO]: true,
 };
 

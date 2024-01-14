@@ -30,8 +30,7 @@ body {
 }
 
 .header-left {
-    @include fixed(null, null, null, 5px);
-    height: 40px;
+    @include fixed(null, null, null, 13px);
 }
 
 .header-right {

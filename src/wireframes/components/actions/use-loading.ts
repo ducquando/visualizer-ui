@@ -53,7 +53,7 @@ export function useLoading() {
 
     const saveDiagram: UIAction = React.useMemo(() => ({
         disabled: !canSave,
-        icon: 'icon-save',
+        icon: 'icon-floppy-o',
         label: texts.common.saveDiagramTooltip,
         shortcut: 'MOD + S',
         tooltip: texts.common.saveDiagramTooltip,

@@ -5,9 +5,8 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
-import { Button, Dropdown, Menu, MenuItemProps, Tooltip } from 'antd';
+import { Button, Menu, MenuItemProps, Tooltip } from 'antd';
 import { ButtonProps } from 'antd/lib/button';
-import { DropdownButtonProps } from 'antd/lib/dropdown';
 import * as React from 'react';
 import { isMac, Shortcut, Types } from '@app/core';
 import { UIAction } from './shared';
@@ -49,42 +48,6 @@ export const ActionMenuButton = React.memo((props: ActionProps & ButtonProps) =>
                     <ButtonContent icon={icon} label={label} displayMode={displayMode || 'Icon'} />
                 </Button>
             </Tooltip>
-
-            {shortcut &&
-                <Shortcut disabled={disabled} onPressed={onAction} keys={shortcut} />
-            }
-        </>
-    );
-});
-
-export const ActionDropdownButton = React.memo((props: ActionProps & DropdownButtonProps) => {
-    const { action, displayMode, hideWhenDisabled, ...other } = props;
-    const {
-        disabled,
-        label,
-        onAction,
-        icon,
-        shortcut,
-        tooltip,
-    } = action;
-
-    if (disabled && hideWhenDisabled) {
-        return null;
-    }
-
-    const title = buildTitle(shortcut, tooltip);
-
-    return (
-        <>
-            <Dropdown.Button {...other} size='large' disabled={disabled} onClick={onAction}
-                buttonsRender={([leftButton, rightButton]) => [
-                    <Tooltip mouseEnterDelay={1} title={title}>
-                        {leftButton}
-                    </Tooltip>,
-                    React.cloneElement(rightButton as React.ReactElement<any, string>),
-                ]}>
-                <ButtonContent icon={icon} label={label} displayMode={displayMode || 'Icon'} />
-            </Dropdown.Button>
 
             {shortcut &&
                 <Shortcut disabled={disabled} onPressed={onAction} keys={shortcut} />
@@ -137,7 +100,7 @@ export const ActionMenuItem = React.memo((props: ActionProps & MenuItemProps) =>
     }
 
     return (
-        <Menu.Item {...other} key={label} className='force-color' disabled={disabled} onClick={onAction}
+        <Menu.Item {...other} key={label} className='force-color action-item' disabled={disabled} onClick={onAction}
             icon={(actualDisplayMode === 'Icon' || actualDisplayMode === 'IconLabel') ? (
                 <>
                     {Types.isString(icon) ? (
@@ -155,7 +118,7 @@ export const ActionMenuItem = React.memo((props: ActionProps & MenuItemProps) =>
     );
 });
 
-const ButtonContent = ({ displayMode, label, icon }: { icon: string | JSX.Element; label: string; displayMode: ActionDisplayMode }) => {
+const ButtonContent = ({ displayMode, label, icon }: { icon?: string | JSX.Element; label: string; displayMode: ActionDisplayMode }) => {
     return (
         <>
             {(displayMode === 'Icon' || displayMode === 'IconLabel') &&

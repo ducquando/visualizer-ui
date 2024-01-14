@@ -1,11 +1,8 @@
 import { useStore, DiagramItem, getDiagram, Diagram } from '@app/wireframes/model';
 import * as React from 'react';
-import { HistoryMenu } from '../menu/HistoryMenu';
-import { ClipboardMenu } from '../menu/ClipboardMenu';
-import { ZoomMenu } from '../menu/UIMenu';
-import { ArrangeMenu } from '../menu/ArrangeMenu';
+import { ClipboardMenu } from '../menu/tools/ClipboardMenu';
 import { TableMenu } from '../menu/TableMenu';
-import { GroupingMenu } from '../menu/GroupingMenu';
+import { GroupingMenu } from '../menu/tools/GroupingMenu';
 
 export interface ToolViewProps {
     item: DiagramItem | null;
@@ -29,37 +26,23 @@ export const ToolViewInner = ({ diagram, item, set }: ToolViewProps & { diagram:
 
     if (set != null && set.length > 1) {
         toolView = <>
-            <ArrangeMenu />
-            <HistoryMenu />
-            <span className='menu-separator' />
             <GroupingMenu />
             <span className='menu-separator' />
             <ClipboardMenu canCopy={true} />
         </>
     } else if (item != null && item.renderer == 'Table') {
         toolView = <>
-            <ArrangeMenu />
-            <HistoryMenu />
-            <span className='menu-separator' />
             <ClipboardMenu canCopy={true} />
             <span className='menu-separator' />
             <TableMenu />
         </>
     } else if (item != null) {
         toolView = <>
-            <ArrangeMenu />
-            <HistoryMenu />
-            <span className='menu-separator' />
             <ClipboardMenu canCopy={true} />
         </>
     } else {
         toolView = <>
-            <ArrangeMenu />
-            <HistoryMenu />
-            <span className='menu-separator' />
             <ClipboardMenu canCopy={false} />
-            <span className='menu-separator' />
-            <ZoomMenu />
         </>
     }
 

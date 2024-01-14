@@ -6,7 +6,7 @@
 */
 
 import * as React from 'react';
-import { ActionMenuButton, useClipboard } from '../actions';
+import { ActionMenuButton, useClipboard } from '../../actions';
 import { Diagram, getDiagram, useStore } from '@app/wireframes/model';
 
 export interface ClipboardMenuProps {

@@ -9,7 +9,7 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { Shortcut, useEventCallback } from '@app/core';
 import { calculateSelection, getDiagram, selectItems, useStore } from '@app/wireframes/model';
-import { useRemove } from './../actions';
+import { useRemove } from '../../actions';
 
 export const ArrangeMenu = React.memo(() => {
     const dispatch = useDispatch();

@@ -19,6 +19,8 @@ export const ShapeView = React.memo(() => {
     const selectedDiagramId = useStore(getDiagramId);
     const [selectedCell, setSelectedCell] = useState(0);
     const [isImageURL, setIsImageURL] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState({'image': false, 'textbox': false, 'shape': false, 'cell': false});
+    const [isTooltipOpen, setIsTooltipOpen] = useState({'image': false, 'textbox': false, 'shape': false, 'cell': false});
 
     const cellAttr = { size: 16, cols: 8, rows: 8 };
     const dropdownWidth = (cellAttr.size + 4) * cellAttr.cols - 4;
@@ -60,7 +62,7 @@ export const ShapeView = React.memo(() => {
 
     const TextButton: React.FC = () => {
         return (
-            <div className='menu-dropdown'>
+            <div className='menu-dropdown' onClick={() => setIsDropdownOpen({...isDropdownOpen, textbox: false})}>
                 <ButtonHelper
                     shape='Textbox'
                     icon={<HeadingIcon />}
@@ -90,7 +92,10 @@ export const ShapeView = React.memo(() => {
         return (
             <div className='menu-dropdown'
                 onMouseLeave={() => setSelectedCell(0)}
-                onClick={() => createNewShape('Table', { 'TEXT': Array(numRow).join(Array(numCol).join(',') + ';') })}
+                onClick={() => {
+                    createNewShape('Table', { 'TEXT': Array(numRow).join(Array(numCol).join(',') + ';') });
+                    setIsDropdownOpen({...isDropdownOpen, cell: false});
+                }}
             >
                 <div className='menu-table' style={{ width: dropdownWidth }} >
                     {[...Array(cellAttr.rows * cellAttr.cols)].map((e, i) =>
@@ -110,7 +115,7 @@ export const ShapeView = React.memo(() => {
 
     const ShapeButton: React.FC = () => {
         return (
-            <div className='menu-dropdown'>
+            <div className='menu-dropdown' onClick={() => {setIsDropdownOpen({...isDropdownOpen, shape: false});}}>
                 <ButtonHelper shape='Rectangle' icon={<RectangleIcon />} />
                 <ButtonHelper shape='Ellipse' icon={<CircleIcon />} />
                 <ButtonHelper shape='Triangle' icon={<TriangleIcon />} />
@@ -125,7 +130,7 @@ export const ShapeView = React.memo(() => {
             return (
                 <Modal
                     visible={open}
-                    title="Add Image by URL"
+                    title="Add Image"
                     okText='Add'
                     cancelText="Cancel"
                     centered={true}
@@ -158,7 +163,7 @@ export const ShapeView = React.memo(() => {
 
         return (
             <>
-                <div className='menu-dropdown'>
+                <div className='menu-dropdown' onClick={() => {setIsDropdownOpen({...isDropdownOpen, image: false});}}>
                     <Button block type='text'
                         className='menu-shape'
                         style={{ display: 'flex', width: dropdownWidth }}
@@ -177,36 +182,86 @@ export const ShapeView = React.memo(() => {
 
     return (
         <>
-            <Tooltip title='Add text' mouseEnterDelay={0.25} mouseLeaveDelay={0}>
-                <Dropdown overlay={<TextButton />} trigger={['click']} >
-                    <Button className='item' type='text' >
-                        <TextIcon />
-                    </Button>
-                </Dropdown>
+            <Tooltip title='Add text'
+                mouseEnterDelay={0.25}
+                mouseLeaveDelay={0}
+                placement='left'
+                visible={isTooltipOpen.textbox && !isDropdownOpen.textbox}
+                onVisibleChange={(e) => setIsTooltipOpen({...isTooltipOpen, textbox: e.valueOf()})}>
+                    <Dropdown
+                        overlay={<TextButton />}
+                        trigger={['click']}
+                        visible={isDropdownOpen.textbox}
+                        onVisibleChange={(e) => {
+                            setIsDropdownOpen({...isDropdownOpen, textbox: e.valueOf()});
+                            setIsTooltipOpen({...isTooltipOpen, textbox: false});
+                        }} >
+                            <Button className='item' type='text' >
+                                <TextIcon />
+                            </Button>
+                    </Dropdown>
             </Tooltip>
 
-            <Tooltip title='Add table' mouseEnterDelay={0.25} mouseLeaveDelay={0}>
-                <Dropdown overlay={<CellButton />} trigger={['click']} >
-                    <Button className='item' type='text' >
-                        <TableIcon />
-                    </Button>
-                </Dropdown>
+            <Tooltip title='Add table'
+                mouseEnterDelay={0.25}
+                mouseLeaveDelay={0}
+                placement='left'
+                visible={isTooltipOpen.cell && !isDropdownOpen.cell}
+                onVisibleChange={(e) => setIsTooltipOpen({...isTooltipOpen, cell: e.valueOf()})}>
+                    <Dropdown
+                        overlay={<CellButton />}
+                        trigger={['click']}
+                        visible={isDropdownOpen.cell}
+                        onVisibleChange={(e) => {
+                            setIsDropdownOpen({...isDropdownOpen, cell: e.valueOf()});
+                            setIsTooltipOpen({...isTooltipOpen, cell: false});
+                        }} >
+                            <Button className='item' type='text' >
+                                <TableIcon />
+                            </Button>
+                    </Dropdown>
             </Tooltip>
 
-            <Tooltip title='Add shape' mouseEnterDelay={0.25} mouseLeaveDelay={0}>
-                <Dropdown overlay={<ShapeButton />} trigger={['click']} >
-                    <Button className='item' type='text' >
-                        <ShapesIcon />
-                    </Button>
-                </Dropdown>
+            <Tooltip
+                title='Add shape'
+                mouseEnterDelay={0.25}
+                mouseLeaveDelay={0}
+                placement='left'
+                visible={isTooltipOpen.shape && !isDropdownOpen.shape}
+                onVisibleChange={(e) => setIsTooltipOpen({...isTooltipOpen, shape: e.valueOf()})}>
+                    <Dropdown
+                        overlay={<ShapeButton />}
+                        trigger={['click']}
+                        visible={isDropdownOpen.shape}
+                        onVisibleChange={(e) => {
+                            setIsDropdownOpen({...isDropdownOpen, shape: e.valueOf()});
+                            setIsTooltipOpen({...isTooltipOpen, shape: false});
+                        }} >
+                            <Button className='item' type='text' >
+                                <ShapesIcon />
+                            </Button>
+                    </Dropdown>
             </Tooltip>
 
-            <Tooltip title='Add image' mouseEnterDelay={0.25} mouseLeaveDelay={0}>
-                <Dropdown overlay={<ImageButton />} trigger={['click']} >
-                    <Button className='item' type='text' >
-                        <ImageIcon />
-                    </Button>
-                </Dropdown>
+            <Tooltip
+                title='Add image'
+                mouseEnterDelay={0.25}
+                mouseLeaveDelay={0}
+                placement='left'
+                visible={isTooltipOpen.image && !isDropdownOpen.image}
+                onVisibleChange={(e) => setIsTooltipOpen({...isTooltipOpen, image: e.valueOf()})}>
+                    <Dropdown
+                        overlay={<ImageButton />}
+                        trigger={['click']}
+                        visible={isDropdownOpen.image}
+                        onVisibleChange={(e) => {
+                            setIsDropdownOpen({...isDropdownOpen, image: e.valueOf()});
+                            setIsTooltipOpen({...isTooltipOpen, image: false});
+                        }} >
+                            <Button className='item' type='text' >
+                                <ImageIcon />
+                            </Button>
+                    </Dropdown>
             </Tooltip>
         </>
     );
