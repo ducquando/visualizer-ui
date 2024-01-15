@@ -10,7 +10,7 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import { ClipboardContainer } from '@app/core';
-import { EditorView, LoadingMenu, PresentMenu, ShapeView, TabView, ToolView, Pages } from '@app/wireframes/components';
+import { EditorView, LoadingMenu, PresentMenu, ShapeView, TabView, ToolView, PagesView } from '@app/wireframes/components';
 import { getSelectedItems, getSelectedShape, loadDiagramFromServer, newDiagram, useStore } from '@app/wireframes/model';
 import { CustomDragLayer } from './wireframes/components/CustomDragLayer';
 import { OverlayContainer } from './wireframes/contexts/OverlayContext';
@@ -75,7 +75,7 @@ export const App = () => {
                     </Layout>
 
                     <Layout.Footer style={{ padding: 0 }} >
-                        <Pages prevWidth={PREVIEW_WIDTH} prevHeight={PREVIEW_HEIGHT} />
+                        <PagesView prevWidth={PREVIEW_WIDTH} prevHeight={PREVIEW_HEIGHT} />
                     </Layout.Footer>
                 </Layout>
 

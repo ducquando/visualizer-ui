@@ -50,6 +50,11 @@ export const changeScript =
         return { payload: createDiagramAction(diagram, { script }) };
     });
 
+export const changeName =
+    createAction('editor/name', (name: string) => {
+        return { payload:  { name } };
+    });
+
 export const changeSize =
     createAction('editor/size', (width: number, height: number) => {
         return { payload:  { width, height } };
@@ -91,6 +96,11 @@ export function buildDiagrams(builder: ActionReducerMapBuilder<EditorState>) {
             const { diagramId, script } = action.payload;
 
             return state.updateDiagram(diagramId, diagram => diagram.changeScript(script));
+        })
+        .addCase(changeName, (state, action) => {
+            const { name } = action.payload;
+
+            return state.changeName(name);
         })
         .addCase(changeSize, (state, action) => {
             const { width, height } = action.payload;

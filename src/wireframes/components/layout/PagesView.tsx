@@ -10,10 +10,10 @@ import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautif
 import { useDispatch } from 'react-redux';
 import { useEventCallback, Vec2 } from '@app/core';
 import { addDiagram, duplicateDiagram, getDiagramId, getFilteredDiagrams, moveDiagram, removeDiagram, selectDiagram, useStore } from '@app/wireframes/model';
-import { PageThumbnail, PageAdd, PageAction } from './Page';
-import './Pages.scss';
+import { PageThumbnail, PageAdd, PageAction } from './menu/PageMenu';
+import './PagesView.scss';
 
-export interface PagesProps {
+export interface PagesViewProps {
     // Preview width;
     prevWidth: number;
 
@@ -21,7 +21,7 @@ export interface PagesProps {
     prevHeight: number
 }
 
-export const Pages = (props: PagesProps) => {
+export const PagesView = (props: PagesViewProps) => {
     const { prevWidth, prevHeight } = props;
     const viewSize = new Vec2(prevWidth, prevHeight);
 

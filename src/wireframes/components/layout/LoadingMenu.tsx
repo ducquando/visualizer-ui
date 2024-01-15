@@ -6,13 +6,12 @@
 */
 
 // import { GithubOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
 import * as React from 'react';
 import { Title } from '@app/core';
 import { texts } from '@app/texts';
-import { useStore } from '@app/wireframes/model';
-import { ActionMenuItem, useLoading } from './../actions';
-import { ArrangeMenu, FileMenu, HistoryMenu, ZoomMenu } from './tools';
+import { getEditor, useStore } from '@app/wireframes/model';
+import { useLoading } from '../actions';
+import { ArrangeMenu, FileMenu, HistoryMenu, ZoomMenu } from './menu';
 import './LoadingMenu.scss'
 
 // const text = require('@app/legal.html');
@@ -58,21 +57,12 @@ export const LoadingMenu = React.memo(() => {
         }
     }, [tokenToWrite, editor]);
 
-    const menu = (
-        <Menu className='loading-action-dropdown'>
-            <ActionMenuItem displayMode='IconLabel' action={forLoading.newDiagram} />
-            <ActionMenuItem displayMode='IconLabel' action={forLoading.openDiagramAction} />
-            <ActionMenuItem displayMode='IconLabel' action={forLoading.saveDiagram} />
-            <ActionMenuItem displayMode='IconLabel' action={forLoading.saveDiagramToFile} />
-        </Menu>
-    );
-
     return (
         <div className='header-left'>
             <CustomTitle token={tokenToRead} />
             <ArrangeMenu />
 
-            <FileMenu label='File' overlay={menu} />
+            <FileMenu forLoading={forLoading} />
             <span className='menu-separator' />
             <HistoryMenu />
             <span className='menu-separator' />
@@ -82,9 +72,10 @@ export const LoadingMenu = React.memo(() => {
 });
 
 const CustomTitle = React.memo(({ token }: { token?: string | null }) => {
+    const editor = useStore(getEditor);
     const title = token && token.length > 0 ?
-        `Visualizer - Diagram ${token}` :
-        `Visualizer - Diagram ${texts.common.unsaved}`;
+        `${editor.name}` :
+        `${editor.name} (${texts.common.unsaved})`;
 
     return (
         <Title text={title} />

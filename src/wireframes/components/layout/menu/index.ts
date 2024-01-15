@@ -3,4 +3,8 @@ export * from './ClipboardMenu';
 export * from './FileMenu';
 export * from './GroupingMenu';
 export * from './HistoryMenu';
+export * from './LockMenu';
+export * from './PageMenu';
+export * from './SettingsMenu';
+export * from './TableMenu';
 export * from './UIMenu';

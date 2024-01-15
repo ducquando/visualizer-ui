@@ -22,6 +22,9 @@ type Props = {
     // The list of ordered diagram ids.
     diagramIds: DiagramIds;
 
+    // The name of this presentation.
+    name: string;
+
     // The size of all diagrams.
     size: Vec2;
 
@@ -38,6 +41,9 @@ export type InitialEditorProps = {
 
     // The list of ordered diagram ids.
     diagramIds?: ReadonlyArray<string> | DiagramIds;
+
+    // The name of this presentation.
+    name?: string;
 
     // The size of all diagrams.
     size?: Vec2;
@@ -63,6 +69,10 @@ export class EditorState extends Record<Props> {
         return this.get('diagramIds');
     }
 
+    public get name() {
+        return this.get('name');
+    }
+
     public get color() {
         return this.get('color');
     }
@@ -76,7 +86,7 @@ export class EditorState extends Record<Props> {
     }
 
     public static create(setup: InitialEditorProps = {}): EditorState {
-        const { color, diagrams, diagramIds, size } = setup;
+        const { name, color, diagrams, diagramIds, size } = setup;
 
         const props: Props = {
             color: color || Color.WHITE,
@@ -84,9 +94,14 @@ export class EditorState extends Record<Props> {
             diagramIds: ImmutableList.of(diagramIds),
             id: MathHelper.guid(),
             size: size || new Vec2(1280, 720),
+            name: name || 'Untitled Presentation',
         };
 
         return new EditorState(props);
+    }
+
+    public changeName(name: string) {
+        return this.set('name', name);
     }
 
     public changeSize(size: Vec2) {

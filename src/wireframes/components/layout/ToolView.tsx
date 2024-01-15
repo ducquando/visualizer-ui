@@ -1,8 +1,8 @@
 import { useStore, DiagramItem, getDiagram, Diagram } from '@app/wireframes/model';
 import * as React from 'react';
-import { ClipboardMenu } from '../menu/tools/ClipboardMenu';
-import { TableMenu } from '../menu/TableMenu';
-import { GroupingMenu } from '../menu/tools/GroupingMenu';
+import { ClipboardMenu } from './menu/ClipboardMenu';
+import { TableMenu } from './menu/TableMenu';
+import { GroupingMenu } from './menu/GroupingMenu';
 
 export interface ToolViewProps {
     item: DiagramItem | null;
