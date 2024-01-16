@@ -42,9 +42,6 @@ export function useLoading() {
         dispatch(saveDiagramToFile());
     });
 
-    const doRename = useEventCallback(() => {
-    });
-
     const newDiagramAction: UIAction = React.useMemo(() => ({
         disabled: false,
         icon: 'icon-new',
@@ -53,14 +50,6 @@ export function useLoading() {
         tooltip: texts.common.newDiagramTooltip,
         onAction: doNew,
     }), [doNew]);
-
-    const renameDiagram: UIAction = React.useMemo(() => ({
-        disabled: false,
-        icon: 'icon-file_rename',
-        label: texts.common.rename,
-        tooltip: texts.common.renameTooltip,
-        onAction: doRename,
-    }), [doRename]);
 
     const saveDiagram: UIAction = React.useMemo(() => ({
         disabled: !canSave,
@@ -87,5 +76,5 @@ export function useLoading() {
         onAction: openHandler,
     }), [openHandler]);
 
-    return { newDiagram: newDiagramAction, openDiagramAction, renameDiagram, saveDiagram, saveDiagramToFile: saveDiagramToFileAction };
+    return { newDiagram: newDiagramAction, openDiagramAction, saveDiagram, saveDiagramToFile: saveDiagramToFileAction };
 }

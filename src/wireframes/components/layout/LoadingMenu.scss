@@ -24,6 +24,7 @@
             border-radius: 10px !important;
             padding: 10px !important;
             filter: drop-shadow($color-border-dark 0 0 5px);
+            width: max-content;
         }
 
         &-item {

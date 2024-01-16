@@ -6,13 +6,14 @@
 */
 
 import { useDispatch } from 'react-redux';
-import { Button, Dropdown, Form, Input, Modal } from 'antd';
+import { Button, Dropdown, Form, Input } from 'antd';
 import { getDiagramId, useStore, addShape } from '@app/wireframes/model';
 import * as React from 'react';
 import { CircleIcon, FunctionIcon, ImageIcon, RectangleIcon, TableIcon, TextIcon, TriangleIcon, ShapesIcon, LinkIcon, HeadingIcon, SubHeadingIcon, ParagraphIcon } from '@app/icons/icon';
 import './ShapeView.scss';
 import { useState } from 'react';
 import classNames from 'classnames';
+import { ModalForm } from './overlay/ModalForm';
 
 export const ShapeView = React.memo(() => {
     const dispatch = useDispatch();
@@ -29,12 +30,6 @@ export const ShapeView = React.memo(() => {
         icon?: JSX.Element;
         title?: string;
         appearance?: any;
-    }
-
-    interface ModalFormProps {
-        open: boolean;
-        onCreate: (values: any) => void;
-        onCancel: () => void;
     }
 
     const handleImageURLOk = (values: any) => {
@@ -122,62 +117,30 @@ export const ShapeView = React.memo(() => {
         )
     }
 
-    const ImageButton: React.FC = () => {
-        const ModalForm: React.FC<ModalFormProps> = (props: ModalFormProps) => {
-            const { open, onCreate, onCancel } = props;
-            const [form] = Form.useForm();
-            return (
-                <Modal
-                    visible={open}
-                    title="Add Image"
-                    okText='Add'
-                    cancelText="Cancel"
-                    centered={true}
-                    onCancel={onCancel}
-                    onOk={() => {
-                        form
-                            .validateFields()
-                            .then((values) => {
-                                form.resetFields();
-                                onCreate(values);
-                            })
-                            .catch((info) => {
-                                console.log('Validate Failed:', info);
-                            });
-                    }}
-                >
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        name="form_in_modal"
-                        initialValues={{ modifier: 'public' }}
-                    >
-                        <Form.Item name="image_url" label="URL">
-                            <Input type="textarea" placeholder="Paste URL of image..." />
-                        </Form.Item>
-                    </Form>
-                </Modal>
-            );
-        };
-
-        return (
-            <>
-                <div className='menu-dropdown' onClick={() => {setIsDropdownOpen({...isDropdownOpen, image: false});}}>
-                    <Button block type='text'
-                        className='menu-shape'
-                        style={{ display: 'flex', width: dropdownWidth }}
-                        icon={<LinkIcon />}
-                        onClick={() => setIsImageURL(true)}
-                    > By URL </Button>
-                </div>
-                <ModalForm
-                    open={isImageURL}
-                    onCancel={() => setIsImageURL(false)}
-                    onCreate={handleImageURLOk}
-                />
-            </>
-        )
-    }
+    const ImageButton: React.FC = () => (
+        <>
+            <div className='menu-dropdown' onClick={() => {setIsDropdownOpen({...isDropdownOpen, image: false});}}>
+                <Button block type='text'
+                    className='menu-shape'
+                    style={{ display: 'flex', width: dropdownWidth }}
+                    icon={<LinkIcon />}
+                    onClick={() => setIsImageURL(true)}
+                > By URL </Button>
+            </div>
+            <ModalForm
+                title='Add Image'
+                okText='Add'
+                open={isImageURL}
+                onCancel={() => setIsImageURL(false)}
+                onCreate={handleImageURLOk} 
+                formItems={
+                    <Form.Item name="image_url" label="URL">
+                        <Input type="textarea" placeholder="Paste URL of image..." />
+                    </Form.Item>
+                }
+            />
+        </>
+    )
 
     return (
         <>
