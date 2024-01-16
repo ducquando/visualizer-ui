@@ -6,7 +6,7 @@
 */
 
 import * as React from 'react';
-import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
 import { useDispatch } from 'react-redux';
 import { useEventCallback, Vec2 } from '@app/core';
 import { addDiagram, duplicateDiagram, getDiagramId, getFilteredDiagrams, moveDiagram, removeDiagram, selectDiagram, useStore } from '@app/wireframes/model';

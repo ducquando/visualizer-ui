@@ -7,6 +7,7 @@
 
 import { CaretDownOutlined, CaretRightOutlined, DeleteOutlined, FileOutlined } from '@ant-design/icons';
 import { Col, Dropdown, Input, Menu, Row } from 'antd';
+import type { InputRef } from 'antd'
 import classNames from 'classnames';
 import * as React from 'react';
 import { Keys, useEventCallback } from '@app/core';
@@ -92,7 +93,7 @@ export const OutlineItem = (props: OutlineItemProps) => {
         }
     });
 
-    const initInput = React.useCallback((event: Input) => {
+    const initInput = React.useCallback((event: InputRef) => {
         event?.focus();
     }, []);
 
