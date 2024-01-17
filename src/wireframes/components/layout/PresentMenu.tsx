@@ -19,14 +19,14 @@ export const PresentMenu = React.memo(() => {
 
     const retrieveObjects = () => {
         let allDiagrams = new Array();
-        let allObjects = {};
+        let allObjects: {[id: string]: any} = {};
 
         diagrams.values.forEach((diagram, i) => {
             const diagramID = diagram.id;
             const diagramScript = diagram.script;
 
             diagram.items.values.forEach((item) => {
-                let object = {};
+                let object: {[id: string]: any} = {};
                 const id = (item.name != undefined) ? `${item.name}` : `${item.id}`;
                 const content = item.text;
                 const bound = item.bounds(diagram);

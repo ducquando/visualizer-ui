@@ -114,13 +114,13 @@ export class Table implements ShapePlugin {
 
     private parseText(shape: Shape) {
         const key = shape.text;
-
+        // @ts-ignore
         let result = shape.renderCache['PARSED'] as { key: string; parsed: Parsed };
 
         if (!result || result.key !== key) {
             const { rows, columnCount, rowCount } = getTableAttributes(key);
             result = { parsed: { rows, columnCount, rowCount }, key };
-
+            // @ts-ignore
             shape.renderCache['PARSED'] = result;
         }
 

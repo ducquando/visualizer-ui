@@ -133,6 +133,7 @@ export module Types {
         }
 
         for (const key of lhsKeys) {
+            // @ts-ignore
             if (!equals(lhs[key], rhs[key], options)) {
                 return false;
             }

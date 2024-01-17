@@ -25,7 +25,7 @@ type Options = {
 
 export function undoable<T>(reducer: Reducer<T>, initialState: T, options?: Options) {
     const initialAction = options?.initialAction;
-    const actionsToIgnore = {};
+    const actionsToIgnore: { [id: string]: any } = {};
     const actionMerger = options?.actionMerger || (() => undefined);
 
     if (options?.actionsToIgnore) {
@@ -47,7 +47,8 @@ export function undoable<T>(reducer: Reducer<T>, initialState: T, options?: Opti
             if (newPresent === state.present) {
                 return state;
             } 
-            
+
+            // @ts-ignore
             if (actionsToIgnore[action.type]) {
                 return state.replacePresent(newPresent);
             }

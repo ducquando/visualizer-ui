@@ -24,6 +24,7 @@ const Template = ({ palette: _, ...rest }: any) => {
 
 export const Default = Template.bind({});
 
+// @ts-ignore
 Default['argTypes'] = {
     palette: {
         table: {

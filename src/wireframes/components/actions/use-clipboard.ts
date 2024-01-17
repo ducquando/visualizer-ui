@@ -24,6 +24,7 @@ export function useClipboard() {
 
     const clipboard = useClipboardProvider({ 
         onPaste: (event: ClipboardPasteEvent) => {
+            // @ts-ignore
             const text = event.items[0]['text'] as string;
     
             if (selectedDiagram && text && text.indexOf(PREFIX) === 0) {

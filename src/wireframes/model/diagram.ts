@@ -327,6 +327,7 @@ export class Diagram extends Record<Props> {
 
             updater(update, resultItems);
 
+            // @ts-ignore
             update['rootIds'] = update.itemIds;
         }
 

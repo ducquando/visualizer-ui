@@ -25,12 +25,14 @@ const Template = (args: any) => {
 
 export const Default = Template.bind({});
 
+// @ts-ignore
 Default['args'] = {
     keys: 'ctrl+s',
 };
 
 export const ReadableKeys = Template.bind({});
 
+// @ts-ignore
 ReadableKeys['args'] = {
     keys: 'CTRL + S',
 };

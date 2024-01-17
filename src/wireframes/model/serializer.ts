@@ -114,7 +114,7 @@ function writeDiagramItem(source: DiagramItem) {
 }
 
 function writeObject(source: object, serializers: PropertySerializers) {
-    const result = {};
+    const result: { [id: string]: any } = {};
 
     for (const [key, value] of Object.entries(source)) {
         const serializer = serializers[key];
@@ -137,6 +137,7 @@ function readDiagram(source: object) {
     const raw: any = readObject(source, DIAGRAM_SERIALIZERS);
 
     if (!raw.rootIds) {
+        // @ts-ignore
         raw.rootIds = source['itemIds'];
     }
 
@@ -160,7 +161,7 @@ function readDiagramItem(source: object, type?: any) {
 }
 
 function readObject(source: object, serializers: PropertySerializers) {
-    const result = {};
+    const result: { [id: string]: any } = {};
 
     for (const [key, value] of Object.entries(source)) {
         const serializer = serializers[key];

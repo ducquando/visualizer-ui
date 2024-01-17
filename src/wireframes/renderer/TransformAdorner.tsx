@@ -265,6 +265,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             this.manipulationMode = Mode.Move;
         } else {
             this.manipulationMode = Mode.Resize;
+            // @ts-ignore
             this.manipulationOffset = hitItem['offset'];
         }
     }
@@ -317,7 +318,7 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
     }
 
     private renderPreview() {
-        const items = {};
+        const items: { [id: string]: any } = {};
 
         for (const item of this.props.selectedItems) {
             items[item.id] = item.transformByBounds(this.startTransform, this.transform);
@@ -485,7 +486,9 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
         const adornerSize = DRAG_SIZE / this.props.zoom;
 
         for (const resizeShape of this.resizeShapes) {
+            // @ts-ignore
             const offset = resizeShape['offset'];
+            // @ts-ignore
             const angle = resizeShape['angle'];
             const width = (angle % 180 === 0) ? this.transform.size.x : (angle % 90 === 0) ? DRAG_SIZE : adornerSize; 
             const height = (angle % 180 === 0) ? DRAG_SIZE : (angle % 90 === 0) ? this.transform.size.y : adornerSize;
@@ -551,9 +554,12 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             const resizeShape = this.props.adorners.rect(DRAG_SIZE, DRAG_SIZE)
                 .stroke({ color: 'none', width: 1 }).fill(TRANSFORMER_NO_SHOW)
 
+            // @ts-ignore
             resizeShape['offset'] = new Vec2(xs[i], ys[i]);
+            // @ts-ignore
             resizeShape['angle'] = as[i];
 
+            // @ts-ignore
             this.props.interactionService.setCursorAngle(resizeShape, resizeShape['angle']);
 
             this.resizeShapes.push(resizeShape);
@@ -569,9 +575,12 @@ export class TransformAdorner extends React.PureComponent<TransformAdornerProps>
             const resizeShape = this.props.adorners.rect(DRAG_SIZE/2, DRAG_SIZE/2)
                 .stroke({ color: TRANSFORMER_STROKE_COLOR, width: 1 }).fill(TRANSFORMER_FILL_COLOR);
 
+            // @ts-ignore
             resizeShape['offset'] = new Vec2(xs[i], ys[i]);
+            // @ts-ignore
             resizeShape['angle'] = as[i];
 
+            // @ts-ignore
             this.props.interactionService.setCursorAngle(resizeShape, resizeShape['angle']);
 
             this.resizeShapes.push(resizeShape);

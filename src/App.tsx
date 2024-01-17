@@ -18,6 +18,7 @@ import { OverlayContainer } from './wireframes/contexts/OverlayContext';
 export const App = () => {
     const dispatch = useDispatch();
     const route = useRouteMatch();
+    // @ts-ignore
     const routeToken = route.params['token'] || null;
     const routeTokenSnapshot = React.useRef(routeToken);
     const showRightSidebar = useStore(s => s.ui.showRightSidebar);

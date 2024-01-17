@@ -684,6 +684,7 @@ function getText(value: TextConfig | Shape | string | null | undefined) {
     if (isShape(value)) {
         return value.text || '';
     } else {
+        // @ts-ignore
         return value?.['text'] || value || '';
     }
 }
@@ -692,6 +693,7 @@ function getTextAlignment(value: TextConfig | Shape | string | null | undefined)
     if (isShape(value)) {
         return value.textAlignment || 'center';
     } else {
+        // @ts-ignore
         return value?.['alignment'] || value || 'center';
     }
 }
@@ -700,6 +702,7 @@ function getFontSize(value: TextConfig | Shape | number | null | undefined) {
     if (isShape(value)) {
         return value.fontSize || 10;
     } else {
+        // @ts-ignore
         return value?.['fontSize'] || value || 10;
     }
 }
@@ -708,6 +711,7 @@ function getFontFamily(value: TextConfig | Shape | string | null | undefined) {
     if (isShape(value)) {
         return value.fontFamily || 'inherit';
     } else {
+        // @ts-ignore
         return value?.['fontFamily'] || value || 10;
     }
 }
