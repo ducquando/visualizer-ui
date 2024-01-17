@@ -33,11 +33,11 @@ body {
     @include fixed(null, null, null, 13px);
 }
 
-.header-right {
+.header-cta-right {
     display: inline-flex;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
+    gap: 2px;
     margin-right: 15px;
     height: 40px;
     background-color: $color-theme-blue-lightest;
@@ -47,13 +47,13 @@ body {
     }
 }
 
-.header-right:hover {
+.header-cta-right:hover {
     background-color: $color-border;
 }
 
 .ant-layout {
     &-header {
-        @include box-shadow-outer(0, 2px, 2px, .1);
+        border-bottom: 1px solid $color-border;
         background-color: white;
         padding-left: 100px;
         padding-right: 0;
@@ -109,7 +109,7 @@ tspan {
 // Sidebars
 //
 .sidebar-right {
-    background: $color-white;
+    background: $color-white !important;
     border: 0;
     border-left: 1px solid $color-border;
     overflow-x: hidden;
@@ -118,7 +118,7 @@ tspan {
 
 .sidebar-left {
     & {
-        background: $color-theme-blue-lightest;
+        background: $color-theme-blue-lightest !important;
         display: flex;
         flex-flow: column;
         height: fit-content;
@@ -152,10 +152,6 @@ tspan {
         padding: 0;
     }
 
-    .item:hover {
-        background: $color-theme-secondary;
-    }
-
     .item:first-of-type {
         border-radius: 20px 20px 0 0;
         padding: 10px 0 0;
@@ -164,6 +160,10 @@ tspan {
     .item:last-of-type {
         border-radius: 0 0 20px 20px;
         padding: 0 0 10px;
+    }
+
+    .item:hover {
+        background: $color-theme-secondary !important;
     }
 }
 

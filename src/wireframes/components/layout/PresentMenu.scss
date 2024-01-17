@@ -3,8 +3,6 @@
 
 .header {
     &-mode {
-        height: 40px !important;
-        width: 40px !important;
         border-color: $color-border !important;
     }
 
@@ -12,33 +10,15 @@
     &-mode:active {
         background-color: $color-border !important;
     }
-
-    &-separator {
-        display: inline-block;
-        height: 1rem;
-        margin-left: .5rem;
-        margin-right: .5rem;
-        width: 1px;
-    }
 }
 
 .present {
     &-action {
-        &-dropdown {
-            border: 0;
-            border-radius: 10px !important;
-            padding: 10px !important;
-            filter: drop-shadow($color-border-dark 0 0 5px);
-        }
-
         &-item {
             display: flex !important;
             align-items: center;
             justify-content: flex-start;
             margin: 0 !important;
-            color: black !important;
-            height: 36px;
-            gap: 6px;
 
             .anticon {
                 width: 15px;
@@ -49,14 +29,8 @@
             background-color: $color-border;
         }
 
-        &-item:first-of-type {
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-
-        &-item:last-of-type {
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
+        &-item.on-selected {
+            fill: #1677ff;
         }
     }
 }

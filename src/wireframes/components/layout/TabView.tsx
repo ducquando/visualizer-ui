@@ -23,7 +23,7 @@ export const TabView = (props: TabViewProps) => {
     );
 };
 
-export const TabViewInner = ({ diagram, collapse }: TabViewProps & { diagram: Diagram }) => {
+const TabViewInner = ({ diagram, collapse }: TabViewProps & { diagram: Diagram }) => {
     const dispatch = useDispatch();
     const selectedTab = useStore(s => s.ui.selectedTab);
 

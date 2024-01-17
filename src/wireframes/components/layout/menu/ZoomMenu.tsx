@@ -75,7 +75,7 @@ export const ZoomMenu = React.memo(() => {
     return (
         <>
             <Dropdown
-                menu={{ items: zoomMenu, onClick: zoomEvt }}
+                menu={{ items: zoomMenu, onClick: zoomEvt, selectable: true, defaultSelectedKeys: [zoomValue], }}
                 className='loading-action-button'
                 trigger={['click']}>
                 <Button type="text">

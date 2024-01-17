@@ -57,33 +57,9 @@
 }
 
 .action {
-    &-dropdown {
-        background-color: $color-white;
-        border: 0;
-        border-radius: 10px !important;
-        padding: 10px !important;
-        filter: drop-shadow($color-border-dark 0 0 5px);
-    }
-
     &-item {
-        align-items: center;
-        justify-content: start;
-        background-color: $color-white;
-        gap: 4px;
-        height: 36px;
-
         .anticon {
             width: 15px;
         }
-    }
-
-    &-item:first-of-type {
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-    }
-
-    &-item:last-of-type {
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
     }
 }

@@ -27,35 +27,35 @@ export const FileMenu = React.memo(() => {
             key: forLoading.newDiagram.label,
             label: forLoading.newDiagram.label,
             icon: <MenuIcon icon={forLoading.newDiagram.icon} />,
-            className: 'force-color loading-action-item',
+            className: 'loading-action-item',
             disabled: forLoading.newDiagram.disabled,
         },
         {
             key: forLoading.openDiagramAction.label,
             label: forLoading.openDiagramAction.label,
             icon: <MenuIcon icon={forLoading.openDiagramAction.icon} />,
-            className: 'force-color loading-action-item',
+            className: 'loading-action-item',
             disabled: forLoading.openDiagramAction.disabled,
         },
         {
             key: texts.common.rename,
             label: texts.common.rename,
             icon: <MenuIcon icon='icon-file_rename' />,
-            className: 'force-color loading-action-item',
+            className: 'loading-action-item',
             disabled: false,
         },
         {
             key: forLoading.saveDiagram.label,
             label: forLoading.saveDiagram.label,
             icon: <MenuIcon icon={forLoading.saveDiagram.icon} />,
-            className: 'force-color loading-action-item',
+            className: 'loading-action-item',
             disabled: forLoading.saveDiagram.disabled,
         },
         {
             key: forLoading.saveDiagramToFile.label,
             label: forLoading.saveDiagramToFile.label,
             icon: <MenuIcon icon={forLoading.saveDiagramToFile.icon} />,
-            className: 'force-color loading-action-item',
+            className: 'loading-action-item',
             disabled: forLoading.saveDiagramToFile.disabled,
         },
     ];
@@ -81,7 +81,7 @@ export const FileMenu = React.memo(() => {
                 menu={{ items: menu, onClick: menuEvt }}
                 trigger={['click']}>
                 <Button type="text" size='middle'>
-                    {<h3>{(label.length < 25) ? label : `${label.substring(0, 25)}...`}</h3>}
+                    <h3>{(label.length < 25) ? label : `${label.substring(0, 25)}...`}</h3>
                 </Button>
             </Dropdown>
             <ModalForm
@@ -91,9 +91,12 @@ export const FileMenu = React.memo(() => {
                 onCancel={() => setIsRename(false)}
                 onCreate={handleRenameOk} 
                 formItems={
-                    <Form.Item name="new_name" label="New name">
-                        <Input type="textarea" maxLength={100} />
-                    </Form.Item>
+                    <>
+                        <div style={{ height: 20 }} />
+                        <Form.Item name="new_name">
+                            <Input placeholder="Enter new name..." type="textarea" maxLength={100} />
+                        </Form.Item>
+                    </>
                 }            
             />
         </>

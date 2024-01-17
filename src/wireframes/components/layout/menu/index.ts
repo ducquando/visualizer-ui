@@ -6,4 +6,4 @@ export * from './HistoryMenu';
 export * from './PageMenu';
 export * from './SettingsMenu';
 export * from './TableMenu';
-export * from './UIMenu';
+export * from './ZoomMenu';

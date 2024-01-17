@@ -1,12 +1,13 @@
-import Icon, { ExportOutlined } from "@ant-design/icons";
+import { ExportOutlined } from "@ant-design/icons";
 import { Button, Dropdown } from "antd";
 import React = require("react");
 import { getDiagrams, getEditor, useStore } from "@app/wireframes/model";
 import { AnimationIcon, DesignIcon } from "@app/icons/icon";
-import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
+// import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
 import './PresentMenu.scss'
 import { useState } from "react";
 import type { MenuProps } from 'antd';
+import Icon, { CustomIconComponentProps } from "@ant-design/icons/lib/components/Icon";
 
 export const PresentMenu = React.memo(() => {
     const html = document.querySelector('.editor-diagram')?.innerHTML;
@@ -126,8 +127,8 @@ export const PresentMenu = React.memo(() => {
     );
 
     const modeMenu: MenuProps['items'] = [
-        { key: 'design', label: 'Design', icon: <DesignIconOutline />, className: 'present-action-item'},
-        { key: 'animation', label: 'Animation', icon: <AnimationIconOutline />, className: 'present-action-item'},
+        { key: 'design', label: 'Design', icon: <DesignIconOutline />, className: `present-action-item ${mode == 'design' ? 'on-selected' : ''}` },
+        { key: 'animation', label: 'Animation', icon: <AnimationIconOutline />, className: `present-action-item ${mode == 'animation' ? 'on-selected' : ''}`},
     ];
 
     const modeEvt: MenuProps['onClick'] = ({key}) => {
@@ -136,13 +137,21 @@ export const PresentMenu = React.memo(() => {
 
     return (
         <>
-            <Dropdown className='header-mode' menu={{ items: modeMenu, onClick: modeEvt}} trigger={['click']}>
-                <Button
-                    icon={(mode == 'animation') ? <AnimationIconOutline /> : <DesignIconOutline />}
-                    shape='circle' />
+            <Dropdown
+                className='header-mode'
+                menu={{ 
+                    items: modeMenu, 
+                    onClick: modeEvt, 
+                    selectable: true, 
+                    defaultSelectedKeys: [mode],
+                }} trigger={['click']}>
+                    <Button
+                        icon={(mode == 'animation') ? <AnimationIconOutline /> : <DesignIconOutline />}
+                        shape='circle'
+                        size="large" />
             </Dropdown>
             <span className='menu-separator' />
-            <Button icon={<ExportOutlined style={{ marginTop: '2px' }} />} onClick={fetchAPI} className="header-right" type="text" shape='round'>
+            <Button icon={<ExportOutlined />} onClick={fetchAPI} className="header-cta-right" type="text" shape='round'>
                 <h4>Present</h4>
             </Button>
         </>
