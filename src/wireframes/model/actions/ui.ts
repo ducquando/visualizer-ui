@@ -7,9 +7,10 @@
 
 import { createAction, createReducer } from '@reduxjs/toolkit';
 import { message } from 'antd';
-import { NoticeType } from 'antd/lib/message';
+import { NoticeType } from 'antd/es/message/interface';
 import { AnyAction, Dispatch, Middleware, Reducer } from 'redux';
 import { UIState } from './../internal';
+
 
 export const showToast =
     createAction('ui/infoToast', (content: string, type?: NoticeType, key?: string, delayed = 1000) => {

@@ -5,7 +5,8 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
-import { Collapse, PageHeader } from 'antd';
+import { Collapse } from 'antd';
+import { PageHeader } from '@ant-design/pro-layout';
 import classNames from 'classnames';
 import * as React from 'react';
 import { texts } from '@app/texts';

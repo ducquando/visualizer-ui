@@ -9,8 +9,9 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useStore, getEditor, setZoom } from '@app/wireframes/model';
-import { Button, Dropdown, Menu } from 'antd';
+import { Button, Dropdown } from 'antd';
 import { Vec2 } from '@app/core';
+import type { MenuProps } from 'antd';
 
 const SPACE_VERTICAL = 255;
 const SPACE_HORI = 195;
@@ -56,23 +57,25 @@ export const ZoomMenu = React.memo(() => {
         }
     }
 
-    const zoomMenu = (
-        <Menu className='loading-action-dropdown' selectedKeys={[zoomValue]}>
-            <Menu.Item key='Fit' className='loading-action-item' onClick={(e) => isZoom(e.key)}>Fit</Menu.Item>
-            <hr style={{ margin: '4px 0' }} />
-            <Menu.Item key='50' className='loading-action-item' onClick={(e) => isZoom(e.key)}>50%</Menu.Item>
-            <Menu.Item key='75' className='loading-action-item' onClick={(e) => isZoom(e.key)}>75%</Menu.Item>
-            <Menu.Item key='100' className='loading-action-item' onClick={(e) => isZoom(e.key)}>100%</Menu.Item>
-            <Menu.Item key='125' className='loading-action-item' onClick={(e) => isZoom(e.key)}>125%</Menu.Item>
-            <Menu.Item key='150' className='loading-action-item' onClick={(e) => isZoom(e.key)}>150%</Menu.Item>
-            <Menu.Item key='200' className='loading-action-item' onClick={(e) => isZoom(e.key)}>200%</Menu.Item>
-        </Menu>
-    );
+    const zoomMenu: MenuProps['items'] = [
+        { key: 'Fit', label: 'Fit', className: 'loading-action-item' },
+        { type: 'divider' },
+        { key: '50', label: '50%', className: 'loading-action-item' },
+        { key: '75', label: '75%', className: 'loading-action-item' },
+        { key: '100', label: '100%', className: 'loading-action-item' },
+        { key: '125', label: '125%', className: 'loading-action-item' },
+        { key: '150', label: '150%', className: 'loading-action-item' },
+        { key: '200', label: '200%', className: 'loading-action-item' },
+    ];
+
+    const zoomEvt: MenuProps['onClick'] = ({key}) => {
+        isZoom(key);
+    };
 
     return (
         <>
             <Dropdown
-                overlay={zoomMenu}
+                menu={{ items: zoomMenu, onClick: zoomEvt }}
                 className='loading-action-button'
                 trigger={['click']}>
                 <Button type="text">

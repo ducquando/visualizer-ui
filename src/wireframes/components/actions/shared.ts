@@ -18,7 +18,7 @@ export interface UIAction {
     label: string;
 
     // The icon.
-    icon: JSX.Element | string;
+    icon: string;
 
     // The tooltip.
     tooltip: string;

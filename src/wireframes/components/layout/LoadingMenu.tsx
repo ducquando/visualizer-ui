@@ -62,7 +62,7 @@ export const LoadingMenu = React.memo(() => {
             <CustomTitle token={tokenToRead} />
             <ArrangeMenu />
 
-            <FileMenu forLoading={forLoading} />
+            <FileMenu />
             <span className='menu-separator' />
             <HistoryMenu />
             <span className='menu-separator' />

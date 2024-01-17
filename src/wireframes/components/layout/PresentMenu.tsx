@@ -1,11 +1,12 @@
 import Icon, { ExportOutlined } from "@ant-design/icons";
-import { Button, Dropdown, Menu } from "antd";
+import { Button, Dropdown } from "antd";
 import React = require("react");
 import { getDiagrams, getEditor, useStore } from "@app/wireframes/model";
 import { AnimationIcon, DesignIcon } from "@app/icons/icon";
 import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
 import './PresentMenu.scss'
 import { useState } from "react";
+import type { MenuProps } from 'antd';
 
 export const PresentMenu = React.memo(() => {
     const html = document.querySelector('.editor-diagram')?.innerHTML;
@@ -119,31 +120,23 @@ export const PresentMenu = React.memo(() => {
     const DesignIconOutline = (props: Partial<CustomIconComponentProps>) => (
         <Icon component={DesignIcon} {...props} />
     );
+
     const AnimationIconOutline = (props: Partial<CustomIconComponentProps>) => (
         <Icon component={AnimationIcon} {...props} />
     );
-    const modeMenu = (
-        <Menu className='present-action-dropdown' selectedKeys={[mode]}>
-            <Menu.Item
-                key='design'
-                className='present-action-item'
-                icon={<DesignIconOutline />}
-                onClick={(e) => setMode(e.key)}>
-                Design
-            </Menu.Item>
-            <Menu.Item
-                key='animation'
-                className='present-action-item'
-                icon={<AnimationIconOutline />}
-                onClick={(e) => setMode(e.key)}>
-                Animation
-            </Menu.Item>
-        </Menu>
-    )
+
+    const modeMenu: MenuProps['items'] = [
+        { key: 'design', label: 'Design', icon: <DesignIconOutline />, className: 'present-action-item'},
+        { key: 'animation', label: 'Animation', icon: <AnimationIconOutline />, className: 'present-action-item'},
+    ];
+
+    const modeEvt: MenuProps['onClick'] = ({key}) => {
+        setMode(key);
+    };
 
     return (
         <>
-            <Dropdown className='header-mode' overlay={modeMenu} trigger={['click']}>
+            <Dropdown className='header-mode' menu={{ items: modeMenu, onClick: modeEvt}} trigger={['click']}>
                 <Button
                     icon={(mode == 'animation') ? <AnimationIconOutline /> : <DesignIconOutline />}
                     shape='circle' />

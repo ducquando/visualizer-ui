@@ -16,7 +16,7 @@ import { addShape, changeItemsAppearance, Diagram, getDiagram, getDiagramId, get
 import { Editor } from '@app/wireframes/renderer/Editor';
 import { DiagramRef, ItemsRef } from '../../model/actions/utils';
 import { ShapeSource } from '../../interface';
-import { ContextMenu } from '../context-menu/ContextMenu';
+import { ContextMenu, ContextMenuEvt } from '../context-menu/ContextMenu';
 import './EditorView.scss';
 
 export interface EditorViewProps {
@@ -64,6 +64,7 @@ export const EditorViewInner = ({ diagram, spacing }: EditorViewProps & { diagra
 
     const doHide = useEventCallback(() => {
         setMenuVisible(false);
+        ContextMenuEvt;
     });
 
     const doSetPosition = useEventCallback((event: React.MouseEvent) => {
@@ -165,7 +166,17 @@ export const EditorViewInner = ({ diagram, spacing }: EditorViewProps & { diagra
     const padding = sizeInPx(spacing);
 
     return (
-        <Dropdown overlay={<ContextMenu onClick={doHide} />} trigger={['contextMenu']} visible={menuVisible} onVisibleChange={setMenuVisible}>            
+        <Dropdown
+            menu={{
+                items: ContextMenu,
+                onClick: doHide,
+                className: 'context-menu',
+                activeKey: 'none'
+            }}
+            trigger={['contextMenu']}
+            open={menuVisible}
+            onOpenChange={setMenuVisible}
+        >            
             <div className='editor-view' onClick={doSetPosition}>
                 <div className='editor-diagram' style={{ width: w, height: h, padding }} ref={renderRef} >
                     <Editor

@@ -12,6 +12,4 @@ export * from './use-clipboard';
 export * from './use-grouping';
 export * from './use-history';
 export * from './use-loading';
-export * from './use-locking';
 export * from './use-remove';
-export * from './use-ui';

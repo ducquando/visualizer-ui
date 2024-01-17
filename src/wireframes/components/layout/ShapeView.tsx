@@ -147,8 +147,8 @@ export const ShapeView = React.memo(() => {
             <Dropdown
                 overlay={<TextButton />}
                 trigger={['click']}
-                visible={isDropdownOpen.textbox}
-                onVisibleChange={(e) => {
+                open={isDropdownOpen.textbox}
+                onOpenChange={(e) => {
                     setIsDropdownOpen({...isDropdownOpen, textbox: e.valueOf()});
                 }} >
                     <Button className='item' type='text' >
@@ -159,8 +159,8 @@ export const ShapeView = React.memo(() => {
             <Dropdown
                 overlay={<CellButton />}
                 trigger={['click']}
-                visible={isDropdownOpen.cell}
-                onVisibleChange={(e) => {
+                open={isDropdownOpen.cell}
+                onOpenChange={(e) => {
                     setIsDropdownOpen({...isDropdownOpen, cell: e.valueOf()});
                 }} >
                     <Button className='item' type='text' >
@@ -171,8 +171,8 @@ export const ShapeView = React.memo(() => {
             <Dropdown
                 overlay={<ShapeButton />}
                 trigger={['click']}
-                visible={isDropdownOpen.shape}
-                onVisibleChange={(e) => {
+                open={isDropdownOpen.shape}
+                onOpenChange={(e) => {
                     setIsDropdownOpen({...isDropdownOpen, shape: e.valueOf()});
                 }} >
                     <Button className='item' type='text' >
@@ -183,8 +183,8 @@ export const ShapeView = React.memo(() => {
             <Dropdown
                 overlay={<ImageButton />}
                 trigger={['click']}
-                visible={isDropdownOpen.image}
-                onVisibleChange={(e) => {
+                open={isDropdownOpen.image}
+                onOpenChange={(e) => {
                     setIsDropdownOpen({...isDropdownOpen, image: e.valueOf()});
                 }} >
                     <Button className='item' type='text' >

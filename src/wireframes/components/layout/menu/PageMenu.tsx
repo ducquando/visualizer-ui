@@ -8,7 +8,7 @@
 import * as svg from '@svgdotjs/svg.js';
 import * as React from 'react';
 import { Diagram, getEditor, useStore } from '@app/wireframes/model';
-import { Card, Dropdown, Menu, Tooltip } from 'antd';
+import { Card, Dropdown, Tooltip } from 'antd';
 import { CopyOutlined, DeleteOutlined, FileAddOutlined, PlusOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import { SVGHelper, Subscription, Vec2, useEventCallback } from '@app/core';
@@ -16,6 +16,7 @@ import { texts } from '@app/texts';
 import { InteractionService } from '@app/wireframes/renderer/interaction-service';
 import { RenderLayer } from '@app/wireframes/renderer/RenderLayer';
 import { PreviewEvent } from '@app/wireframes/renderer/preview';
+import type { MenuProps } from 'antd';
 
 interface PageProps {
     // Width.
@@ -161,20 +162,21 @@ export const PageThumbnail = (props: PageThumbnailProps) => {
         onAction(diagram.id, 'Delete');
     });
 
-    const PageItem = (
-        <Menu className='action-dropdown' selectable={false}>
-            <Menu.Item className='action-item' key='add' icon={<FileAddOutlined />} onClick={doAdd}>
-                {`${texts.common.newDiagram} page`}
-            </Menu.Item>
-            <Menu.Item className='action-item' key='duplicate' icon={<CopyOutlined />} onClick={doDuplicate}>
-                {`${texts.common.duplicate} page`}
-            </Menu.Item>
-            <Menu.Item className='action-item' key='delete' icon={<DeleteOutlined />} onClick={doDelete}>
-                {`${texts.common.delete} page`}
-            </Menu.Item>
-            
-        </Menu>
-    );
+    const pageItem: MenuProps['items'] = [
+        { key: 'add', label: `${texts.common.newDiagram} page`, icon: <FileAddOutlined />, className: 'action-item'},
+        { key: 'duplicate', label: `${texts.common.duplicate} page`, icon: <CopyOutlined />, className: 'action-item'},
+        { key: 'delete', label: `${texts.common.delete} page`, icon: <DeleteOutlined />, className: 'action-item'},
+    ];
+
+    const pageEvt: MenuProps['onClick'] = ({key}) => {
+        if (key == 'add') {
+            doAdd;
+        } else if (key == 'duplicate') {
+            doDuplicate;
+        } else if (key == 'delete') {
+            doDelete;
+        }
+    };
 
     return (
         <div className='tree-item'>
@@ -183,7 +185,7 @@ export const PageThumbnail = (props: PageThumbnailProps) => {
                     className={classNames('pages-thumbnail', { selected }) }
                     style={{ height: cardHeight }} >
                     <Tooltip title={`Page ${pageIndex}`}>
-                        <Dropdown overlay={PageItem} trigger={['contextMenu']}>
+                        <Dropdown menu={{ items: pageItem, onClick: pageEvt }} trigger={['contextMenu']}>
                             <Card
                                 className='pages-card'
                                 style={{ width: cardWidth, height: cardHeight, borderRadius: 20, overflow: "hidden" }} 

@@ -5,7 +5,7 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
-import { Button, Menu, MenuItemProps, Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 import { ButtonProps } from 'antd/lib/button';
 import * as React from 'react';
 import { isMac, Shortcut, Types } from '@app/core';
@@ -81,40 +81,6 @@ export const ActionButton = React.memo((props: ActionProps & ButtonProps) => {
                 </Button>
             </Tooltip>
         </>
-    );
-});
-
-export const ActionMenuItem = React.memo((props: ActionProps & MenuItemProps) => {
-    const { action, displayMode, hideWhenDisabled, ...other } = props;
-    const {
-        disabled,
-        label,
-        onAction,
-        icon,
-    } = action;
-
-    const actualDisplayMode = displayMode || 'IconLabel';
-
-    if (disabled && hideWhenDisabled) {
-        return null;
-    }
-
-    return (
-        <Menu.Item {...other} key={label} className='force-color loading-action-item' disabled={disabled} onClick={onAction}
-            icon={(actualDisplayMode === 'Icon' || actualDisplayMode === 'IconLabel') ? (
-                <>
-                    {Types.isString(icon) ? (
-                        <span className='anticon'>
-                            <i className={icon} />
-                        </span>
-                    ) : icon}
-                </>
-            ) : undefined}>
-
-            {(actualDisplayMode === 'Label' || actualDisplayMode === 'IconLabel') &&
-                <>{label}</>
-            }
-        </Menu.Item>
     );
 });
 

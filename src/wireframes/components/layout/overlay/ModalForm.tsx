@@ -32,7 +32,7 @@ export const ModalForm: React.FC<ModalFormProps> = (props: ModalFormProps) => {
     const [form] = Form.useForm();
     return (
         <Modal
-            visible={open}
+            open={open}
             title={title}
             okText={okText ?? 'OK'}
             cancelText={cancelText ?? "Cancel"}

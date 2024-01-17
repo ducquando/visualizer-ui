@@ -1,67 +1,86 @@
 import { changeName, getEditor, useStore } from '@app/wireframes/model';
-import { Button, Dropdown, Form, Input, Menu } from 'antd';
+import { Button, Dropdown, Form, Input } from 'antd';
 import * as React from 'react';
 import { useState } from 'react';
-import { ActionMenuItem } from '../../actions';
+import { useLoading } from '../../actions';
 import { texts } from '@app/texts/en';
 import { useDispatch } from 'react-redux';
 import { ModalForm } from '../overlay/ModalForm';
+import type { MenuProps } from 'antd';
+import { MenuIcon } from '@app/style/icomoon/icomoon_icon';
 
-type ActionDisplayMode = 'Icon' | 'IconLabel' | 'Label';
-
-type FileMenuProps = {
-    // The UI 
-    forLoading: any;
-
-    // The icon to show, if any.
-    icon?: string | JSX.Element;
-
-    // Display mode
-    displayMode?: ActionDisplayMode;
-};
-
-export const FileMenu = React.memo((props: FileMenuProps) => {
-    const { icon, forLoading } = props;
+export const FileMenu = React.memo(() => {
     const dispatch = useDispatch();
+    const forLoading = useLoading();
     const editor = useStore(getEditor);
     const [label, setLabel] = useState(editor.name);
     const [isRename, setIsRename] = useState(false);
 
     const handleRenameOk = (values: any) => {
-        dispatch(changeName(values.new_name))
+        dispatch(changeName(values.new_name));
         setLabel(values.new_name);
         setIsRename(false);
     };
 
-    const menu = (
-        <Menu className='loading-action-dropdown'>
-            <ActionMenuItem displayMode='IconLabel' action={forLoading.newDiagram} />
-            <ActionMenuItem displayMode='IconLabel' action={forLoading.openDiagramAction} />
-            <Menu.Item
-                key={'Rename'}
-                className='force-color loading-action-item'
-                disabled={false}
-                onClick={() => setIsRename(true)}
-                icon={
-                    <>
-                        <span className='anticon'>
-                            <i className={'icon-file_rename'} />
-                        </span>
-                    </>}>
-                {texts.common.rename}
-            </Menu.Item>
-            <ActionMenuItem displayMode='IconLabel' action={forLoading.saveDiagram} />
-            <ActionMenuItem displayMode='IconLabel' action={forLoading.saveDiagramToFile} />
-        </Menu>
-    );
+    const menu: MenuProps['items'] = [
+        {
+            key: forLoading.newDiagram.label,
+            label: forLoading.newDiagram.label,
+            icon: <MenuIcon icon={forLoading.newDiagram.icon} />,
+            className: 'force-color loading-action-item',
+            disabled: forLoading.newDiagram.disabled,
+        },
+        {
+            key: forLoading.openDiagramAction.label,
+            label: forLoading.openDiagramAction.label,
+            icon: <MenuIcon icon={forLoading.openDiagramAction.icon} />,
+            className: 'force-color loading-action-item',
+            disabled: forLoading.openDiagramAction.disabled,
+        },
+        {
+            key: texts.common.rename,
+            label: texts.common.rename,
+            icon: <MenuIcon icon='icon-file_rename' />,
+            className: 'force-color loading-action-item',
+            disabled: false,
+        },
+        {
+            key: forLoading.saveDiagram.label,
+            label: forLoading.saveDiagram.label,
+            icon: <MenuIcon icon={forLoading.saveDiagram.icon} />,
+            className: 'force-color loading-action-item',
+            disabled: forLoading.saveDiagram.disabled,
+        },
+        {
+            key: forLoading.saveDiagramToFile.label,
+            label: forLoading.saveDiagramToFile.label,
+            icon: <MenuIcon icon={forLoading.saveDiagramToFile.icon} />,
+            className: 'force-color loading-action-item',
+            disabled: forLoading.saveDiagramToFile.disabled,
+        },
+    ];
+
+    const menuEvt: MenuProps['onClick'] = ({key}) => {
+        if (key == 'Rename') {
+            setIsRename(true);
+        } else if (key == forLoading.newDiagram.label) {
+            forLoading.newDiagram.onAction;
+        } else if (key == forLoading.openDiagramAction.label) {
+            forLoading.openDiagramAction.onAction;
+        } else if (key == forLoading.saveDiagram.label) {
+            forLoading.saveDiagram.onAction;
+        } else if (key == forLoading.saveDiagramToFile.label) {
+            forLoading.saveDiagramToFile.onAction;
+        }
+    }
 
     return (
         <>
             <Dropdown
                 className='loading-action-button'
-                overlay={menu}
+                menu={{ items: menu, onClick: menuEvt }}
                 trigger={['click']}>
-                <Button type="text" icon={icon} size='middle'>
+                <Button type="text" size='middle'>
                     {<h3>{(label.length < 25) ? label : `${label.substring(0, 25)}...`}</h3>}
                 </Button>
             </Dropdown>
