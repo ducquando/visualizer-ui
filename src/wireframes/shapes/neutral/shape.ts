@@ -22,7 +22,7 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.STROKE_COLOR]: CommonTheme.CONTROL_BORDER_COLOR,
     [DefaultAppearance.STROKE_THICKNESS]: CommonTheme.CONTROL_BORDER_THICKNESS,
     [DefaultAppearance.TEXT_ALIGNMENT]: 'center',
-    [DefaultAppearance.TEXT]: 'Shape',
+    [DefaultAppearance.TEXT]: '',
     [SHAPE]: SHAPE_RECTANGLE,
 };
 

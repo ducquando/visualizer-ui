@@ -9,6 +9,7 @@ import { createAction, createReducer } from '@reduxjs/toolkit';
 import { message } from 'antd';
 import { NoticeType } from 'antd/es/message/interface';
 import { AnyAction, Dispatch, Middleware, Reducer } from 'redux';
+import { ApplicationMode } from '@app/core';
 import { UIState } from './../internal';
 
 
@@ -33,7 +34,7 @@ export const selectPanel =
     });
 
 export const selectTab =
-    createAction('ui/tab', (tab: string) => {
+    createAction('ui/tab', (tab: ApplicationMode) => {
         return { payload: { tab } };
     });
 
@@ -44,11 +45,6 @@ export const filterDiagrams =
 
 export const togglePanel =
     createAction('ui/togglePanel', () => {
-        return { payload: { } };
-    });
-
-export const toggleRightSidebar =
-    createAction('ui/toggleRightSidebar', () => {
         return { payload: { } };
     });
 
@@ -76,9 +72,6 @@ export function ui(initialState: UIState): Reducer<UIState> {
         .addCase(setZoom, (state, action) => {
             state.zoom = action.payload.zoom;
         })
-        .addCase(selectPanel, (state, action) => {
-            state.selectedPanel = action.payload.tab;
-        })
         .addCase(selectTab, (state, action) => {
             state.selectedTab = action.payload.tab;
         })
@@ -87,8 +80,5 @@ export function ui(initialState: UIState): Reducer<UIState> {
         })
         .addCase(togglePanel, (state) => {
             state.showPanel = !state.showPanel;
-        })
-        .addCase(toggleRightSidebar, (state) => {
-            state.showRightSidebar = !state.showRightSidebar;
         }));
 }

@@ -10,7 +10,7 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import { ClipboardContainer } from '@app/core';
-import { EditorView, LoadingMenu, PresentMenu, ShapeView, ToolView, PagesView, Properties } from '@app/wireframes/components';
+import { EditorView, ShapeView, ToolView, PagesView, HeaderView, TabView } from '@app/wireframes/components';
 import { getSelectedItems, getSelectedShape, loadDiagramFromServer, newDiagram, useStore } from '@app/wireframes/model';
 import { CustomDragLayer } from './wireframes/components/CustomDragLayer';
 import { OverlayContainer } from './wireframes/contexts/OverlayContext';
@@ -21,16 +21,15 @@ export const App = () => {
     // @ts-ignore
     const routeToken = route.params['token'] || null;
     const routeTokenSnapshot = React.useRef(routeToken);
-    const showRightSidebar = useStore(s => s.ui.showRightSidebar);
     const selectedItem = useStore(getSelectedShape);
     const selectedSet = useStore(getSelectedItems);
+    const applicationMode = useStore(s => s.ui.selectedTab);
 
-    const SHAPE_WIDTH = 45;
+    const SHAPE_WIDTH = 38;
     const PREVIEW_WIDTH = 128;
     const PREVIEW_HEIGHT = 72;
-    const EDITOR_MARGIN = 30;
-    const TAB_WIDTH = 330;
-    const TAB_MIN_WIDTH = 40;
+    const EDITOR_MARGIN = 20;
+    const TAB_WIDTH = 240;
 
     React.useEffect(() => {
         const token = routeTokenSnapshot.current;
@@ -48,6 +47,12 @@ export const App = () => {
                 components: {
                     Dropdown: {
                         paddingBlock: 7,
+                    },
+                    Layout: {
+                        headerHeight: 56,
+                    },
+                    Tabs: {
+                        horizontalItemGutter: 16,
                     }
                 },
                 token: {
@@ -60,29 +65,31 @@ export const App = () => {
                 <ClipboardContainer>
                     <Layout className='screen-mode'>
                         <Layout.Header>
-                            <LoadingMenu />
-
-                            <ToolView item={selectedItem} set={selectedSet} />
-
-                            <span style={{ float: 'right' }}>
-                                <PresentMenu />
-                            </span>
+                            <HeaderView />
                         </Layout.Header>
 
                         <Layout className='content'>
-                            <Layout.Sider width={SHAPE_WIDTH} className='sidebar-left'>
-                                <ShapeView />
-                            </Layout.Sider>
+                            <Layout>
+                                <Layout.Header className='header-toolbar'>
+                                    <ToolView item={selectedItem} set={selectedSet} />
+                                </Layout.Header>
 
-                            <Layout className='editor-content'>
-                                <EditorView spacing={EDITOR_MARGIN} />
+                                <Layout>
+                                    <Layout.Sider width={SHAPE_WIDTH} className='sidebar-left'>
+                                        <ShapeView />
+                                    </Layout.Sider>
+
+                                    <Layout className='editor-content'>
+                                        <EditorView spacing={EDITOR_MARGIN} />
+                                    </Layout>
+                                </Layout>
                             </Layout>
 
-                            <Layout.Sider width={TAB_WIDTH} className='sidebar-right'
-                                collapsed={!showRightSidebar}
-                                collapsedWidth={TAB_MIN_WIDTH}>
-                                    <Properties />
-                                {/* <TabView collapse={!showRightSidebar} /> */}
+                            <Layout.Sider 
+                                width={TAB_WIDTH} 
+                                className='sidebar-right'
+                                style={{ visibility: (applicationMode == 'fullscreen') ? 'collapse' : 'visible'}}>
+                                    <TabView />
                             </Layout.Sider>
                         </Layout>
 
@@ -90,7 +97,6 @@ export const App = () => {
                             <PagesView prevWidth={PREVIEW_WIDTH} prevHeight={PREVIEW_HEIGHT} />
                         </Layout.Footer>
                     </Layout>
-
                     <CustomDragLayer />
                 </ClipboardContainer>
             </OverlayContainer>

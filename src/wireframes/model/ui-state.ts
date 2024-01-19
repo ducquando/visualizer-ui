@@ -5,6 +5,8 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
+import { ApplicationMode } from '@app/core';
+
 export interface UIState {
     // The current zoom level.
     zoom: number;
@@ -18,14 +20,8 @@ export interface UIState {
     // Indicates if the left sidebar is open.
     showPanel: boolean;
 
-    // Indicates if the right sidebar is open.
-    showRightSidebar: boolean;
-
     // The selected panel on the bottom layout.
-    selectedPanel: string;
-
-    // The selected panel on the bottom layout.
-    selectedTab: string;
+    selectedTab: ApplicationMode;
 
     // The color tab.
     selectedColorTab: string;
@@ -42,9 +38,7 @@ export const createInitialUIState: () => UIState = () => {
     return {
         zoom: 1,
         showPanel: true,
-        showRightSidebar: true,
         selectedColorTab: 'palette',
-        selectedPanel: 'animation',
-        selectedTab: 'properties',
+        selectedTab: 'design',
     };
 };

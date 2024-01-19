@@ -6,6 +6,7 @@
 */
 
 import { Button, Popover, Tabs } from 'antd';
+import type { TabsProps } from 'antd';
 import { TooltipPlacement } from 'antd/lib/tooltip';
 import * as React from 'react';
 import { ColorResult, SketchPicker } from 'react-color';
@@ -16,7 +17,7 @@ import './ColorPicker.scss';
 import { ColorList } from './ColorList';
 import { useEventCallback } from './hooks';
 
-type ColorTab = 'palette' | 'advanced';
+type ColorTab = 'palette' | 'custom';
 
 interface ColorPickerProps {
     // The selected color.
@@ -30,6 +31,9 @@ interface ColorPickerProps {
 
     // The active color tab.
     activeColorTab?: ColorTab;
+
+    // The icon to show
+    icon?: React.JSX.Element;
 
     // Where to place the popover
     popoverPlacement?: TooltipPlacement;
@@ -54,6 +58,7 @@ export const ColorPicker = React.memo((props: ColorPickerProps) => {
         popoverPlacement,
         recentColors,
         value,
+        icon,
     } = props;
 
     const [color, setColor] = React.useState(Color.BLACK);
@@ -71,10 +76,6 @@ export const ColorPicker = React.memo((props: ColorPickerProps) => {
     React.useEffect(() => {
         setColor(value ? Color.fromValue(value) : Color.BLACK);
     }, [value]);
-
-    const doToggle = useEventCallback(() => {
-        setVisible(x => !x);
-    });
 
     const doSelectColorResult = useEventCallback((result: ColorResult) => {
         setColorHex(result.hex);
@@ -96,38 +97,54 @@ export const ColorPicker = React.memo((props: ColorPickerProps) => {
         setColorHex(colorHex);
     });
 
-    const content = (
-        <Tabs size='small' className='color-picker-tabs' animated={false} activeKey={activeColorTab} onChange={doSelectTab}>
-            <Tabs.TabPane key='palette' tab={texts.common.palette}>
+    const menu: TabsProps['items'] = [
+        {
+            key: 'palette', 
+            label: texts.common.palette, 
+            children: <>
                 <ColorList color={color} colors={selectedPalette} onClick={doSelectColor} />
-
                 {recentColors &&
                     <div>
                         <h4>{texts.common.recent}</h4>
-
                         <ColorList color={color} colors={recentColors} onClick={doSelectColor} />
                     </div>
                 }
-            </Tabs.TabPane>
-            <Tabs.TabPane key='advanced' tab={texts.common.advanced}>
+            </>, 
+        },
+        {
+            key: 'custom', 
+            label: texts.common.custom, 
+            children: <>
                 <SketchPicker color={colorHex} onChange={doSelectColorResult} disableAlpha={true} width='210px' />
-
                 <Button onClick={doConfirmColor}>
                     {texts.common.apply}
                 </Button>
-            </Tabs.TabPane>
-        </Tabs>
+            </>, 
+        }
+    ];
+
+    const content = (
+        <Tabs 
+            size='small' 
+            items={menu} 
+            className='color-picker-tabs' 
+            animated={false} 
+            activeKey={activeColorTab} 
+            onChange={doSelectTab} />
     );
 
     const placement = popoverPlacement || 'left';
 
     return (
         <Popover content={content} open={visible && !disabled} placement={placement} trigger='click' onOpenChange={setVisible}>
-            <Button disabled={disabled} className='color-picker-button' onClick={doToggle}>
-                <div className='color-picker-color'>
-                    <div className='color-picker-color-inner' style={{ background: colorHex }}></div>
-                </div>
-            </Button>
+            { (!icon)
+                ? <Button disabled={disabled} className='color-picker-circle' type='text'>
+                    <div className='color-picker-color'>
+                        <div className='color-picker-color-inner' style={{ background: colorHex }}></div>
+                    </div>
+                </Button>
+                : <Button disabled={disabled} className='color-picker-button' type='text' icon={icon} style={{ fill: colorHex }} />
+            }
         </Popover>
     );
 });

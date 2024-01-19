@@ -230,7 +230,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
     }
 
     protected renderID(item: DiagramItem, bounds: Transform) {
-        const id = (item.name != undefined) ? `${item.name}` : `${item.id}`
+        const id = `${item.id}`;
         this.props.overlayManager.showInfo(bounds, id, 1, -20, true, true);
     }
 

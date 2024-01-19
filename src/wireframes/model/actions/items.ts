@@ -39,9 +39,9 @@ export const removeItems =
         return { payload: createItemsAction(diagram, items) };
     });
 
-export const renameItems =
-    createAction('items/rename', (diagram: DiagramRef, items: ItemsRef, name: string) => {
-        return { payload: createItemsAction(diagram, items, { name }) };
+export const resetIDItems =
+    createAction('items/resetID', (diagram: DiagramRef, items: ItemsRef, id: string) => {
+        return { payload: createItemsAction(diagram, items, { id }) };
     });
 
 export const pasteItems =
@@ -89,12 +89,12 @@ export function buildItems(builder: ActionReducerMapBuilder<EditorState>) {
                 });
             });
         })
-        .addCase(renameItems, (state, action) => {
-            const { diagramId, itemIds, name } = action.payload;
+        .addCase(resetIDItems, (state, action) => {
+            const { diagramId, itemIds, id } = action.payload;
 
             return state.updateDiagram(diagramId, diagram => {
                 return diagram.updateItems(itemIds, item => {
-                    return item.rename(name);
+                    return item.resetID(id);
                 });
             });
         })

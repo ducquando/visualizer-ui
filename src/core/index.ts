@@ -14,6 +14,7 @@ export * from './react/MarkerButton';
 export * from './react/Shortcut';
 export * from './react/Title';
 export * from './react/UserReport';
+export * from './utils/application-mode';
 export * from './utils/collections';
 export * from './utils/color-palette';
 export * from './utils/color';

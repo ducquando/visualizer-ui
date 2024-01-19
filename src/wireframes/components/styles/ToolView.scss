@@ -1,0 +1,23 @@
+@import 'mixins';
+@import 'vars';
+
+.tool {
+    &-menu {
+        display: flex;
+        flex-direction: row;
+        background-color: $color-border;
+        border: 0;
+        border-radius: 20px;
+        padding: 3px 10px;
+        align-items: center;
+        width: 100%;
+    }
+
+    &-menu-item {
+        padding: 3px 8px;
+
+        h5 {
+            margin: 0;
+        }
+    }
+}

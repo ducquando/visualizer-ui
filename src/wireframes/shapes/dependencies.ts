@@ -5,7 +5,6 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
-export * from './neutral/arrow';
 export * from './neutral/ellipse';
 export * from './neutral/latex';
 export * from './neutral/image';

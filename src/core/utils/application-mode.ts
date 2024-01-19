@@ -1,0 +1,1 @@
+export type ApplicationMode = 'animation' | 'design' | 'fullscreen';

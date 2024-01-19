@@ -33,13 +33,20 @@ body {
     @include fixed(null, null, null, 13px);
 }
 
+.header-toolbar {
+    background-color: transparent !important;
+    padding: 0 !important;
+    border: 0 !important;
+    margin: 10px 13px;
+    height: fit-content;
+}
+
 .header-cta-right {
     display: inline-flex;
     flex-direction: row;
     align-items: center;
     gap: 2px;
-    margin-right: 15px;
-    height: 40px;
+    margin-right: 13px;
     background-color: $color-theme-blue-lightest;
 
     h4 {
@@ -61,10 +68,6 @@ body {
         overflow-y: hidden;
         text-align: center;
         z-index: 1000;
-
-        .header-left {
-            max-height: 100%;
-        }
 
         @media (max-width: 1000px) {
             text-align: left;
@@ -114,6 +117,8 @@ tspan {
     border-left: 1px solid $color-border;
     overflow-x: hidden;
     overflow-y: auto;
+    margin: 10px 13px 10px 10px;
+    border-radius: 20px;
 }
 
 .sidebar-left {
@@ -123,7 +128,7 @@ tspan {
         flex-flow: column;
         height: fit-content;
         border-radius: 20px;
-        margin: 20px 0 20px 20px;
+        margin: 0 10px 0 13px;
     }
 
     .ant-layout-sider-children,
@@ -147,8 +152,7 @@ tspan {
         background: $color-theme-blue-lightest;
         border: 0;
         border-radius: 0;
-        max-height: 45px;
-        min-height: 45px;
+        height: 42px;
         padding: 0;
     }
 
@@ -164,34 +168,6 @@ tspan {
 
     .item:hover {
         background: $color-theme-secondary !important;
-    }
-}
-
-$toggle-button-top: 72px;
-$toggle-button-offset-left: 10px;
-$toggle-button-offset-right: 27px;
-$sidebar-size-left: 160px;
-$sidebar-size-right: 320px;
-
-.content {
-    .toggle-button-left {
-        & {
-            @include absolute($toggle-button-top, auto, auto, $toggle-button-offset-left);
-        }
-
-        &.visible {
-            left: $sidebar-size-left + $toggle-button-offset-left;
-        }
-    }
-
-    .toggle-button-right {
-        & {
-            @include absolute($toggle-button-top, $toggle-button-offset-right, auto, auto);
-        }
-
-        &.visible {
-            right: $sidebar-size-right + $toggle-button-offset-right;
-        }
     }
 }
 
@@ -325,8 +301,6 @@ header {
             background: transparent !important;
             border: 0;
             border-radius: 0;
-            max-height: 60px;
-            min-height: 60px;
             opacity: .8;
         }
 

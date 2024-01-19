@@ -48,15 +48,15 @@ describe('DiagramItem', () => {
     });
 
     it('should rename item', () => {
-        const item_2 = item_1.rename('Name');
+        const item_2 = item_1.resetID('ID');
 
-        expect(item_2.name).toBe('Name');
+        expect(item_2.id).toBe('ID');
     });
 
 
     it('should return original when renaming with same name', () => {
-        const item_2 = item_1.rename('Name');
-        const item_3 = item_2.rename('Name');
+        const item_2 = item_1.resetID('ID');
+        const item_3 = item_2.resetID('ID');
 
         expect(item_3).toBe(item_2);
     });

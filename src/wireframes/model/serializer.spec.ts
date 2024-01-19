@@ -14,7 +14,7 @@ describe('Serializer', () => {
     const checkbox = new AbstractControl(new Checkbox());
 
     const groupId = 'group-1';
-    const oldShape1 = DiagramItem.createShape(checkbox.createDefaultShape()).transformWith(t => t.moveTo(new Vec2(100, 20))).rename('Named');
+    const oldShape1 = DiagramItem.createShape(checkbox.createDefaultShape()).transformWith(t => t.moveTo(new Vec2(100, 20))).resetID('ID');
     const oldShape2 = DiagramItem.createShape(checkbox.createDefaultShape()).transformWith(t => t.moveTo(new Vec2(100, 20))).lock();
     const brokenShape = DiagramItem.createShape({ renderer: null! });
 
@@ -148,7 +148,7 @@ describe('Serializer', () => {
     function compareShapes(newValue: DiagramItem | undefined, original: DiagramItem) {
         expect(newValue).toBeDefined();
         expect(newValue?.type).toEqual(original.type);
-        expect(newValue?.name).toEqual(original?.name);
+        expect(newValue?.id).toEqual(original?.id);
         expect(newValue?.isLocked).toEqual(original?.isLocked);
 
         if (original.type === 'Group') {

@@ -8,7 +8,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { Vec2 } from '@app/core';
-import { addShape, buildItems, calculateSelection, createClassReducer, Diagram, DiagramItem, DiagramItemSet, EditorState, lockItems, pasteItems, removeItems, renameItems, RendererService, selectItems, Serializer, unlockItems } from '@app/wireframes/model';
+import { addShape, buildItems, calculateSelection, createClassReducer, Diagram, DiagramItem, DiagramItemSet, EditorState, lockItems, pasteItems, removeItems, resetIDItems, RendererService, selectItems, Serializer, unlockItems } from '@app/wireframes/model';
 import { Button } from '@app/wireframes/shapes/neutral/button';
 import { Icon } from '@app/wireframes/shapes/shared/icon';
 import { Raster } from '@app/wireframes/shapes/shared/raster';
@@ -68,15 +68,15 @@ describe('ItemsReducer', () => {
         expect(newDiagram.selectedIds.size).toBe(0);
     });
 
-    it('should rename item', () => {
-        const action = renameItems(diagram, [shape1], 'Name');
+    it('should reset item id', () => {
+        const action = resetIDItems(diagram, [shape1], 'ID');
 
         const state_1 = EditorState.create().addDiagram(diagram);
         const state_2 = reducer(state_1, action);
 
         const newShape = state_2.diagrams.get(diagram.id)!.items.get('1')!;
 
-        expect(newShape.name).toEqual('Name');
+        expect(newShape.id).toEqual('ID');
     });
 
     it('should lock item', () => {

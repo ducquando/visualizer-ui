@@ -31,8 +31,14 @@ export const DiagramProperties = React.memo(() => {
         setColor(editorColor);
     }, [editorColor]);
 
-    const doChangeSize = useEventCallback(() => {
-        dispatch(changeSize(sizeWidth, sizeHeight));
+    const doChangeWidth = useEventCallback((width: number) => {
+        setWidth(width);
+        dispatch(changeSize(width, sizeHeight));
+    });
+
+    const doChangeHeight = useEventCallback((height: number) => {
+        setHeight(height);
+        dispatch(changeSize(sizeWidth, height));
     });
 
     const doChangeColor = useEventCallback((color: Color) => {
@@ -44,19 +50,19 @@ export const DiagramProperties = React.memo(() => {
             <Row className='property'>
                 <Col span={12} className='property-label'>{texts.common.width}</Col>
                 <Col span={12} className='property-value'>
-                    <InputNumber value={sizeWidth} min={100} max={3000} onChange={(e) => !e ? null : setWidth} onBlur={doChangeSize} />
+                    <InputNumber value={sizeWidth} min={100} max={3000} onChange={(e) => !e ? null : doChangeWidth(e)} />
                 </Col>
             </Row>
 
             <Row className='property'>
                 <Col span={12} className='property-label'>{texts.common.height}</Col>
                 <Col span={12} className='property-value'>
-                    <InputNumber value={sizeHeight} min={100} max={3000} onChange={(e) => !e ? null : setHeight} onBlur={doChangeSize} />
+                    <InputNumber value={sizeHeight} min={100} max={3000} onChange={(e) => !e ? null : doChangeHeight(e)} />
                 </Col>
             </Row>
 
             <Row className='property'>
-                <Col span={12} className='property-label'>{texts.common.backgroundColor}</Col>
+                <Col span={12} className='property-label'>{texts.common.background}</Col>
                 <Col span={12} className='property-value'>
                     <ColorPicker value={color} onChange={doChangeColor} recentColors={recentColors} />
                 </Col>

@@ -12,7 +12,7 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.FONT_SIZE]: CommonTheme.CONTROL_FONT_SIZE,
     [DefaultAppearance.FOREGROUND_COLOR]: CommonTheme.CONTROL_TEXT_COLOR,
     [DefaultAppearance.TEXT_ALIGNMENT]: 'left',
-    [DefaultAppearance.TEXT]: 'Textbox',
+    [DefaultAppearance.TEXT]: '',
 };
 
 export class Textbox implements ShapePlugin {
