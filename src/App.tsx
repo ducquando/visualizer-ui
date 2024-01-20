@@ -23,13 +23,14 @@ export const App = () => {
     const routeTokenSnapshot = React.useRef(routeToken);
     const selectedItem = useStore(getSelectedShape);
     const selectedSet = useStore(getSelectedItems);
-    const applicationMode = useStore(s => s.ui.selectedTab);
+    const applicationMode = useStore(s => s.ui.selectedApplicationMode);
+    const sidebarWidth = useStore(s => s.ui.sidebarSize);
 
     const SHAPE_WIDTH = 38;
     const PREVIEW_WIDTH = 128;
     const PREVIEW_HEIGHT = 72;
     const EDITOR_MARGIN = 20;
-    const TAB_WIDTH = 240;
+    const designBarVisibility = applicationMode != 'animation';
 
     React.useEffect(() => {
         const token = routeTokenSnapshot.current;
@@ -69,26 +70,29 @@ export const App = () => {
                         </Layout.Header>
 
                         <Layout className='content'>
-                            <Layout>
-                                <Layout.Header className='header-toolbar'>
-                                    <ToolView item={selectedItem} set={selectedSet} />
-                                </Layout.Header>
-
-                                <Layout>
-                                    <Layout.Sider width={SHAPE_WIDTH} className='sidebar-left'>
-                                        <ShapeView />
-                                    </Layout.Sider>
-
-                                    <Layout className='editor-content'>
-                                        <EditorView spacing={EDITOR_MARGIN} />
+                            { designBarVisibility
+                                ? <Layout>
+                                    <Layout.Header className='header-toolbar'>
+                                        <ToolView item={selectedItem} set={selectedSet} />
+                                    </Layout.Header>
+                                    <Layout>
+                                        <Layout.Sider width={SHAPE_WIDTH} className='sidebar-left'>
+                                            <ShapeView />
+                                        </Layout.Sider>
+                                        <Layout className='editor-content'>
+                                            <EditorView spacing={EDITOR_MARGIN} />
+                                        </Layout>
                                     </Layout>
                                 </Layout>
-                            </Layout>
+                                
+                                : <Layout className='editor-content'>
+                                    <EditorView spacing={EDITOR_MARGIN} />
+                                </Layout>
+                            }
 
                             <Layout.Sider 
-                                width={TAB_WIDTH} 
-                                className='sidebar-right'
-                                style={{ visibility: (applicationMode == 'fullscreen') ? 'collapse' : 'visible'}}>
+                                width={sidebarWidth} 
+                                className='sidebar-right'>
                                     <TabView />
                             </Layout.Sider>
                         </Layout>

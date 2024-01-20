@@ -17,11 +17,11 @@ export interface UIState {
     // The info toast from any loading operation.
     infoToast?: string;
 
-    // Indicates if the left sidebar is open.
-    showPanel: boolean;
+    // The size for left sidebar
+    sidebarSize: number;
 
-    // The selected panel on the bottom layout.
-    selectedTab: ApplicationMode;
+    // The selected mode for the application.
+    selectedApplicationMode: ApplicationMode;
 
     // The color tab.
     selectedColorTab: string;
@@ -37,8 +37,8 @@ export interface UIStateInStore {
 export const createInitialUIState: () => UIState = () => {
     return {
         zoom: 1,
-        showPanel: true,
         selectedColorTab: 'palette',
-        selectedTab: 'design',
+        selectedApplicationMode: 'design',
+        sidebarSize: 240,
     };
 };

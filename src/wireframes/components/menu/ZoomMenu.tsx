@@ -13,25 +13,26 @@ import { Button, Dropdown } from 'antd';
 import { Vec2 } from '@app/core';
 import type { MenuProps } from 'antd';
 
-const SPACE_VERTICAL = 255;
-const SPACE_HORI = 195;
-
 export const ZoomMenu = React.memo(() => {
     const dispatch = useDispatch();
     const editorSize = useStore(getEditor).size;
+
+    const paddVert = 20 * 2 + 10 * 3 + 56 + 38 + (72 + 15 + 23) + 4; // EDITOR_MARGIN * 2 + INNER_PADD * 3 + headerHeight + SHAPE_HEIGHT + pagesHeight + (BORDER * 4)?
+    const paddHori = 20 * 2 + 13 * 2 + 10 * 2 + 38 + 240 + 4; // EDITOR_MARGIN * 2 + OUTER_PADD * 2 + INNER_PADD * 2 + SHAPE_WIDTH + rightSidebar + (BORDER * 4)?;
+
     const [zoomValue, setZoomValue] = useState('Fit');
-    const [windowSize, setWindowSize] = useState(new Vec2(window.innerWidth - SPACE_HORI, window.innerHeight - SPACE_VERTICAL));
+    const [windowSize, setWindowSize] = useState(new Vec2(window.innerWidth - paddHori, window.innerHeight - paddVert));
 
     const isZoom = (key: string) => {
         setZoomValue(key);
         dispatch(setZoom(getZoomValue(key)));
     };
 
-    React.useEffect(() => {
-        function getWindowSize() {
-            setWindowSize(new Vec2(window.innerWidth - SPACE_HORI, window.innerHeight - SPACE_VERTICAL));
-        }
+    const getWindowSize = () => {
+        setWindowSize(new Vec2(window.innerWidth - paddHori, window.innerHeight - paddVert));
+    }
 
+    React.useEffect(() => {
         if (zoomValue == 'Fit') {
             window.addEventListener('resize', getWindowSize);
             isZoom(zoomValue);
@@ -53,7 +54,7 @@ export const ZoomMenu = React.memo(() => {
                 return Number(value) / 100;
             case 'Fit':
             default:
-                return Math.round(Math.min(windowSize.x / editorSize.x, windowSize.y / editorSize.y) * 100) / 100;
+                return Math.floor(Math.min(windowSize.x / editorSize.x, windowSize.y / editorSize.y) * 100) / 100;
         }
     }
 
@@ -79,7 +80,7 @@ export const ZoomMenu = React.memo(() => {
                 className='tool-menu-item'
                 trigger={['click']}>
                 <Button type="text">
-                    <h5>{`${Math.round(getZoomValue(zoomValue) * 100)}%`}</h5>
+                    <h5>{`${Math.floor(getZoomValue(zoomValue) * 100)}%`}</h5>
                 </Button>
             </Dropdown>
         </>

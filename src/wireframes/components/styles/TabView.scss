@@ -1,13 +1,18 @@
 @import 'mixins';
 @import 'vars';
 
+.properties {
+    &-collapse {
+        background-color: $color-white;
+    }
+}
+
 .animation-view {
     display: block;
     flex-direction: column;
     width: 100%;
     min-width: 600px;
     background-color: $color-white;
-    border-top: solid 1px $color-border;
 }
 
 .title-editor {
@@ -26,16 +31,15 @@
 .code-editor {
     display: inline-flex;
     gap: 10px;
-    width: calc(100% - 2 * 1em);
+    width: 100%;
     padding: .75em 1em;
-    margin: 0 1em;
-    border: solid 1px $color-border;
-    background-color: $color-background;
+    background-color: $color-white;
     font-family: 'Source Code Pro', ui-monospace, monospace;
     font-size: 14px;
     line-height: 21px;
-    height: 200px;
+    height: 100%;
     overflow: auto;
+    overscroll-behavior-y: none;
 
     >.line-numbers,
     textarea {
@@ -48,7 +52,7 @@
         width: 100%;
         outline: none;
         color: $color-text;
-        background-color: $color-background;
+        background-color: $color-white;
         border: 0;
         resize: none;
     }

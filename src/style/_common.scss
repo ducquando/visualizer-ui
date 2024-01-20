@@ -112,9 +112,8 @@ tspan {
 // Sidebars
 //
 .sidebar-right {
-    background: $color-white !important;
+    background: transparent !important;
     border: 0;
-    border-left: 1px solid $color-border;
     overflow-x: hidden;
     overflow-y: auto;
     margin: 10px 13px 10px 10px;

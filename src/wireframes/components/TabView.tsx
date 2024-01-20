@@ -5,15 +5,15 @@ import './styles/TabView.scss';
 
 export const TabView = () => {
     const diagram = useStore(getDiagram);
-    const selectedTab = useStore(s => s.ui.selectedTab);
+    const applicationMode = useStore(s => s.ui.selectedApplicationMode);
 
     if (!diagram) {
         return null;
     }
 
     return (
-        (selectedTab == 'design') ? <PropertiesMenu /> :
-        (selectedTab == 'animation') ? <AnimationMenu diagram={ diagram } />
+        (applicationMode == 'design') ? <PropertiesMenu /> :
+        (applicationMode == 'animation') ? <AnimationMenu diagram={ diagram } />
         : <></>
     );
 };

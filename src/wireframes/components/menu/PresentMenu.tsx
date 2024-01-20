@@ -2,7 +2,7 @@ import { FundProjectionScreenOutlined, MoreOutlined } from "@ant-design/icons";
 import { Button, Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import React = require("react");
-import { getDiagrams, getEditor, selectTab, useStore } from "@app/wireframes/model";
+import { getDiagrams, getEditor, selectApplicationMode, setSidebarSize, useStore } from "@app/wireframes/model";
 import { AnimationIcon, DesignIcon, FullscreenIcon, IconOutline } from "@app/icons/icon";
 import { useDispatch } from "react-redux";
 
@@ -13,7 +13,7 @@ export const PresentMenu = React.memo(() => {
     const dispatch = useDispatch();
     const diagrams = useStore(getDiagrams);
     const editor = useStore(getEditor);
-    const mode = useStore(s => s.ui.selectedTab);
+    const mode = useStore(s => s.ui.selectedApplicationMode);
 
     const retrieveObjects = () => {
         let allDiagrams = new Array();
@@ -116,19 +116,35 @@ export const PresentMenu = React.memo(() => {
 
     const flipMode = () => {
         if (mode == 'design') {
-            dispatch(selectTab('animation'));
+            dispatch(setSidebarSize(420));
+            dispatch(selectApplicationMode('animation'));
         } else if (mode == 'animation') {
-            dispatch(selectTab('fullscreen'));
+            dispatch(setSidebarSize(0));
+            dispatch(selectApplicationMode('fullscreen'));
         } else {
-            dispatch(selectTab('design'));
+            dispatch(setSidebarSize(240));
+            dispatch(selectApplicationMode('design'));
         }
     }
 
     const modeMenu: MenuProps['items'] = [
+        { key: 'fullscreen', label: 'Fullscreen mode', icon: <IconOutline icon={FullscreenIcon} /> },
         { key: 'design', label: 'Design mode', icon: <IconOutline icon={DesignIcon} /> },
         { key: 'animation', label: 'Animation mode', icon: <IconOutline icon={AnimationIcon} /> },
-        { key: 'fullscreen', label: 'Fullscreen mode', icon: <IconOutline icon={FullscreenIcon} /> },
     ];
+
+    const modeMenuEvt: MenuProps['onClick'] = ({key}) => {
+        if (key == 'design') {
+            dispatch(setSidebarSize(240));
+            dispatch(selectApplicationMode('design'));
+        } else if (key == 'animation') {
+            dispatch(setSidebarSize(420));
+            dispatch(selectApplicationMode('animation'));
+        } else {
+            dispatch(setSidebarSize(0));
+            dispatch(selectApplicationMode('fullscreen'));
+        }
+    };
 
     return (
         <>
@@ -144,7 +160,7 @@ export const PresentMenu = React.memo(() => {
                     }
             </Button>
             <Dropdown 
-                menu={{ items: modeMenu, selectable: true, selectedKeys: [mode] }} 
+                menu={{ items: modeMenu, selectable: true, selectedKeys: [mode], onClick: modeMenuEvt }} 
                 trigger={['click']}>
                     <Button 
                         className='header-mode'

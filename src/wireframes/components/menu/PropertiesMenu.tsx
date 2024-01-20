@@ -57,12 +57,12 @@ export const PropertiesMenu = () => {
     return (
         <>
             <Collapse
-                className={(classNames({ hidden: !hasSelection }))}
+                className={`properties-collapse ${classNames({ hidden: !hasSelection })}`}
                 bordered={false}
                 items={objectMenu}
                 defaultActiveKey={['properties', 'transform']} />
             <Collapse
-                className={(classNames({ hidden: hasSelection || !hasDiagram }))}
+                className={`properties-collapse ${classNames({ hidden: hasSelection || !hasDiagram })}`}
                 bordered={false}
                 items={diagramMenu}
                 defaultActiveKey={['diagram', 'colors']} />

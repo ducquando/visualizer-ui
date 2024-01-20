@@ -28,24 +28,19 @@ export const selectColorTab =
         return { payload: { tab } };
     });
 
-export const selectPanel =
-    createAction('ui/panel', (tab: string) => {
-        return { payload: { tab } };
+export const setSidebarSize =
+    createAction('ui/sizebarSize', (size: number) => {
+        return { payload: { size } };
     });
 
-export const selectTab =
-    createAction('ui/tab', (tab: ApplicationMode) => {
-        return { payload: { tab } };
+export const selectApplicationMode =
+    createAction('ui/applicationMode', (mode: ApplicationMode) => {
+        return { payload: { mode } };
     });
 
 export const filterDiagrams =
     createAction('ui/diagrams/filter', (filter: string) => {
         return { payload: { filter } };
-    });
-
-export const togglePanel =
-    createAction('ui/togglePanel', () => {
-        return { payload: { } };
     });
 
 export function toastMiddleware() {
@@ -72,13 +67,13 @@ export function ui(initialState: UIState): Reducer<UIState> {
         .addCase(setZoom, (state, action) => {
             state.zoom = action.payload.zoom;
         })
-        .addCase(selectTab, (state, action) => {
-            state.selectedTab = action.payload.tab;
+        .addCase(setSidebarSize, (state, action) => {
+            state.sidebarSize = action.payload.size;
+        })
+        .addCase(selectApplicationMode, (state, action) => {
+            state.selectedApplicationMode = action.payload.mode;
         })
         .addCase(selectColorTab, (state, action) => {
             state.selectedColorTab = action.payload.tab;
-        })
-        .addCase(togglePanel, (state) => {
-            state.showPanel = !state.showPanel;
         }));
 }
