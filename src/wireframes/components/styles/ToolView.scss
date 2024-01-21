@@ -2,6 +2,30 @@
 @import 'vars';
 
 .tool {
+    &-container {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    &-toggle {
+        width: 38px !important;
+        height: 38px;
+    }
+
+    &-cta {
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        height: 38px;
+        background-color: $color-theme-blue-lightest;
+        border-radius: 20px;
+
+        h4 {
+            margin: 0 !important;
+        }
+    }
+
     &-menu {
         display: flex;
         flex-direction: row;

@@ -18,7 +18,10 @@ export interface UIState {
     infoToast?: string;
 
     // The size for left sidebar
-    sidebarSize: number;
+    sidebarLeftSize: number;
+
+    // The size for right sidebar
+    sidebarRightSize: number;
 
     // The selected mode for the application.
     selectedApplicationMode: ApplicationMode;
@@ -39,6 +42,7 @@ export const createInitialUIState: () => UIState = () => {
         zoom: 1,
         selectedColorTab: 'palette',
         selectedApplicationMode: 'design',
-        sidebarSize: 240,
+        sidebarLeftSize: 200,
+        sidebarRightSize: 0,
     };
 };

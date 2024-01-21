@@ -3,7 +3,13 @@ import { getDiagram, useStore } from "@app/wireframes/model";
 import { AnimationMenu, PropertiesMenu } from "./menu";
 import './styles/TabView.scss';
 
-export const TabView = () => {
+export const TabLeftView = () => {
+    return (
+        <PropertiesMenu /> 
+    );
+};
+
+export const TabRightView = () => {
     const diagram = useStore(getDiagram);
     const applicationMode = useStore(s => s.ui.selectedApplicationMode);
 
@@ -12,8 +18,8 @@ export const TabView = () => {
     }
 
     return (
-        (applicationMode == 'design') ? <PropertiesMenu /> :
-        (applicationMode == 'animation') ? <AnimationMenu diagram={ diagram } />
+        applicationMode == 'animation'
+        ? <AnimationMenu diagram={ diagram } />
         : <></>
     );
 };

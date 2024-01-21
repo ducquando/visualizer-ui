@@ -28,10 +28,15 @@ export const selectColorTab =
         return { payload: { tab } };
     });
 
-export const setSidebarSize =
-    createAction('ui/sizebarSize', (size: number) => {
+export const setSidebarLeftSize =
+    createAction('ui/sizebarLeftSize', (size: number) => {
         return { payload: { size } };
     });
+
+export const setSidebarRightSize =
+    createAction('ui/sizebarRightSize', (size: number) => {
+        return { payload: { size } };
+    });    
 
 export const selectApplicationMode =
     createAction('ui/applicationMode', (mode: ApplicationMode) => {
@@ -67,8 +72,11 @@ export function ui(initialState: UIState): Reducer<UIState> {
         .addCase(setZoom, (state, action) => {
             state.zoom = action.payload.zoom;
         })
-        .addCase(setSidebarSize, (state, action) => {
-            state.sidebarSize = action.payload.size;
+        .addCase(setSidebarLeftSize, (state, action) => {
+            state.sidebarLeftSize = action.payload.size;
+        })
+        .addCase(setSidebarRightSize, (state, action) => {
+            state.sidebarRightSize = action.payload.size;
         })
         .addCase(selectApplicationMode, (state, action) => {
             state.selectedApplicationMode = action.payload.mode;

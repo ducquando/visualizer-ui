@@ -10,7 +10,7 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import { ClipboardContainer } from '@app/core';
-import { EditorView, ShapeView, ToolView, PagesView, HeaderView, TabView } from '@app/wireframes/components';
+import { EditorView, ShapeView, ToolDesignView, PagesView, HeaderView, TabLeftView, TabRightView, ToolAnimationView } from '@app/wireframes/components';
 import { getSelectedItems, getSelectedShape, loadDiagramFromServer, newDiagram, useStore } from '@app/wireframes/model';
 import { CustomDragLayer } from './wireframes/components/CustomDragLayer';
 import { OverlayContainer } from './wireframes/contexts/OverlayContext';
@@ -23,14 +23,13 @@ export const App = () => {
     const routeTokenSnapshot = React.useRef(routeToken);
     const selectedItem = useStore(getSelectedShape);
     const selectedSet = useStore(getSelectedItems);
-    const applicationMode = useStore(s => s.ui.selectedApplicationMode);
-    const sidebarWidth = useStore(s => s.ui.sidebarSize);
+    const sidebarLeftWidth = useStore(s => s.ui.sidebarLeftSize);
+    const sidebarRightWidth = useStore(s => s.ui.sidebarRightSize);
 
     const SHAPE_WIDTH = 38;
     const PREVIEW_WIDTH = 128;
     const PREVIEW_HEIGHT = 72;
-    const EDITOR_MARGIN = 20;
-    const designBarVisibility = applicationMode != 'animation';
+    const EDITOR_MARGIN = 13;
 
     React.useEffect(() => {
         const token = routeTokenSnapshot.current;
@@ -70,30 +69,37 @@ export const App = () => {
                         </Layout.Header>
 
                         <Layout className='content'>
-                            { designBarVisibility
-                                ? <Layout>
-                                    <Layout.Header className='header-toolbar'>
-                                        <ToolView item={selectedItem} set={selectedSet} />
-                                    </Layout.Header>
+                            <Layout.Sider 
+                                width={sidebarLeftWidth} 
+                                style={{ visibility: sidebarLeftWidth == 0 ? 'hidden' : 'visible' }}
+                                className='sidebar-left'>
+                                    <TabLeftView />
+                            </Layout.Sider>
+
+                            <Layout>
+                                <Layout.Header className='header-toolbar'>
+                                    <ToolDesignView item={selectedItem} set={selectedSet} />
+                                </Layout.Header>
+                                <Layout>
+                                    <Layout.Sider width={SHAPE_WIDTH} className='sidebar-shape'>
+                                        <ShapeView />
+                                    </Layout.Sider>
                                     <Layout>
-                                        <Layout.Sider width={SHAPE_WIDTH} className='sidebar-left'>
-                                            <ShapeView />
-                                        </Layout.Sider>
-                                        <Layout className='editor-content'>
-                                            <EditorView spacing={EDITOR_MARGIN} />
-                                        </Layout>
+                                        <EditorView spacing={EDITOR_MARGIN} />
                                     </Layout>
                                 </Layout>
-                                
-                                : <Layout className='editor-content'>
-                                    <EditorView spacing={EDITOR_MARGIN} />
-                                </Layout>
-                            }
+                            </Layout>
 
                             <Layout.Sider 
-                                width={sidebarWidth} 
+                                width={sidebarRightWidth} 
+                                style={{ visibility: sidebarRightWidth == 0 ? 'hidden' : 'visible' }}
                                 className='sidebar-right'>
-                                    <TabView />
+                                    <Layout.Header className='header-toolbar'>
+                                        <ToolAnimationView />
+                                    </Layout.Header>
+                                    <Layout>
+                                        <TabRightView />
+                                    </Layout>
                             </Layout.Sider>
                         </Layout>
 

@@ -17,8 +17,8 @@ export const ZoomMenu = React.memo(() => {
     const dispatch = useDispatch();
     const editorSize = useStore(getEditor).size;
 
-    const paddVert = 20 * 2 + 10 * 3 + 56 + 38 + (72 + 15 + 23) + 4; // EDITOR_MARGIN * 2 + INNER_PADD * 3 + headerHeight + SHAPE_HEIGHT + pagesHeight + (BORDER * 4)?
-    const paddHori = 20 * 2 + 13 * 2 + 10 * 2 + 38 + 240 + 4; // EDITOR_MARGIN * 2 + OUTER_PADD * 2 + INNER_PADD * 2 + SHAPE_WIDTH + rightSidebar + (BORDER * 4)?;
+    const paddVert = 13 * 2 + 10 * 3 + 56 + 38 + (72 + 15 + 23) + 4; // EDITOR_MARGIN * 2 + INNER_PADD * 3 + headerHeight + SHAPE_HEIGHT + pagesHeight + (BORDER * 4)?
+    const paddHori = 13 * 2 + 13 * 2 + 10 * 2 + 38 + 200 + 4; // EDITOR_MARGIN * 2 + OUTER_PADD * 2 + INNER_PADD * 2 + SHAPE_WIDTH + rightSidebar + (BORDER * 4)?;
 
     const [zoomValue, setZoomValue] = useState('Fit');
     const [windowSize, setWindowSize] = useState(new Vec2(window.innerWidth - paddHori, window.innerHeight - paddVert));

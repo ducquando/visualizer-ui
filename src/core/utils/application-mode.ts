@@ -1,1 +1,1 @@
-export type ApplicationMode = 'animation' | 'design' | 'fullscreen';
+export type ApplicationMode = 'animation' | 'design';

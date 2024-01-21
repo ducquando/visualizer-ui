@@ -37,7 +37,7 @@ body {
     background-color: transparent !important;
     padding: 0 !important;
     border: 0 !important;
-    margin: 10px 13px;
+    margin: 10px 13px 10px 10px;
     height: fit-content;
 }
 
@@ -52,6 +52,10 @@ body {
     h4 {
         margin-bottom: 0;
     }
+}
+
+.editor-content {
+    margin: 10px 13px 10px 10px;
 }
 
 .header-cta-right:hover {
@@ -111,62 +115,72 @@ tspan {
 //
 // Sidebars
 //
-.sidebar-right {
-    background: transparent !important;
-    border: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    margin: 10px 13px 10px 10px;
-    border-radius: 20px;
-}
-
-.sidebar-left {
-    & {
-        background: $color-theme-blue-lightest !important;
-        display: flex;
-        flex-flow: column;
-        height: fit-content;
-        border-radius: 20px;
-        margin: 0 10px 0 13px;
-    }
-
-    .ant-layout-sider-children,
-    .ant-tabs,
-    .ant-tabs-content,
-    .ant-tabs-tabpane,
-    .tab-panel {
-        display: flex;
-        flex-flow: column;
-    }
-
-    .ant-tabs-tabpane {
-        min-height: 100%;
-    }
-
-    .ant-tabs-tabpane {
-        flex-shrink: 1 !important;
-    }
-
-    .item {
-        background: $color-theme-blue-lightest;
+.sidebar {
+    &-left,
+    &-right {
+        background: transparent !important;
         border: 0;
-        border-radius: 0;
-        height: 42px;
-        padding: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
-    .item:first-of-type {
-        border-radius: 20px 20px 0 0;
-        padding: 10px 0 0;
+    &-left {
+        border-radius: 20px;
+        margin: 10px 5px 10px 13px;
     }
 
-    .item:last-of-type {
-        border-radius: 0 0 20px 20px;
-        padding: 0 0 10px;
+    &-right {
+        margin: 0 13px 10px 5px;
     }
 
-    .item:hover {
-        background: $color-theme-secondary !important;
+    &-shape {
+        & {
+            background: $color-theme-blue-lightest !important;
+            display: flex;
+            flex-flow: column;
+            height: fit-content;
+            border-radius: 20px;
+            margin: 0 10px;
+        }
+
+        .ant-layout-sider-children,
+        .ant-tabs,
+        .ant-tabs-content,
+        .ant-tabs-tabpane,
+        .tab-panel {
+            display: flex;
+            flex-flow: column;
+        }
+
+        .ant-tabs-tabpane {
+            min-height: 100%;
+        }
+
+        .ant-tabs-tabpane {
+            flex-shrink: 1 !important;
+        }
+
+        .item {
+            background: $color-theme-blue-lightest;
+            border: 0;
+            border-radius: 0;
+            height: 42px;
+            padding: 0;
+        }
+
+        .item:first-of-type {
+            border-radius: 20px 20px 0 0;
+            padding: 10px 0 0;
+        }
+
+        .item:last-of-type {
+            border-radius: 0 0 20px 20px;
+            padding: 0 0 10px;
+        }
+
+        .item:hover {
+            background: $color-theme-secondary !important;
+        }
     }
 }
 
