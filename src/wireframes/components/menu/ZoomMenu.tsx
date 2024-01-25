@@ -49,7 +49,6 @@ export const ZoomMenu = React.memo(() => {
     useEffect(() => {
         if (zoomValue == 'Fit') {
             getWindowSize();
-            console.log(sidebarLeftSize, sidebarRightSize);
             isZoom(zoomValue);
         }
 

@@ -59,7 +59,6 @@ export const TableMenu = React.memo(() => {
                     break;
                 case 'remove':
                     newText = getRemoveFromTable(selectedItem, selectedIndex, delimiter);
-                    console.log(newText);
                     selectedIndex = (selectedIndex == 0) ? selectedIndex : selectedIndex - 1;
                     break;
                 default:
