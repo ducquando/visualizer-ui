@@ -15,14 +15,14 @@ export interface ToolDesignViewProps {
     set: DiagramItem[] | null;
 }
 
-export const ToolDesignView = (props: ToolDesignViewProps) => {
-    const { item, set } = props;
+const FullscreenButton = () => {
+    const SIDEBAR_LEFT_WIDTH = 200; 
     const dispatch = useDispatch();
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     const hideSidebar = () => {
         if (isFullscreen) {
-            dispatch(setSidebarLeftSize(200));
+            dispatch(setSidebarLeftSize(SIDEBAR_LEFT_WIDTH));
             setIsFullscreen(!isFullscreen);
         } else {
             dispatch(setSidebarLeftSize(0));
@@ -31,12 +31,20 @@ export const ToolDesignView = (props: ToolDesignViewProps) => {
     }
 
     return (
+        <Button 
+            type='text' shape='circle' 
+            className='tool-toggle' 
+            icon={isFullscreen ? <FullscreenExitOutlined /> : <ArrowsAltOutlined />}
+            onClick={hideSidebar} />
+    )
+}
+
+export const ToolDesignView = (props: ToolDesignViewProps) => {
+    const { item, set } = props;
+
+    return (
         <div className='tool-container'>
-            <Button 
-                type='text' shape='circle' 
-                className='tool-toggle' 
-                icon={isFullscreen ? <FullscreenExitOutlined /> : <ArrowsAltOutlined />}
-                onClick={hideSidebar} />
+            <FullscreenButton />
             <div className='tool-menu'>
                 <HistoryMenu />
                 <span className='menu-separator' />
@@ -73,6 +81,7 @@ export const ToolDesignView = (props: ToolDesignViewProps) => {
 export const ToolAnimationView = () => {
     return (
         <div className='tool-container'>
+            <FullscreenButton />
             <Button 
                 type='text' shape='rounded' 
                 className='tool-cta' 
@@ -81,6 +90,8 @@ export const ToolAnimationView = () => {
             </Button>
             <div className='tool-menu'>
                 <HistoryMenu />
+                <span className='menu-separator' />
+                <ZoomMenu />
             </div>
         </div>
     )

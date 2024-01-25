@@ -34,11 +34,21 @@ body {
 }
 
 .header-toolbar {
-    background-color: transparent !important;
-    padding: 0 !important;
-    border: 0 !important;
-    margin: 10px 13px 10px 10px;
-    height: fit-content;
+    &-left,
+    &-right {
+        background-color: transparent !important;
+        padding: 0 !important;
+        border: 0 !important;
+        height: fit-content;
+    }
+
+    &-left {
+        margin: 10px 13px 10px 10px;
+    }
+
+    &-right {
+        margin: 10px 0;
+    }
 }
 
 .header-cta-right {

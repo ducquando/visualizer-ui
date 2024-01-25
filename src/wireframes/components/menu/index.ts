@@ -6,7 +6,6 @@ export * from './GroupingMenu';
 export * from './HistoryMenu';
 export * from './PageMenu';
 export * from './PresentMenu';
-export * from './PropertiesMenu';
 export * from './TableMenu';
 export * from './VisualMenu';
 export * from './ZoomMenu';

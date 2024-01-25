@@ -6,7 +6,7 @@
 */
 
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useStore, getEditor, setZoom } from '@app/wireframes/model';
 import { Button, Dropdown } from 'antd';
@@ -14,14 +14,15 @@ import { Vec2 } from '@app/core';
 import type { MenuProps } from 'antd';
 
 export const ZoomMenu = React.memo(() => {
+    const PADD_VERT = 13 * 2 + 10 * 3 + 56 + 38 + (72 + 15 + 23) + 4; // EDITOR_MARGIN * 2 + INNER_PADD * 3 + headerHeight + SHAPE_HEIGHT + pagesHeight + (BORDER * 4)?
+    const PADD_HORI = 13 * 2 + 13 * 2 + 10 * 2 + 38 + 4; // EDITOR_MARGIN * 2 + OUTER_PADD * 2 + INNER_PADD * 2 + SHAPE_WIDTH + (BORDER * 4)?;
+
     const dispatch = useDispatch();
     const editorSize = useStore(getEditor).size;
-
-    const paddVert = 13 * 2 + 10 * 3 + 56 + 38 + (72 + 15 + 23) + 4; // EDITOR_MARGIN * 2 + INNER_PADD * 3 + headerHeight + SHAPE_HEIGHT + pagesHeight + (BORDER * 4)?
-    const paddHori = 13 * 2 + 13 * 2 + 10 * 2 + 38 + 200 + 4; // EDITOR_MARGIN * 2 + OUTER_PADD * 2 + INNER_PADD * 2 + SHAPE_WIDTH + rightSidebar + (BORDER * 4)?;
-
+    const sidebarLeftSize = useStore(s => s.ui.sidebarLeftSize);
+    const sidebarRightSize = useStore(s => s.ui.sidebarRightSize);
     const [zoomValue, setZoomValue] = useState('Fit');
-    const [windowSize, setWindowSize] = useState(new Vec2(window.innerWidth - paddHori, window.innerHeight - paddVert));
+    const [areaSize, setAreaSize] = useState(new Vec2(window.innerWidth - PADD_HORI - sidebarLeftSize - sidebarRightSize, window.innerHeight - PADD_VERT));
 
     const isZoom = (key: string) => {
         setZoomValue(key);
@@ -29,10 +30,11 @@ export const ZoomMenu = React.memo(() => {
     };
 
     const getWindowSize = () => {
-        setWindowSize(new Vec2(window.innerWidth - paddHori, window.innerHeight - paddVert));
+        setAreaSize(new Vec2(window.innerWidth - PADD_HORI - sidebarLeftSize - sidebarRightSize, window.innerHeight - PADD_VERT));
     }
-
-    React.useEffect(() => {
+    
+    // Get area size value on resizing window
+    useEffect(() => {
         if (zoomValue == 'Fit') {
             window.addEventListener('resize', getWindowSize);
             isZoom(zoomValue);
@@ -41,7 +43,17 @@ export const ZoomMenu = React.memo(() => {
         return () => {
             window.removeEventListener('resize', getWindowSize);
         };
-    }, [isZoom])
+    }, [isZoom]);
+
+    // Get area size value on toggling sidebars / changing canvas size
+    useEffect(() => {
+        if (zoomValue == 'Fit') {
+            getWindowSize();
+            console.log(sidebarLeftSize, sidebarRightSize);
+            isZoom(zoomValue);
+        }
+
+    }, [sidebarLeftSize, sidebarRightSize, editorSize]);
 
     const getZoomValue = (value: string) => {
         switch (value) {
@@ -54,7 +66,7 @@ export const ZoomMenu = React.memo(() => {
                 return Number(value) / 100;
             case 'Fit':
             default:
-                return Math.floor(Math.min(windowSize.x / editorSize.x, windowSize.y / editorSize.y) * 100) / 100;
+                return Math.floor(Math.min(areaSize.x / editorSize.x, areaSize.y / editorSize.y) * 100) / 100;
         }
     }
 

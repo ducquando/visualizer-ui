@@ -10,7 +10,7 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import { ClipboardContainer } from '@app/core';
-import { EditorView, ShapeView, ToolDesignView, PagesView, HeaderView, TabLeftView, TabRightView, ToolAnimationView } from '@app/wireframes/components';
+import { EditorView, ShapeView, ToolDesignView, PagesView, HeaderView, PropertiesView, AnimationView, ToolAnimationView } from '@app/wireframes/components';
 import { getSelectedItems, getSelectedShape, loadDiagramFromServer, newDiagram, useStore } from '@app/wireframes/model';
 import { CustomDragLayer } from './wireframes/components/CustomDragLayer';
 import { OverlayContainer } from './wireframes/contexts/OverlayContext';
@@ -25,6 +25,7 @@ export const App = () => {
     const selectedSet = useStore(getSelectedItems);
     const sidebarLeftWidth = useStore(s => s.ui.sidebarLeftSize);
     const sidebarRightWidth = useStore(s => s.ui.sidebarRightSize);
+    const applicationMode = useStore(s => s.ui.selectedApplicationMode);
 
     const SHAPE_WIDTH = 38;
     const PREVIEW_WIDTH = 128;
@@ -69,38 +70,44 @@ export const App = () => {
                         </Layout.Header>
 
                         <Layout className='content'>
-                            <Layout.Sider 
-                                width={sidebarLeftWidth} 
+                            <Layout.Sider
+                                width={sidebarLeftWidth}
                                 style={{ visibility: sidebarLeftWidth == 0 ? 'hidden' : 'visible' }}
                                 className='sidebar-left'>
-                                    <TabLeftView />
+                                <PropertiesView />
                             </Layout.Sider>
 
-                            <Layout>
-                                <Layout.Header className='header-toolbar'>
-                                    <ToolDesignView item={selectedItem} set={selectedSet} />
-                                </Layout.Header>
+                            {applicationMode == 'animation'
+                                ?
                                 <Layout>
-                                    <Layout.Sider width={SHAPE_WIDTH} className='sidebar-shape'>
-                                        <ShapeView />
-                                    </Layout.Sider>
                                     <Layout>
                                         <EditorView spacing={EDITOR_MARGIN} />
                                     </Layout>
+                                    <Layout.Sider 
+                                        width={sidebarRightWidth} 
+                                        style={{ visibility: sidebarRightWidth == 0 ? 'hidden' : 'visible' }}
+                                        className='sidebar-right'>
+                                            <Layout.Header className='header-toolbar-right'>
+                                                <ToolAnimationView />
+                                            </Layout.Header>
+                                                <AnimationView />
+                                    </Layout.Sider>
                                 </Layout>
-                            </Layout>
-
-                            <Layout.Sider 
-                                width={sidebarRightWidth} 
-                                style={{ visibility: sidebarRightWidth == 0 ? 'hidden' : 'visible' }}
-                                className='sidebar-right'>
-                                    <Layout.Header className='header-toolbar'>
-                                        <ToolAnimationView />
+                                :
+                                <Layout>
+                                    <Layout.Header className='header-toolbar-left'>
+                                        <ToolDesignView item={selectedItem} set={selectedSet} />
                                     </Layout.Header>
                                     <Layout>
-                                        <TabRightView />
+                                        <Layout.Sider width={SHAPE_WIDTH} className='sidebar-shape'>
+                                            <ShapeView />
+                                        </Layout.Sider>
+                                        <Layout>
+                                            <EditorView spacing={EDITOR_MARGIN} />
+                                        </Layout>
                                     </Layout>
-                            </Layout.Sider>
+                                </Layout>
+                            }
                         </Layout>
 
                         <Layout.Footer style={{ padding: 0 }} >

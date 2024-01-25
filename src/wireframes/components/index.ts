@@ -6,10 +6,11 @@
 */
 
 export * from './EditorView';
-export * from './TabView';
+export * from './AnimationView';
 export * from './ToolView';
 export * from './HeaderView';
 export * from './ShapeView';
 export * from './PagesView';
+export * from './PropertiesView';
 export * from './OutlineView';
 export * from './RecentView';

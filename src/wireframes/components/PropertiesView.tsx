@@ -11,9 +11,10 @@ import classNames from 'classnames';
 import * as React from 'react';
 import { texts } from '@app/texts';
 import { getDiagram, getSelectedItems, useStore } from '@app/wireframes/model';
-import { Colors, CustomProperties, DiagramProperties, LayoutProperties, ShapeProperties, TransformProperties } from '../properties';
+import { Colors, CustomProperties, DiagramProperties, LayoutProperties, ShapeProperties, TransformProperties } from './properties';
+import './styles/PropertiesView.scss';
 
-export const PropertiesMenu = () => {
+export const PropertiesView = () => {
     const selectedItems = useStore(getSelectedItems);
     const selectedItem = useStore(getDiagram);
     const hasSelection = selectedItems.length > 0;

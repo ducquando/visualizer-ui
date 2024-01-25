@@ -1,12 +1,6 @@
 @import 'mixins';
 @import 'vars';
 
-.properties {
-    &-collapse {
-        background-color: $color-white;
-    }
-}
-
 .animation-view {
     display: block;
     flex-direction: column;
@@ -37,10 +31,11 @@
     font-family: 'Source Code Pro', ui-monospace, monospace;
     font-size: 14px;
     line-height: 21px;
-    height: 100%;
     overflow: auto;
     overscroll-behavior-y: none;
     border-radius: 20px;
+    margin: 0;
+    height: calc(100% - 58px);
 
     >.line-numbers,
     textarea {

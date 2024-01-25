@@ -117,6 +117,7 @@ export const PresentMenu = React.memo(() => {
 
     const flipMode = () => {
         if (mode == 'design') {
+            console.log('hi');
             dispatch(setSidebarRightSize(SIDEBAR_RIGHT_WIDTH));
             dispatch(selectApplicationMode('animation'));
         } else {
@@ -134,7 +135,8 @@ export const PresentMenu = React.memo(() => {
         if (key == 'design') {
             dispatch(setSidebarRightSize(0));
             dispatch(selectApplicationMode('design'));
-        } else if (key == 'animation') {
+        } else {
+            console.log('hi');
             dispatch(setSidebarRightSize(SIDEBAR_RIGHT_WIDTH));
             dispatch(selectApplicationMode('animation'));
         }
