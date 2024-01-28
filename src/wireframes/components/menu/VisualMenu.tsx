@@ -67,7 +67,6 @@ export const VisualMenu = React.memo(() => {
                         defaultSelectedKeys: [`${fontSize.value}`],
                     }}
                     trigger={['click']}
-                    disabled={fontSize.empty}
                 >
                     <InputNumber 
                         size="small" 
@@ -75,6 +74,7 @@ export const VisualMenu = React.memo(() => {
                         variant="filled" 
                         style={{ width: 50 }}
                         controls={false}    
+                        disabled={fontSize.empty}
                         onChange={(e) => !e ? null : setFontSize(e)}
                     />
                 </Dropdown>
@@ -139,9 +139,8 @@ export const VisualMenu = React.memo(() => {
                         onClick: ({key}) => {setStrokeThickness(Number(key))}
                     }}
                     trigger={['click']}
-                    disabled={strokeThickness.empty}
                 >
-                    <Button type='text' icon={<IconOutline icon={BorderWidthIcon} />} />
+                    <Button type='text' icon={<IconOutline icon={BorderWidthIcon} />} disabled={strokeThickness.empty} />
                 </Dropdown>
             </Tooltip>
 

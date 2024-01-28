@@ -25,7 +25,7 @@ export class Textbox implements ShapePlugin {
     }
 
     public defaultSize() {
-        return { x: 200, y: 140 };
+        return { x: 400, y: 100 };
     }
 
     public previewSize(desiredWidth: number, desiredHeight: number) {

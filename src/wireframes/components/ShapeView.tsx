@@ -10,7 +10,7 @@ import { Button, Dropdown, Form, Input } from 'antd';
 import type { MenuProps } from 'antd';
 import { getDiagramId, useStore, addShape } from '@app/wireframes/model';
 import * as React from 'react';
-import { CircleIcon, FunctionIcon, ImageIcon, RectangleIcon, TableIcon, TextIcon, TriangleIcon, ShapesIcon, LinkIcon, HeadingIcon, SubHeadingIcon, ParagraphIcon } from '@app/icons/icon';
+import { CircleIcon, FunctionIcon, ImageIcon, RectangleIcon, TableIcon, TextIcon, TriangleIcon, ShapesIcon, LinkIcon, HeadingIcon, SubHeadingIcon, ParagraphIcon, DiamondIcon, RoundedRectangleIcon } from '@app/icons/icon';
 import './styles/ShapeView.scss';
 import { useState } from 'react';
 import classNames from 'classnames';
@@ -67,8 +67,10 @@ export const ShapeView = React.memo(() => {
 
     const shapeMenu: MenuProps['items'] = [
         { key: 'Rectangle', label: 'Rectangle', icon: <RectangleIcon />, className: 'menu-shape', },
+        { key: 'Rounded Rectangle', label: 'Rounded Rectangle', icon: <RoundedRectangleIcon />, className: 'menu-shape', },
         { key: 'Ellipse', label: 'Ellipse', icon: <CircleIcon />, className: 'menu-shape', },
-        { key: 'Triangle', label: 'Triangle', icon: <TriangleIcon />, className: 'menu-shape', }
+        { key: 'Triangle', label: 'Triangle', icon: <TriangleIcon />, className: 'menu-shape', },
+        { key: 'Rhombus', label: 'Rhombus', icon: <DiamondIcon />, className: 'menu-shape', }
     ];
 
     const imageMenu: MenuProps['items'] = [
@@ -95,7 +97,9 @@ export const ShapeView = React.memo(() => {
         setSelectedCell(0);
     };
 
-    const shapeMenuEvt: MenuProps['onClick'] = ({key}) => { createNewShape(key) };
+    const shapeMenuEvt: MenuProps['onClick'] = ({key}) => { 
+        createNewShape('Shape', { 'FONT_SIZE': 24, 'SHAPE': key });
+    };
 
     const imageMenuEvt: MenuProps['onClick'] = () => { setIsImageURL(true) };    
 

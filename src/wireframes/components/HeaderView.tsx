@@ -62,6 +62,7 @@ export const HeaderView = React.memo(() => {
 
                 <FileMenu />
                 <span className='menu-separator' />
+                <p style={{ display: 'inline-block', width: '80px'}}>{tokenToWrite ?? 'Unsaved'}</p>
             </div>
 
             <span style={{ float: 'right' }}>
