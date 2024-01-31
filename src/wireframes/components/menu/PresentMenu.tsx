@@ -1,7 +1,7 @@
 import { FundProjectionScreenOutlined, MoreOutlined } from "@ant-design/icons";
 import { Button, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import React = require("react");
+import * as React from "react";
 import { getDiagrams, getEditor, selectApplicationMode, setSidebarRightSize, useStore } from "@app/wireframes/model";
 import { AnimationIcon, DesignIcon, IconOutline } from "@app/icons/icon";
 import { useDispatch } from "react-redux";

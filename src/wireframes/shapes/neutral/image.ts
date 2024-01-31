@@ -8,7 +8,7 @@
 import { ConfigurableFactory, DefaultAppearance, RenderContext, ShapePlugin } from '@app/wireframes/interface';
 import { CommonTheme } from './_theme';
 
-// const IMAGE_URL = 'URL';
+const IMAGE_URL = 'IMAGE_URL';
 const IMAGE_ASPECT_RATIO = 'ASPECT_RATIO';
 
 const DEFAULT_APPEARANCE = {
@@ -16,6 +16,7 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.STROKE_COLOR]: CommonTheme.CONTROL_BORDER_COLOR,
     [DefaultAppearance.STROKE_THICKNESS]: CommonTheme.CONTROL_BORDER_THICKNESS,
     [DefaultAppearance.TEXT]: '',
+    [IMAGE_URL]: '',
     [IMAGE_ASPECT_RATIO]: true,
 };
 
@@ -34,21 +35,29 @@ export class Image implements ShapePlugin {
 
     public configurables(factory: ConfigurableFactory) {
         return [
+            factory.text(IMAGE_URL, 'Image URL'),
             factory.toggle(IMAGE_ASPECT_RATIO, 'Preserve aspect ratio'),
         ];
     }
 
     public render(ctx: RenderContext) {
-        const url = ctx.shape.getAppearance(DefaultAppearance.TEXT);
+        const url = ctx.shape.getAppearance(IMAGE_URL);
 
         if (url) {
             const aspectRatio = ctx.shape.getAppearance(IMAGE_ASPECT_RATIO);
 
             ctx.renderer2.raster(url, ctx.rect, aspectRatio);
         } else {
+            this.createText(ctx);
             this.createBorder(ctx);
             this.createCross(ctx);
         }
+    }
+
+    private createText(ctx: RenderContext) {
+        ctx.renderer2.textMultiline(ctx.shape, ctx.rect, p => {
+            p.setForegroundColor(ctx.shape);
+        }, true);
     }
 
     private createCross(ctx: RenderContext) {

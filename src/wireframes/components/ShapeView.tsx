@@ -10,17 +10,20 @@ import { Button, Dropdown, Form, Input } from 'antd';
 import type { MenuProps } from 'antd';
 import { getDiagramId, useStore, addShape } from '@app/wireframes/model';
 import * as React from 'react';
-import { CircleIcon, FunctionIcon, ImageIcon, RectangleIcon, TableIcon, TextIcon, TriangleIcon, ShapesIcon, LinkIcon, HeadingIcon, SubHeadingIcon, ParagraphIcon, DiamondIcon, RoundedRectangleIcon } from '@app/icons/icon';
+import { CircleIcon, FunctionIcon, ImageIcon, RectangleIcon, TableIcon, TextIcon, TriangleIcon, ShapesIcon, LinkIcon, HeadingIcon, SubHeadingIcon, ParagraphIcon, DiamondIcon, GraphicIcon, VectorIcon } from '@app/icons/icon';
 import './styles/ShapeView.scss';
 import { useState } from 'react';
 import classNames from 'classnames';
 import { ModalForm } from './overlay/ModalForm';
+import TextArea from 'antd/es/input/TextArea';
+
+type ShapeModal = 'image' | 'graphic' | 'vector' | '';
 
 export const ShapeView = React.memo(() => {
     const dispatch = useDispatch();
     const selectedDiagramId = useStore(getDiagramId);
     const [selectedCell, setSelectedCell] = useState(0);
-    const [isImageURL, setIsImageURL] = useState(false);
+    const [isShapeModal, setIsShapeModal] = useState<ShapeModal>('');
 
     const OFFSET_DROPDOWN = [45, -45];  // Place to the left
     const CELL_ATTR = { size: 16, cols: 8, rows: 8 }; // Max table creation size
@@ -30,8 +33,13 @@ export const ShapeView = React.memo(() => {
     const numCol = selectedCell % CELL_ATTR.cols + 1;
     
     const handleImageURLOk = (values: any) => {
-        createNewShape('Image', { 'TEXT': values.image_url })
-        setIsImageURL(false);
+        createNewShape('Image', { 'IMAGE_URL': values.image_url })
+        setIsShapeModal('');
+    };
+
+    const handleGraphicOk = (values: any) => {
+        createNewShape('Graphic', { 'SVG_CODE': values.svg_code })
+        setIsShapeModal('');
     };
 
     const createNewShape = (renderer: string, appearance?: any) => {
@@ -47,6 +55,17 @@ export const ShapeView = React.memo(() => {
         { type: 'divider' },
         { key: 'Equation', label: 'Equation', icon: <FunctionIcon />, className: 'menu-shape', }
     ];
+    const textMenuEvt: MenuProps['onClick'] = ({key}) => {
+        if (key == 'Heading') {
+            createNewShape('Textbox', { 'TEXT': 'Add a heading', 'FONT_SIZE': 60 })
+        } else if (key == 'Subheading') {
+            createNewShape('Textbox', { 'TEXT': 'Add a subheading', 'FONT_SIZE': 40 })
+        } else if (key == 'Paragraph') {
+            createNewShape('Textbox', { 'TEXT': 'Add a paragraph', 'FONT_SIZE': 24 })
+        } else if (key == 'Equation') {
+            createNewShape('Equation')
+        }
+    };
 
     const cellMenu: MenuProps['items'] = [
         { key: 'Cell', className:'menu-table', label: <>
@@ -64,44 +83,41 @@ export const ShapeView = React.memo(() => {
             </p>
         </> }
     ];
-
-    const shapeMenu: MenuProps['items'] = [
-        { key: 'Rectangle', label: 'Rectangle', icon: <RectangleIcon />, className: 'menu-shape', },
-        { key: 'Rounded Rectangle', label: 'Rounded Rectangle', icon: <RoundedRectangleIcon />, className: 'menu-shape', },
-        { key: 'Ellipse', label: 'Ellipse', icon: <CircleIcon />, className: 'menu-shape', },
-        { key: 'Triangle', label: 'Triangle', icon: <TriangleIcon />, className: 'menu-shape', },
-        { key: 'Rhombus', label: 'Rhombus', icon: <DiamondIcon />, className: 'menu-shape', }
-    ];
-
-    const imageMenu: MenuProps['items'] = [
-        { key: 'url',  label: 'By URL', icon: <LinkIcon />, className: 'menu-shape', }
-    ]
-
-    const textMenuEvt: MenuProps['onClick'] = ({key}) => {
-        if (key == 'Heading') {
-            createNewShape('Textbox', { 'TEXT': 'Add a heading', 'FONT_SIZE': 60 })
-        } else if (key == 'Subheading') {
-            createNewShape('Textbox', { 'TEXT': 'Add a subheading', 'FONT_SIZE': 40 })
-        } else if (key == 'Paragraph') {
-            createNewShape('Textbox', { 'TEXT': 'Add a paragraph', 'FONT_SIZE': 24 })
-        } else if (key == 'Equation') {
-            createNewShape('Equation')
-        }
-    };
-
     const cellMenuEvtClick: MenuProps['onClick'] = () => {
         createNewShape('Table', { 'TEXT': Array(numRow).join(Array(numCol).join(',') + ';') });
     };
-
     const cellMenuEvtLeave: MenuProps['onMouseLeave'] = () => {
         setSelectedCell(0);
     };
 
+    const shapeMenu: MenuProps['items'] = [
+        { key: 'Rectangle', label: 'Rectangle', icon: <RectangleIcon />, className: 'menu-shape', },
+        { key: 'Ellipse', label: 'Ellipse', icon: <CircleIcon />, className: 'menu-shape', },
+        { key: 'Triangle', label: 'Triangle', icon: <TriangleIcon />, className: 'menu-shape', },
+        { key: 'Rhombus', label: 'Rhombus', icon: <DiamondIcon />, className: 'menu-shape', },
+        { type: 'divider' },
+        { key: 'Custom', label: 'Custom', icon: <VectorIcon />, className: 'menu-shape', },
+    ];
     const shapeMenuEvt: MenuProps['onClick'] = ({key}) => { 
-        createNewShape('Shape', { 'FONT_SIZE': 24, 'SHAPE': key });
+        if (key == 'Custom') {
+
+        } else {
+            createNewShape('Shape', { 'FONT_SIZE': 24, 'SHAPE': key });
+        }
     };
 
-    const imageMenuEvt: MenuProps['onClick'] = () => { setIsImageURL(true) };    
+    const imageMenu: MenuProps['items'] = [
+        { key: 'svg',  label: 'By SVG', icon: <GraphicIcon />, className: 'menu-shape', },
+        { type: 'divider' },
+        { key: 'url',  label: 'By URL', icon: <LinkIcon />, className: 'menu-shape', },
+    ]
+    const imageMenuEvt: MenuProps['onClick'] = ({key}) => { 
+        if (key == 'url') {
+            setIsShapeModal('image');
+        } else if (key == 'svg') {
+            setIsShapeModal('graphic');
+        }
+    };    
 
     return (
         <>
@@ -162,17 +178,28 @@ export const ShapeView = React.memo(() => {
             </Dropdown>
 
             <ModalForm
-                title='Add Image'
+                title={`Add ${ isShapeModal == 'image' ? 'Image' : isShapeModal == 'graphic' ? 'Graphic' : ''} `}
                 okText='Add'
-                open={isImageURL}
-                onCancel={() => setIsImageURL(false)}
-                onCreate={handleImageURLOk} 
+                open={isShapeModal != ''}
+                onCancel={() => setIsShapeModal('')}
+                onCreate={
+                    isShapeModal == 'image' ? handleImageURLOk
+                    : isShapeModal == 'graphic' ? handleGraphicOk
+                    : ()=>{}
+                } 
                 formItems={
                     <>
-                        <div style={{ height: 20 }} />
-                        <Form.Item name="image_url">
-                            <Input type="textarea" placeholder="Paste URL of image..." />
-                        </Form.Item>
+                        {
+                            isShapeModal == 'image' ?
+                                <Form.Item name="image_url">
+                                    <Input type="textarea" placeholder="Paste URL of image..." />
+                                </Form.Item>
+                            : isShapeModal == 'graphic' ?
+                                <Form.Item name="svg_code">
+                                    <TextArea rows={10} type="textarea" placeholder="Paste SVG code..." />
+                                </Form.Item>
+                            : <></>
+                        } 
                     </>
                 }
             />

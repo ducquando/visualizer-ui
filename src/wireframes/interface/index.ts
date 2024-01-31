@@ -90,7 +90,7 @@ export interface ShapeFactory {
 
     roundedRectangleBottom(strokeWidth: RendererWidth, radius: number, bounds: Rect2, properties?: ShapePropertiesFunc): RendererElement;
 
-    path(strokeWidth: RendererWidth, path: string, properties?: ShapePropertiesFunc): RendererElement;
+    path(strokeWidth: RendererWidth, path: string, properties?: ShapePropertiesFunc, preserveAspectRatio?: boolean): RendererElement;
 
     raster(source: string, bounds: Rect2, preserveAspectRatio?: boolean, properties?: ShapePropertiesFunc): RendererElement;
 
