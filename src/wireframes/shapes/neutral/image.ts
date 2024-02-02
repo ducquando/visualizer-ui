@@ -45,7 +45,6 @@ export class Image implements ShapePlugin {
 
         if (url) {
             const aspectRatio = ctx.shape.getAppearance(IMAGE_ASPECT_RATIO);
-
             ctx.renderer2.raster(url, ctx.rect, aspectRatio);
         } else {
             this.createText(ctx);

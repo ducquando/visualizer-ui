@@ -20,7 +20,7 @@ const DEFAULT_APPEARANCE = {
     [DefaultAppearance.STROKE_THICKNESS]: CommonTheme.CONTROL_BORDER_THICKNESS,
     [DefaultAppearance.TEXT_ALIGNMENT]: 'center',
     [DefaultAppearance.TEXT]: '',
-    [SVG_CODE]: '',
+    [SVG_CODE]: SVGAElement,
     [SVG_ASPECT_RATIO]: true,
 };
 

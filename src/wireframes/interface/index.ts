@@ -23,7 +23,7 @@ export type RendererOpacity = number | Shape;
 export type RendererText = TextConfig | Shape;
 export type RendererWidth = number | Shape;
 export type Size = { x: number; y: number };
-export type TextConfig = { text: string; fontSize?: number; fontFamily?: string; alignment?: string };
+export type TextConfig = { text: string; fontSize?: number; fontFamily?: string; alignment?: string; backgroundColor?: RendererColor };
 export type TextDecoration = 'underline' | 'none';
 
 export interface RenderContext {
