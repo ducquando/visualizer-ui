@@ -1,7 +1,25 @@
 import { ExportOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import React = require("react");
+import * as svg from '@svgdotjs/svg.js';
 import { getDiagrams, getEditor, useStore } from "@app/wireframes/model";
+import { Image, Raster, Shape, Table, Textbox } from '@app/wireframes/shapes/dependencies';
+import { AbstractControl } from "@app/wireframes/shapes/utils/abstract-control";
+
+function getPlugin(renderer: string) {
+    switch (renderer) {
+        case new Image().identifier():
+            return new Image();
+        case new Shape().identifier():
+            return new Shape();
+        case new Table().identifier():
+            return new Table();
+        case new Textbox().identifier():
+            return new Textbox();
+        default:
+            return new Raster();
+    }
+}
 
 export const PresentMenu = React.memo(() => {
     const html = document.querySelector('.editor-diagram')?.innerHTML;
@@ -25,12 +43,18 @@ export const PresentMenu = React.memo(() => {
                 const content = item.text;
                 const bound = item.bounds(diagram);
 
+                // Get svg
+                const svgControl = new AbstractControl(getPlugin(item.renderer));
+                const svgElement: svg.Element = svgControl.render(item, undefined);
+                const svgCode = svgElement.node.outerHTML;
+
                 switch (item.renderer) {
                     case 'Textbox':
                     case 'Equation':
                         object['content'] = content;
                         object['diagram'] = diagramID;
                         object['id'] = id;
+                        object['svg'] = svgCode;
                         object['style'] = {
                             alignment: item.textAlignment,
                             colorBackground: item.backgroundColor,
@@ -44,6 +68,7 @@ export const PresentMenu = React.memo(() => {
                         object['content'] = content;
                         object['diagram'] = diagramID;
                         object['id'] = id;
+                        object['svg'] = svgCode;
                         object['style'] = {
                             alignment: item.textAlignment,
                             keepAspectRatio: item.getAppearance('ASPECT_RATIO'),
