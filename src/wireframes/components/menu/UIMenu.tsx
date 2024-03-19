@@ -5,29 +5,19 @@
  * Copyright (c) Sebastian Stehle. All rights reserved.
 */
 
-import { PlayCircleOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
 import * as React from 'react';
 import { ActionMenuButton, useUI } from '../actions';
 
-export interface UIMenuProps {
-    // The presentation callback.
-    onPlay?: () => void;
+export interface ZoomMenuProps {
 }
 
-export const UIMenu = React.memo((props: UIMenuProps) => {
-    const { onPlay } = props;
-
+export const ZoomMenu = React.memo((props: ZoomMenuProps) => {
     const forUI = useUI();
 
     return (
         <>
             <ActionMenuButton action={forUI.zoomOut} />
             <ActionMenuButton action={forUI.zoomIn} />
-
-            <Button className='menu-item' size='large' onClick={onPlay}>
-                <PlayCircleOutlined />
-            </Button>
         </>
     );
 });

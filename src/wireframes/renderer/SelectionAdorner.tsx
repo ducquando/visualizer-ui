@@ -12,6 +12,7 @@ import { calculateSelection, Diagram, DiagramItem, Transform } from '@app/wirefr
 import { InteractionHandler, InteractionService, SvgEvent } from './interaction-service';
 import { PreviewEvent } from './preview';
 import { OverlayManager } from '../contexts/OverlayContext';
+import { getSelectedCell, getTableAttributes } from '../shapes/dependencies';
 
 const SELECTION_STROKE_COLOR = '#080';
 const SELECTION_STROKE_LOCK_COLOR = '#f00';
@@ -40,6 +41,9 @@ export interface SelectionAdornerProps {
 
     // A function to select a set of items.
     onSelectItems: (diagram: Diagram, itemIds: string[]) => any;
+
+    // A function to change the appearance of a visual.
+    onChangeItemsAppearance: (diagram: Diagram, visuals: DiagramItem[], key: string, val: any) => any;
 }
 
 export class SelectionAdorner extends React.Component<SelectionAdornerProps> implements InteractionHandler {
@@ -47,7 +51,6 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
     private selectionShape!: svg.Rect;
     private dragStart: Vec2 | null = null;
     
-
     public componentDidMount() {
         this.props.interactionService.addHandler(this);
 
@@ -129,6 +132,13 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
         }
     }
 
+    public onClick(event: SvgEvent) {
+        if (event.shape) {
+            this.changeSelectedCell(event.shape, event.position, event.shape.bounds(this.props.selectedDiagram).aabb);
+        }
+        return false;
+    }
+
     public onBlur(event: FocusEvent, next: (event: FocusEvent) => void) {
         if (!this.dragStart) {
             next(event);
@@ -158,7 +168,6 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
         }
 
         const aabb = event.shape?.bounds(diagram).aabb;
-
         if (aabb?.contains(event.position) && event.shape) {
             return calculateSelection([event.shape], diagram, true, isMod);
         } else {
@@ -201,6 +210,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
             this.transformShape(marker, actualBounds.position.sub(actualBounds.halfSize), actualBounds.size, strokeWidth, actualBounds.rotation.degree);
             this.renderID(actualItem, actualBounds);
             this.renderLineCount(actualItem, actualBounds);
+            this.renderSelectedCell(actualItem, actualBounds);
         });
     }
 
@@ -219,12 +229,12 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
         }
     }
 
-    private renderID(item: DiagramItem, bounds: Transform) {
+    protected renderID(item: DiagramItem, bounds: Transform) {
         const id = (item.name != undefined) ? `${item.name}` : `${item.id}`
         this.props.overlayManager.showInfo(bounds, id, 1, -20, true, true);
     }
 
-    private renderLineCount(item: DiagramItem, bounds: Transform) {
+    protected renderLineCount(item: DiagramItem, bounds: Transform) {
         // Determine line breaks for textbox based on width and fontsize
         // This assumes that every char has the same width
         if (item.renderer == 'Textbox') {
@@ -242,7 +252,36 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
         };
     }
 
+    protected renderSelectedCell(item: DiagramItem, bounds: Transform) {
+        if (item.renderer == 'Table') {
+            const parseTable = getTableAttributes(item.text);
+            const sizeX = bounds.aabb.width / parseTable.columnCount;
+            const sizeY = bounds.aabb.height / parseTable.rowCount;
+            const rowIndex = item.getAppearance('SELECTED_CELL_X');
+            const colIndex = item.getAppearance('SELECTED_CELL_Y');
+
+            this.props.overlayManager.showGrid(bounds, parseTable.columnCount, parseTable.rowCount);
+            this.props.overlayManager.showBox(bounds, sizeX * rowIndex, sizeY * colIndex, sizeX, sizeY);
+        }
+    }
+
+    protected changeSelectedCell(shape: DiagramItem, position: Vec2, aabb: Rect2) {
+        if (shape.renderer == 'Table') {
+            const parseTable = getTableAttributes(shape.text);
+            const sizeX = aabb.width / parseTable.columnCount;
+            const sizeY = aabb.height / parseTable.rowCount;
+            const cell = getSelectedCell(
+                {'x': parseInt(position.getX()), 'y': parseInt(position.getY())},
+                {'x': shape.transform.left, 'y': shape.transform.top},
+                {'x': sizeX, 'y': sizeY},
+                {'x': parseTable.columnCount, 'y': parseTable.rowCount});
+            this.props.onChangeItemsAppearance(this.props.selectedDiagram, [shape], 'SELECTED_CELL_X', cell.indexCol);
+            this.props.onChangeItemsAppearance(this.props.selectedDiagram, [shape], 'SELECTED_CELL_Y', cell.indexRow);
+        }
+    }
+
     public render(): any {
         return null;
     }
 }
+
